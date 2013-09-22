@@ -1123,6 +1123,15 @@ void Role::decipher(QString command)
             case 4:
                 player=playerList.at(targetID);
                 player->changeHandCardNum(howMany);
+                if(targetID==myID)
+                {
+                    for(i=0;i<howMany;i++)
+                    {
+                        cardID=cardIDList[i].toInt();
+                        card=dataInterface->getCard(cardID);
+                        dataInterface->addHandCard(card);
+                    }
+                }
                 break;
             case 5:
                 cardID=cardIDList[0].toInt();
