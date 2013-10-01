@@ -1,4 +1,4 @@
-#ifndef LINGHUN_H
+﻿#ifndef LINGHUN_H
 #define LINGHUN_H
 #include "Role.h"
 class LingHun : public Role

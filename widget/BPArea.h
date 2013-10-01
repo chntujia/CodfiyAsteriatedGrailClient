@@ -1,4 +1,4 @@
-#ifndef BPAREA_H
+﻿#ifndef BPAREA_H
 #define BPAREA_H
 
 #include <QGraphicsObject>

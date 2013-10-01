@@ -1,4 +1,4 @@
-#ifndef MAOXIAN_H
+﻿#ifndef MAOXIAN_H
 #define MAOXIAN_H
 #include "Role.h"
 class MaoXian: public Role

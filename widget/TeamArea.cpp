@@ -1,4 +1,4 @@
-#include "TeamArea.h"
+﻿#include "TeamArea.h"
 #include "data/DataInterface.h"
 #include <QPainter>
 #include <QFont>

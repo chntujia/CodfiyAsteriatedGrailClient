@@ -1,4 +1,4 @@
-#include "widget/GUI.h"
+﻿#include "widget/GUI.h"
 #include "data/DataInterface.h"
 GUI* gui=NULL;
 GUI::GUI(QObject *parent) :

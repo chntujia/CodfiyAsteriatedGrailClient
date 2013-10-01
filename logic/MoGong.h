@@ -1,4 +1,4 @@
-#ifndef MOGONG_H
+﻿#ifndef MOGONG_H
 #define MOGONG_H
 #include "Role.h"
 

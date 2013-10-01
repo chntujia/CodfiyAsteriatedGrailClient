@@ -1,4 +1,4 @@
-#ifndef DIEWU_H
+﻿#ifndef DIEWU_H
 #define DIEWU_H
 #include "Role.h"
 

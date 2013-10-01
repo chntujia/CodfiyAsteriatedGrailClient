@@ -1,4 +1,4 @@
-#ifndef GONGNV_H
+﻿#ifndef GONGNV_H
 #define GONGNV_H
 #include "Role.h"
 class GongNv : public Role

@@ -60,8 +60,11 @@ HEADERS += client/Client.h \
            widget/RoomView.h \
            widget/ShowArea.h \
            widget/TeamArea.h \
-           widget/TipArea.h
-FORMS += client/ClientUI.ui
+           widget/TipArea.h \
+    client/Lobby.h \
+    client/RoomUI.h
+FORMS += client/ClientUI.ui \
+    client/Lobby.ui
 SOURCES += main.cpp \
            client/Client.cpp \
            client/ClientUI.cpp \
@@ -113,4 +116,6 @@ SOURCES += main.cpp \
            widget/RoomView.cpp \
            widget/ShowArea.cpp \
            widget/TeamArea.cpp \
-           widget/TipArea.cpp
+           widget/TipArea.cpp \
+    client/Lobby.cpp \
+    client/RoomUI.cpp

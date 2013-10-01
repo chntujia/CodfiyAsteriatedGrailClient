@@ -1,4 +1,4 @@
-#ifndef SHENGQIANG_H
+﻿#ifndef SHENGQIANG_H
 #define SHENGQIANG_H
 #include "Role.h"
 

@@ -1,4 +1,4 @@
-#include "MoQiang.h"
+﻿#include "MoQiang.h"
 
 MoQiang::MoQiang()
 {

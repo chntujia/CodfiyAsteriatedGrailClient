@@ -1,4 +1,4 @@
-#include "CardItem.h"
+﻿#include "CardItem.h"
 #include <QPainter>
 
 CardItem::CardItem(Card* card)

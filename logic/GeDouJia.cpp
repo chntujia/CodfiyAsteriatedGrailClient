@@ -1,4 +1,4 @@
-#include "GeDouJia.h"
+﻿#include "GeDouJia.h"
 
 GeDouJia::GeDouJia()
 {

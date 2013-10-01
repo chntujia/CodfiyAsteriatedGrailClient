@@ -1,4 +1,4 @@
-#ifndef LOGAREA_H
+﻿#ifndef LOGAREA_H
 #define LOGAREA_H
 
 #include <QTextEdit>

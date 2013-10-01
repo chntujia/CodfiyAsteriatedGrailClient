@@ -1,4 +1,4 @@
-#include "MoJian.h"
+﻿#include "MoJian.h"
 
 MoJian::MoJian()
 {

@@ -1,4 +1,4 @@
-#include "MoGong.h"
+﻿#include "MoGong.h"
 
 MoGong::MoGong()
 {

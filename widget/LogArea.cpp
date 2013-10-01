@@ -1,4 +1,4 @@
-#include "LogArea.h"
+﻿#include "LogArea.h"
 #include "Logic.h"
 #include "DataInterface.h"
 LogArea::LogArea(QWidget *parent) :

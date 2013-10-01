@@ -1,4 +1,4 @@
-#ifndef PLAYERAREA_H
+﻿#ifndef PLAYERAREA_H
 #define PLAYERAREA_H
 
 #include <QGraphicsObject>

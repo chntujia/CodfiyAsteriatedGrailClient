@@ -1,4 +1,4 @@
-#include "TipArea.h"
+﻿#include "TipArea.h"
 #include <QPainter>
 #include <QFont>
 #include "data/DataInterface.h"

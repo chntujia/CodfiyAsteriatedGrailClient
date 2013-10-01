@@ -1,4 +1,4 @@
-#ifndef CARDITEM_H
+﻿#ifndef CARDITEM_H
 #define CARDITEM_H
 
 #include <QGraphicsObject>

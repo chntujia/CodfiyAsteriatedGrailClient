@@ -1,4 +1,4 @@
-#include "Animation.h"
+﻿#include "Animation.h"
 #include "data/DataInterface.h"
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>

@@ -1,4 +1,4 @@
-#ifndef SHENGNV_H
+﻿#ifndef SHENGNV_H
 #define SHENGNV_H
 #include "Role.h"
 class ShengNv : public Role

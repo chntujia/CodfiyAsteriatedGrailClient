@@ -1,4 +1,4 @@
-#ifndef HONGLIAN_H
+﻿#ifndef HONGLIAN_H
 #define HONGLIAN_H
 #include "Role.h"
 

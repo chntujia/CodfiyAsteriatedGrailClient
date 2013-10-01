@@ -1,4 +1,4 @@
-#ifndef FENGYIN_H
+﻿#ifndef FENGYIN_H
 #define FENGYIN_H
 #include "Role.h"
 class FengYin : public Role

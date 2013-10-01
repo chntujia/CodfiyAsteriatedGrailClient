@@ -1,4 +1,4 @@
-#include "data/Team.h"
+﻿#include "data/Team.h"
 
 Team::Team(bool isRed,int moraleMax):grail(0),crystal(0),gem(0)
 {

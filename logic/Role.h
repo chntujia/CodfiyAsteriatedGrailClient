@@ -1,4 +1,4 @@
-#ifndef ROLE_H
+﻿#ifndef ROLE_H
 #define ROLE_H
 
 #include <QObject>

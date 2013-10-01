@@ -1,4 +1,4 @@
-#include "data/DataInterface.h"
+﻿#include "data/DataInterface.h"
 #include <QTextStream>
 #include <QFile>
 #include "widget/GUI.h"

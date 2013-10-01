@@ -1,4 +1,4 @@
-#include "logic/Logic.h"
+﻿#include "logic/Logic.h"
 #include "data/DataInterface.h"
 #include "Role.h"
 #include "widget/PlayerArea.h"

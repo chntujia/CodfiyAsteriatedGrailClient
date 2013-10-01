@@ -1,4 +1,4 @@
-#ifndef SHENGUAN_H
+﻿#ifndef SHENGUAN_H
 #define SHENGUAN_H
 #include "Role.h"
 

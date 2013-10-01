@@ -1,4 +1,4 @@
-#include "ShowArea.h"
+﻿#include "ShowArea.h"
 #include "Animation.h"
 #include <QPainter>
 //#include <windows.h>

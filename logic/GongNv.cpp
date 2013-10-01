@@ -1,4 +1,4 @@
-#include "GongNv.h"
+﻿#include "GongNv.h"
 GongNv::GongNv()
 {
     makeConnection();

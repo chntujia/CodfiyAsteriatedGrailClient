@@ -1,4 +1,4 @@
-#ifndef BUTTONAREA_H
+﻿#ifndef BUTTONAREA_H
 #define BUTTONAREA_H
 
 #include <QGraphicsObject>

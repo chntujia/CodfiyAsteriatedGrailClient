@@ -1,4 +1,4 @@
-#ifndef JIANDI_H
+﻿#ifndef JIANDI_H
 #define JIANDI_H
 #include "Role.h"
 class JianDi : public Role

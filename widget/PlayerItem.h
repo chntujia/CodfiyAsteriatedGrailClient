@@ -1,4 +1,4 @@
-#ifndef PLAYERITEM_H
+﻿#ifndef PLAYERITEM_H
 #define PLAYERITEM_H
 
 #include <QGraphicsObject>

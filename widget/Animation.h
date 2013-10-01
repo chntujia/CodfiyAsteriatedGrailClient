@@ -1,4 +1,4 @@
-#ifndef ANIMATION_H
+﻿#ifndef ANIMATION_H
 #define ANIMATION_H
 #include "RoomView.h"
 #include "CardItem.h"

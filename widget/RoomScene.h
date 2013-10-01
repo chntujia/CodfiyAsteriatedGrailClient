@@ -1,4 +1,4 @@
-#ifndef ROOMSCENE_H
+﻿#ifndef ROOMSCENE_H
 #define ROOMSCENE_H
 
 #include <QGraphicsScene>

@@ -1,4 +1,4 @@
-#ifndef DATAINTERFACE_H
+﻿#ifndef DATAINTERFACE_H
 #define DATAINTERFACE_H
 
 #include <QObject>

@@ -1,4 +1,4 @@
-#include "Role.h"
+﻿#include "Role.h"
 #include <QStringList>
 #include <QSound>
 #include "data/DataInterface.h"

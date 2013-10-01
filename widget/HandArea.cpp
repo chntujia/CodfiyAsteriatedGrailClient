@@ -1,4 +1,4 @@
-#include <QPainter>
+﻿#include <QPainter>
 #include <widget/GUI.h>
 #include "HandArea.h"
 #include "data/DataInterface.h"

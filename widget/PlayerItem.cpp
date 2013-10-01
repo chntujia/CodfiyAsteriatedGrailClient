@@ -1,4 +1,4 @@
-#include "PlayerItem.h"
+﻿#include "PlayerItem.h"
 #include "data/DataInterface.h"
 #include <QPainter>
 #include <QPushButton.h>

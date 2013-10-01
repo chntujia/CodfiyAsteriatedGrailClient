@@ -1,4 +1,4 @@
-#ifndef ANSHA_H
+﻿#ifndef ANSHA_H
 #define ANSHA_H
 #include "Role.h"
 class AnSha : public Role

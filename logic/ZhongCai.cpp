@@ -1,4 +1,4 @@
-#include "ZhongCai.h"
+﻿#include "ZhongCai.h"
 
 ZhongCai::ZhongCai()
 {

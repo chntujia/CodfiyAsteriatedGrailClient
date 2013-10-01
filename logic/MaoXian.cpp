@@ -1,4 +1,4 @@
-#include "MaoXian.h"
+﻿#include "MaoXian.h"
 MaoXian::MaoXian()
 {
     makeConnection();

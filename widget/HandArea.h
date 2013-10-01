@@ -1,4 +1,4 @@
-#ifndef HANDAREA_H
+﻿#ifndef HANDAREA_H
 #define HANDAREA_H
 
 #include <QGraphicsObject>

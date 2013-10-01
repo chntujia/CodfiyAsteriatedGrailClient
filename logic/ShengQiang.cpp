@@ -1,4 +1,4 @@
-#include "shengqiang.h"
+﻿#include "shengqiang.h"
 
 ShengQiang::ShengQiang()
 {

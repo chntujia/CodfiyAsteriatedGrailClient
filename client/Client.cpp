@@ -1,4 +1,4 @@
-#include <QMessageBox>
+﻿#include <QMessageBox>
 #include "client/Client.h"
 #include "widget/GUI.h"
 #include "logic/Logic.h"

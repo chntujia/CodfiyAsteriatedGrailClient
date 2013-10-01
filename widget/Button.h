@@ -1,4 +1,4 @@
-#ifndef BUTTON_H
+﻿#ifndef BUTTON_H
 #define BUTTON_H
 
 #include <QGraphicsObject>

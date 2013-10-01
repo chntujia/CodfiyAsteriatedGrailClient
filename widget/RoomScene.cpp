@@ -1,4 +1,4 @@
-#include "RoomScene.h"
+﻿#include "RoomScene.h"
 #include <QPointF>
 #include "widget/GUI.h"
 #include <QPainter>

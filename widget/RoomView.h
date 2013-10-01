@@ -1,4 +1,4 @@
-#ifndef ROOMVIEW_H
+﻿#ifndef ROOMVIEW_H
 #define ROOMVIEW_H
 
 #include <QGraphicsView>

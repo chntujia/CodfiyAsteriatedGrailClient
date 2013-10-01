@@ -1,4 +1,4 @@
-#include "LingHun.h"
+﻿#include "LingHun.h"
 
 LingHun::LingHun()
 {

@@ -1,4 +1,4 @@
-#include "data/Player.h"
+﻿#include "data/Player.h"
 #include <QTextStream>
 #include <QFile>
 Player::Player(int ID, int isRed, QString nickname):id(ID),handCardsMax(6),crossNum(0),crossMax(2),energyMax(3),color(isRed),tap(0)

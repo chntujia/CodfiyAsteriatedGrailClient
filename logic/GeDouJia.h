@@ -1,4 +1,4 @@
-#ifndef GEDOUJIA_H
+﻿#ifndef GEDOUJIA_H
 #define GEDOUJIA_H
 #include "Role.h"
 class GeDouJia : public Role

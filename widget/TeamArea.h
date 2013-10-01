@@ -1,4 +1,4 @@
-#ifndef TEAMAREA_H
+﻿#ifndef TEAMAREA_H
 #define TEAMAREA_H
 
 #include <QGraphicsObject>

@@ -1,4 +1,4 @@
-#ifndef ZHONGCAI_H
+﻿#ifndef ZHONGCAI_H
 #define ZHONGCAI_H
 #include "Role.h"
 class ZhongCai : public Role

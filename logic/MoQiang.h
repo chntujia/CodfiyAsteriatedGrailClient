@@ -1,4 +1,4 @@
-#ifndef MOQIANG_H
+﻿#ifndef MOQIANG_H
 #define MOQIANG_H
 #include "Role.h"
 class MoQiang : public Role

@@ -1,4 +1,4 @@
-#ifndef TIPAREA_H
+﻿#ifndef TIPAREA_H
 #define TIPAREA_H
 
 #include <QGraphicsObject>

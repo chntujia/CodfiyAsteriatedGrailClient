@@ -1,4 +1,4 @@
-#include "ButtonArea.h"
+﻿#include "ButtonArea.h"
 #include "data/DataInterface.h"
 #include "widget/GUI.h"
 DecisionArea::DecisionArea()

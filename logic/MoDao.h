@@ -1,4 +1,4 @@
-#ifndef MODAO_H
+﻿#ifndef MODAO_H
 #define MODAO_H
 #include "Role.h"
 class MoDao : public Role

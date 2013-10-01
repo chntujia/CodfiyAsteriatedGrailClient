@@ -1,4 +1,4 @@
-#include "BPArea.h"
+﻿#include "BPArea.h"
 #include <QPainter>
 #include <QFont>
 #include "data/DataInterface.h"

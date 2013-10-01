@@ -1,4 +1,4 @@
-#ifndef SILING_H
+﻿#ifndef SILING_H
 #define SILING_H
 #include "Role.h"
 

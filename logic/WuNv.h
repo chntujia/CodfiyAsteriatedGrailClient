@@ -1,4 +1,4 @@
-#ifndef WUNV_H
+﻿#ifndef WUNV_H
 #define WUNV_H
 #include "Role.h"
 

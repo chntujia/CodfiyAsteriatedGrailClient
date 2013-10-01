@@ -1,4 +1,4 @@
-#ifndef JIANSHENG_H
+﻿#ifndef JIANSHENG_H
 #define JIANSHENG_H
 #include "Role.h"
 class JianSheng : public Role

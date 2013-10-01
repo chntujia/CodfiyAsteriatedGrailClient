@@ -1,4 +1,4 @@
-#ifndef ROLEITEM_H
+﻿#ifndef ROLEITEM_H
 #define ROLEITEM_H
 
 #include <QGraphicsObject>

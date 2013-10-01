@@ -1,4 +1,4 @@
-#include "data/Card.h"
+﻿#include "data/Card.h"
 Card::Card(QStringList* cardEntry)
 {
     this->id=cardEntry->at(0).toInt();

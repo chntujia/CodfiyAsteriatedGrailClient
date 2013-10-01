@@ -1,4 +1,4 @@
-#ifndef YONGZHE_H
+﻿#ifndef YONGZHE_H
 #define YONGZHE_H
 #include "Role.h"
 class YongZhe : public Role

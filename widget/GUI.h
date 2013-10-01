@@ -1,4 +1,4 @@
-#ifndef GUI_H
+﻿#ifndef GUI_H
 #define GUI_H
 
 #include <QObject>

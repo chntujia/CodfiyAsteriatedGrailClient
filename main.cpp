@@ -1,4 +1,4 @@
-#include <QtGui>
+﻿#include <QtGui>
 #include <QApplication>
 #include "widget/Animation.h"
 #include "widget/RoomView.h"

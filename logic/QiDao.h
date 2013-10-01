@@ -1,4 +1,4 @@
-#ifndef QIDAO_H
+﻿#ifndef QIDAO_H
 #define QIDAO_H
 #include "Role.h"
 class QiDao  : public Role

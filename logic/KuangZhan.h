@@ -1,4 +1,4 @@
-#ifndef KUANGZHAN_H
+﻿#ifndef KUANGZHAN_H
 #define KUANGZHAN_H
 #include "Role.h"
 class KuangZhan : public Role

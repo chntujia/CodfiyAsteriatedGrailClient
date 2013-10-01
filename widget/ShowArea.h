@@ -1,4 +1,4 @@
-#ifndef SHOWAREA_H
+﻿#ifndef SHOWAREA_H
 #define SHOWAREA_H
 
 #include <QGraphicsObject>

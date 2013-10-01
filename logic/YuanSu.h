@@ -1,4 +1,4 @@
-#ifndef YUANSU_H
+﻿#ifndef YUANSU_H
 #define YUANSU_H
 #include "Role.h"
 class YuanSu : public Role

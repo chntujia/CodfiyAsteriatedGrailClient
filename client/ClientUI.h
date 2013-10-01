@@ -1,4 +1,4 @@
-#ifndef CLIENTUI_H
+﻿#ifndef CLIENTUI_H
 #define CLIENTUI_H
 
 #include <QDialog>

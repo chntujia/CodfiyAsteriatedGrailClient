@@ -1,4 +1,4 @@
-#include "RoleItem.h"
+﻿#include "RoleItem.h"
 #include <QPainter>
 #include "GUI.h"
 RoleItem::RoleItem(int roleID)

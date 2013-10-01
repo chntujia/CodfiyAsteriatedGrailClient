@@ -1,4 +1,4 @@
-#include <QMessageBox>
+﻿#include <QMessageBox>
 #include "client/ClientUI.h"
 #include "client/ui_ClientUI.h"
 #include "data/DataInterface.h"

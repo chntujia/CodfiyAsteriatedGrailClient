@@ -1,4 +1,4 @@
-#ifndef TIANSHI_H
+﻿#ifndef TIANSHI_H
 #define TIANSHI_H
 #include "Role.h"
 class TianShi : public Role
