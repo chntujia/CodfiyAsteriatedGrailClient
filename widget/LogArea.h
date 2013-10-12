@@ -1,4 +1,5 @@
 ﻿#ifndef LOGAREA_H
+#include "Logic.h"
 #define LOGAREA_H
 
 #include <QTextEdit>
@@ -25,7 +26,7 @@ public slots:
     void onReturnPressed();
     void onTextChanged(QString);
 signals:
-    void toChat(QString msg);
+    void toChat(quint16 proto_type, google::protobuf::Message*);
 };
 
 #endif // LOGAREA_H

@@ -208,6 +208,12 @@ void ShengNv::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
+    static int ShengLiao_count;
+    static int ShengLiao_dst[3];
+
     switch(state)
     {
 //额外行动询问
@@ -216,73 +222,72 @@ void ShengNv::onOkClicked()
         //攻击或法术行动
         if(text[0]=='1'){
             ShengLiaoAddition=false;
-            emit sendCommand("606;"+QString::number(myID)+";");
+            respond = newRespond(606);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackOrMagic();
         }
         break;
 //冰霜祷言
     case 601:
-        command="601;";
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";";
-        emit sendCommand(command);
+        respond = newRespond(601);
+        respond->add_args(1);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //治疗术
     case 602:
-        command="602;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        action = newAction(602);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //治愈之光
     case 603:
-        command="603;";
-        int n;
-        n=selectedPlayers.size();
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        command+=cardID+";"+QString::number(myID)+";"+QString::number(n)+";";
-        for(int i=0; i<n; i++)
-            command+=QString::number(selectedPlayers[i]->getID())+";";
+        action = newAction(603);
+        action->add_args(selectedCards[0]->getID());
+        for(int i=0; i<selectedCards.length(); i++)
+            action->add_dst_ids(selectedPlayers[i]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //怜悯
     case 604:
+        respond = newRespond(604);
+        respond->add_args(1);
         start=true;
-        command="604;1;";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //圣疗
-    case 651:        
-        command="605;";
-        text=tipArea->getBoxCurrentText();
-        if(text[0]=='1')
-            command+="0;";
-        else
-            command+="1;";
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";";
+    case 651:
+        ShengLiao_dst[0] = selectedPlayers[0]->getID();
+        ShengLiao_count = 1;
         ShengLiao2();
         break;
     case 652:
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";";
+        ShengLiao_dst[1] = selectedPlayers[0]->getID();
+        ShengLiao_count = 2;
         ShengLiao3();
         break;
     case 653:
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";";
-        sourceID=QString::number(myID);
-        command+=sourceID+";";
-        emit sendCommand(command);
+        ShengLiao_dst[2] = selectedPlayers[0]->getID();
+        ShengLiao_count = 3;
+
+        action = newAction(605);
+        action->add_args(1);
+        for (int i = 0; i < ShengLiao_count; ++i)
+        {
+            action->add_dst_ids(ShengLiao_dst[i]);
+        }
+
+        emit sendCommand(network::MSG_ACTION, action);
         ShengLiaoAddition=true;
         gui->reset();
         break;
@@ -294,12 +299,15 @@ void ShengNv::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
 //怜悯
     case 604:
-        command="604;0;";
-        emit sendCommand(command);
+        respond = newRespond(604);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //冰霜祷言

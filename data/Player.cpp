@@ -185,6 +185,16 @@ bool Player::checkBasicStatus(QString status)
     return 0;
 }
 
+void Player::cleanBasicStatus()
+{
+    int i;
+    for(i=0;i<BasicStatusList.count();i++)
+    {
+        emit removeBasicStatusSIG(BasicStatusList.at(i));
+    }
+    BasicStatusList.clear();
+}
+
 void Player::setHandCardsMax(int howMany)
 {
     handCardsMax=howMany;
@@ -217,6 +227,11 @@ void Player::setSpecial(int type,bool flag)
         emit addSpecialStatusSIG(type);
     else
         emit removeSpecialStatusSIG(type);
+}
+
+void Player::cleanSpecial()
+{
+    // TODO：清理专属牌
 }
 
 int Player::getID()

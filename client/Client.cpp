@@ -8,8 +8,8 @@ Client::Client()
     forwarded=false;
     connect(this,SIGNAL(readyRead()),this,SLOT(readMessage()));
     connect(logic,SIGNAL(gameStart()),this,SIGNAL(readyToStart()));
-    connect(logic,SIGNAL(sendCommand(QString)),this,SLOT(sendMessage(QString)));
-    connect(this,SIGNAL(getMessage(QString)),logic,SLOT(getCommand(QString)));
+    connect(logic,SIGNAL(sendCommand(quint16, google::protobuf::Message*)),this,SLOT(sendMessage(quint16, google::protobuf::Message*)));
+    connect(this,SIGNAL(getMessage(quint16, google::protobuf::Message*)),logic,SLOT(getCommand(quint16, google::protobuf::Message*)));
     connect(this,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     logic->setClient(this);
 }
@@ -41,17 +41,25 @@ void Client::readMessage()
         if(bytesAvailable() < nextBlockSize){
             return;
         }
-        QString message(read(nextBlockSize));
+        QByteArray message(read(nextBlockSize));
+
+        char *msg = message.data();
+
+        quint16 proto_type;
+        google::protobuf::Message* proto;
+        proto = (google::protobuf::Message*)proto_decoder(msg, proto_type);
         //将接收到的数据存放到变量中
-        emit getMessage(message);
+        emit getMessage(proto_type, proto);
     }
 }
 
-void Client::sendMessage(QString message)
+void Client::sendMessage(quint16 proto_type, google::protobuf::Message* proto)
 {
+    string message;
+    proto_encoder(proto_type, *proto, message);
+    delete proto;
+
     QByteArray packet;
-    qint32 len = message.size();
-    packet.append((char*)&len, sizeof(qint32));
-    packet.append(message);
+    packet.append(QString::fromStdString(message));
     write(packet);
 }

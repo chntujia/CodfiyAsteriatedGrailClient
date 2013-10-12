@@ -186,6 +186,9 @@ void QiDao::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //额外行动询问
@@ -193,66 +196,65 @@ void QiDao::onOkClicked()
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
             onceUsed=true;
-            emit sendCommand("1606;"+QString::number(myID)+";");
+
+            respond = newRespond(1606);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             magicAction();
 
         }
         break;
 //祈祷
     case 1601:
-        command="1601;1;";
+        respond = newRespond(1606);
+        respond->add_args(1);
         start = true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //威力赐福
     case 1602:
-        command="1602;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        action = newAction(1602);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
         usedMagic=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //迅捷赐福
     case 1603:
-        command="1603;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        action = newAction(1603);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
         usedMagic=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //光辉信仰
     case 1604:
-        command="1604;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";"+QString::number(selectedCards.size())+";";
+        action = newAction(1604);
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        for(int i=0;i<(2-selectedCards.size());i++)
-            command+="-1;";
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         usedMagic=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //漆黑信仰
     case 1605:
-        command="1605;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
+        action = newAction(1605);
+        action->add_args(1);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         usedMagic=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }
@@ -262,12 +264,15 @@ void QiDao::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
 //祈祷
     case 1601:
-        command="1601;0;;";
-        emit sendCommand(command);
+        respond = newRespond(1606);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //威力赐福

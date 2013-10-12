@@ -40,6 +40,8 @@ void JianSheng::onOkClicked()
     Role::onOkClicked();
     QString text;
 
+    network::Respond* respond;
+
     switch(state)
     {
 //NORMALACTION
@@ -56,15 +58,24 @@ void JianSheng::onOkClicked()
         switch (text[0].digitValue()){
         case 1:
             JiFengJi--;           
-            emit sendCommand("103;"+QString::number(myID)+";");
+            respond = newRespond(103);
+            respond->add_args(1);
+
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();            
             break;
         case 2:            
-            emit sendCommand("101;"+QString::number(myID)+";");
+            respond = newRespond(101);
+            respond->add_args(1);
+
+            emit sendCommand(network::MSG_RESPOND, respond);
             LianXuJi();
             break;
         case 3:            
-            emit sendCommand("102;"+QString::number(myID)+";");
+            respond = newRespond(102);
+            respond->add_args(1);
+
+            emit sendCommand(network::MSG_RESPOND, respond);
             JianYing();
             break;
         }

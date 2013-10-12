@@ -219,6 +219,17 @@ void HandArea::removeCardItem(Card* card)
     adjustCards();
 }
 
+void HandArea::cleanCardItem()
+{
+    foreach(CardItem *ptr,cardItems)
+    {
+        delete ptr;
+    }
+    cardItems.clear();
+
+    adjustCards();
+}
+
 void HandArea::adjustCards()
 {
     if(cardItems.isEmpty())

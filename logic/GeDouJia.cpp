@@ -289,6 +289,8 @@ void GeDouJia::onOkClicked()
     selectedPlayers=playerArea->getSelectedPlayers();
     selectedCards=handArea->getSelectedCards();
 
+    network::Respond* respond;
+
     switch(state)
     {
     case 1:
@@ -298,43 +300,56 @@ void GeDouJia::onOkClicked()
             baiShiFirst=false;
         break;
     case 2001:
-        command="2001;1;";
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2001);
+
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1')
-            command+"0;";
+            respond->add_args(0);
         else
-            command+="1;";
-        emit sendCommand(command);
+            respond->add_args(1);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2002:
         NianDan2();
         break;
     case 2052:
-        command="2002;1;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2001);
+        respond->add_args(1);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2003:
-        command="2003;1;";
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2003);
+        respond->add_args(1);
+
         baiShiUsed=true;
         baiShiFirst=true;
         start=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2004:
-        command="2004;1;";
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2004);
+        respond->add_args(1);
+
         start=true;
-        command+=QString::number(selectedCards.size())+";";
+        respond->add_args(selectedCards.size());
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            respond->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -344,29 +359,44 @@ void GeDouJia::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
     case 2001:
-        command="2001;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2001);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2002:
-        command="2002;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2002);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2052:
         NianDan1();
         break;
     case 2003:
-        command="2003;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2003);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2004:
-        command="2004;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2004);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

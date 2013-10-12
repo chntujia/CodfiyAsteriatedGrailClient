@@ -256,6 +256,9 @@ void MaoXian::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //额外行动询问
@@ -263,23 +266,28 @@ void MaoXian::onOkClicked()
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
             TeShuJiaGongAddition=false;
-            emit sendCommand("1205;"+QString::number(myID)+";");
+            respond = newRespond(1205);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackOrMagic();
         }
         else if(text[0]=='2'){
             TouTianHuanRiAddition=false;
-            emit sendCommand("1206;"+QString::number(myID)+";");
+            respond = newRespond(1206);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackOrMagic();
         }
         break;
 //欺诈
     case 1201:
+        action = newAction(1201);
+
         tipArea->addBoxItem(QStringLiteral("1.风"));
         tipArea->addBoxItem(QStringLiteral("2.水"));
         tipArea->addBoxItem(QStringLiteral("3.火"));
         tipArea->addBoxItem(QStringLiteral("4.地"));
         tipArea->addBoxItem(QStringLiteral("5.雷"));
-        command="1201;";
         if(selectedCards.size()==3)
             flag=6;
         else
@@ -287,105 +295,113 @@ void MaoXian::onOkClicked()
         switch(flag)
         {
         case 1:
-            cardID=QString::number(66);
+            respond->add_args(66);
             break;
         case 2:
-            cardID=QString::number(133);
+            respond->add_args(133);
             break;
         case 3:
-            cardID=QString::number(87);
+            respond->add_args(87);
             break;
         case 4:
-            cardID=QString::number(45);
+            respond->add_args(45);
             break;
         case 5:
-            cardID=QString::number(110);
+            respond->add_args(110);
             break;
         case 6:
-            cardID=QString::number(39);
+            respond->add_args(39);
             break;
         }
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";"+QString::number(selectedCards.size())+";";
+        respond->add_dst_ids(selectedPlayers[0]->getID());
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            respond->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         qizha=false;
         gui->reset();
         break;
 //特殊加工
     case 1202:
-        command="1202;";
+        action = newAction(1202);
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1')
-            command+="0;";
+            action->add_args(0);
         else
-            command+="1;";
-        command+=QString::number(myID)+";";
+            action->add_args(1);
         onceUsed=true;
         TeShuJiaGongAddition=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //偷天换日
     case 1203:
-        command="1203;";
+        action = newAction(1203);
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1')
-            command+="0;";
+            action->add_args(0);
         else
-            command+="1;";
-        command+=QString::number(myID)+";";
+            action->add_args(1);
         TouTianHuanRiAddition=true;
         onceUsed2=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //冒险家天堂
     case 1204:
-        command+="1204;";
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";";
-        command+=QString::number(myID)+";";
+        action = newAction(1204);
+        action->add_dst_ids(selectedPlayers[0]->getID());
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
         {
         case 1:
-            command+="2;0;";
+            action->add_args(2);
+            action->add_args(0);
             break;
         case 2:
-            command+="0;2;";
+            action->add_args(0);
+            action->add_args(2);
             break;
         case 3:
-            command+="1;1;";
+            action->add_args(1);
+            action->add_args(1);
             break;
         case 4:
-            command+="1;0;";
+            action->add_args(1);
+            action->add_args(0);
             break;
         case 5:
-            command+="0;1;";
+            action->add_args(0);
+            action->add_args(1);
             break;
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //购买
     case 1205:
-        command="4;3;0;";
+        action = newAction(network::ACTION_BUY);
         int stone=dataInterface->getMyTeam()->getEnergy();
         if(stone<4)
-            command+="2;0;";
+        {
+            action->add_args(2);
+            action->add_args(0);
+        }
         else if(stone==4)
-                command+="1;0;";
+        {
+            action->add_args(1);
+            action->add_args(0);
+        }
         else
-            command+="0;0;";
+        {
+            action->add_args(0);
+            action->add_args(0);
+        }
         gui->reset();
         usedSpecial=true;
         usedAttack=usedMagic=false;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         break;
     }
 }

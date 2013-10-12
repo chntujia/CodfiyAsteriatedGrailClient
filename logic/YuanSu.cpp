@@ -152,6 +152,9 @@ void YuanSu::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //额外行动询问
@@ -161,17 +164,23 @@ void YuanSu::onOkClicked()
         {
         case 1:
             earth=false;
-            emit sendCommand("1105;"+QString::number(myID)+";");
+            respond = newRespond(1105);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             magicAction();
             break;
         case 2:
             ignite=false;
-            emit sendCommand("1106;"+QString::number(myID)+";");
+            respond = newRespond(1106);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             magicAction();
             break;
         case 3:
             wind=false;
-            emit sendCommand("1104;"+QString::number(myID)+";");
+            respond = newRespond(1104);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
             break;
         }
@@ -182,56 +191,50 @@ void YuanSu::onOkClicked()
         break;
 //元素法术2
     case 1101:
-        command="1101;";
+        action = newAction(1101);
         if(magicCard->getElement()=="wind"){
-            command+="1;";
+            action->add_args(1);
             wind=true;
         }
         else if(magicCard->getElement()=="water"){
-            command+="2;";
+            action->add_args(2);
             water=true;
         }
         else if(magicCard->getElement()=="fire")
-            command+="3;";
+            action->add_args(3);
         else if(magicCard->getElement()=="earth"){
-            command+="4;";
+            action->add_args(4);
             earth=true;
         }
         else
-            command+="5;";
-        cardID=QString::number(magicCard->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(magicTargetID);
-        command+=targetID+";"+sourceID+";";
+            action->add_args(5);
+        action->add_args(magicCard->getID());
+        action->add_dst_ids(magicTargetID);
         if(handArea->getSelectedCards().size()>0){
-            command+="2;"+cardID+";"+QString::number(selectedCards[0]->getID())+";";
+            action->add_args(selectedCards[0]->getID());
             dataInterface->removeHandCard(selectedCards[0]);
         }
-        else
-            command+="1;"+cardID+";";
         if(water)
-            command+=QString::number(selectedPlayers[0]->getID())+";";
+            action->add_dst_ids(selectedPlayers[0]->getID());
         dataInterface->removeHandCard(magicCard);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //元素点燃
     case 1102:
-        command="1102;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
+        action = newAction(1102);
+        action->add_args(1);
+        action->add_dst_ids(selectedPlayers[0]->getID());
         ignite=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //月光
     case 1103:
-        command="1103;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
-        emit sendCommand(command);
+        action = newAction(1103);
+        action->add_args(1);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }

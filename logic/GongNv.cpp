@@ -135,50 +135,63 @@ void GongNv::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //额外行动询问
     case 42:
         text=tipArea->getBoxCurrentText();
-        if(text[0]=='1'){                        
-            emit sendCommand("304;"+QString::number(myID)+";");
+        if(text[0]=='1'){
+            respond = new network::Respond();
+            respond->set_src_id(myID);
+            respond->set_respond_id(304);
+            respond->add_args(1);
+
+            emit sendCommand(network::MSG_RESPOND, respond);
             JuJiAdditon=false;
             attackAction();
         }
         break;
 //贯穿询问
     case 301:
-        command="301;1;";
-        cardID=QString::number(selectedCards[0]->getID());
-        command+=cardID+";";
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(301);
+        respond->add_args(selectedCards[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;   
 //闪光陷阱
     case 302:
-        command="302;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(302);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //狙击
     case 303:
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(303);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         JuJiAdditon=true;
-        command="303;";
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1')
-            command+="0;";
+            action->add_args(0);
         else
-            command+="1;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
-        emit sendCommand(command);
+            action->add_args(1);
+
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }
@@ -189,12 +202,18 @@ void GongNv::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
 //贯穿询问
     case 301:
-        command="301;0;;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(301);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //闪光陷阱

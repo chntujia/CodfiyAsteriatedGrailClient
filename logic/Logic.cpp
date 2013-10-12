@@ -44,7 +44,8 @@ Logic::Logic(QObject *parent) :
 }
 void Logic::readyToStart()
 {
-    emit sendCommand("16;");
+    network::StartReply *start_reply = new network::StartReply();
+    emit sendCommand(network::MSG_START_REP, start_reply);
 }
 void Logic::setMyRole(int roleID)
 {
@@ -134,9 +135,8 @@ void Logic::setMyRole(int roleID)
     }
 }
 
-void Logic::getCommand(QString command)
+void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
 {
-    QStringList arg=command.split(';');
     TipArea *tipArea;
     DecisionArea* decisionArea;
     BPArea* bpArea;
@@ -145,81 +145,101 @@ void Logic::getCommand(QString command)
     QStringList nicknames;
     int playerMax,targetID,roleID,howMany,num;
     QString temp;
+    QString arg[10];
 
-    switch (arg[0].toInt())
+    network::CharactorPickRequest* char_pick;
+
+    switch (proto_type)
     {
     //Port Redirect
     case 150:
+        /*
         temp=socket->GetAddr();
         socket->disconnectFromHost();
         socket->connectToHost(temp, arg[1].toInt());
         socket->forwarded=true;
         emit sendCommand("0;"+QString::number(socket->isRed)+";"+socket->nickname+";");
+        */
         break;
-    case LOGINPERMIT:
-        myID=arg[1].toInt();
+    case network::MSG_LOGIN_REP:
+        myID=((network::LoginReply*)proto)->serial_num();
         dataInterface->setID(myID);
         break;
-    case GAMESTART:
+    case network::MSG_GAME:
         if(state == -1){
             state = GAMESTART;
-            playerMax=arg[1].count()/2;
+            network::GameInfo* game_info = (network::GameInfo*) proto;
+
+            playerMax = game_info->player_infos_size();
             dataInterface->setPlayerMax(playerMax);
             //nicknames=arg[2].split(',');
-            dataInterface->initPlayerList(arg[1],nicknames);
+            dataInterface->initPlayerList(game_info);
             if (playerMax==8)
                 dataInterface->initTeam(18);
             else
                 dataInterface->initTeam(15);
-        }
-//dataInterface初始化完成
-        emit gameStart();
-        break;
-//角色宣告
-    case 37:
-        targetID=arg[1].toInt();
-        roleID=arg[2].toInt();
-        roles[targetID]=roleID;
-        if(arg[3]=="1"){
-            dataInterface->getPlayerList().at(targetID)->setRole(roleID);
-            gui->getPlayerArea()->update();
-            hasShownRole=true;
-        }
-        if(targetID==myID){
-            dataInterface->getPlayerList().at(targetID)->setRole(roleID);
-            setMyRole(roleID);
-            gui->getPlayerArea()->getPlayerItem(targetID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
-            gui->getPlayerArea()->update();
-        }
-        count++;
-        if(count==dataInterface->getPlayerMax())
-        {
-            disconnect(getClient(),0,this,0);
-            if(!hasShownRole){
-                for(int i=0;i<dataInterface->getPlayerMax();i++)
-                    dataInterface->getPlayerList().at(i)->setRole(roles[i]);
-                gui->getPlayerArea()->update();
-            }
 
-            for(int i=0;i<dataInterface->getPlayerMax();i++){
-                gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
+            //dataInterface初始化完成
+            emit gameStart();
+        }
+        else {
+            //角色宣告
+            network::GameInfo* game_info = (network::GameInfo*) proto;
+            for (int i = 0; i < game_info->player_infos_size(); ++i)
+            {
+                network::SinglePlayerInfo* player_info = (network::SinglePlayerInfo*)&(game_info->player_infos(i));
+
+                targetID=player_info->id();
+                roleID=player_info->role_id();
+
+                roles[targetID]=roleID;
+
+                dataInterface->getPlayerList().at(targetID)->setRole(roleID);
+                gui->getPlayerArea()->update();
+                hasShownRole=true;
+
+                if(targetID==myID){
+                    dataInterface->getPlayerList().at(targetID)->setRole(roleID);
+                    setMyRole(roleID);
+                    gui->getPlayerArea()->getPlayerItem(targetID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
+                    gui->getPlayerArea()->update();
+                }
+                count++;
+                if(count==dataInterface->getPlayerMax())
+                {
+                    disconnect(getClient(),0,this,0);
+                    if(!hasShownRole){
+                        for(int i=0;i<dataInterface->getPlayerMax();i++)
+                            dataInterface->getPlayerList().at(i)->setRole(roles[i]);
+                        gui->getPlayerArea()->update();
+                    }
+
+                    for(int i=0;i<dataInterface->getPlayerMax();i++){
+                        gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
+                    }
+                }
             }
         }
         break;
-    case 38:
+    case network::MSG_GOSSIP:
         if(gui!=NULL)
-            gui->logAppend(arg[1]);
+        {
+            network::Gossip* gossip = (network::Gossip*) proto;
+            gui->logAppend(QString::fromStdString(gossip->txt()));
+        }
         break;
-//31选择角色
-    case 46:
+//选择角色
+    case network::MSG_PICK_REQ:
         state=46;
+        char_pick = (network::CharactorPickRequest*) proto;
+
         tipArea=gui->getTipArea();
         decisionArea=gui->getDecisionArea();
         tipArea->reset();
         connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
-        howMany=arg[1].toInt();
+        howMany=char_pick->role_ids_size();
         for(int i=0;i<howMany;i++){
-            roleID=arg[2+i].toInt();
+            roleID=char_pick->role_ids(i);
             tipArea->addBoxItem(QString::number(roleID)+"."+dataInterface->getRoleName(roleID));
         }
         tipArea->setMsg(QStringLiteral("请选择角色："));
@@ -227,6 +247,7 @@ void Logic::getCommand(QString command)
         decisionArea->enable(0);
         break;
     case 51:
+        // TODO:BP模式，暂不可用
         state = 51;
         tipArea=gui->getTipArea();
         decisionArea=gui->getDecisionArea();
@@ -244,6 +265,7 @@ void Logic::getCommand(QString command)
         bpArea->BPStart(num, roleIDs);
         break;
     case 52:
+        // TODO:BP模式，暂不可用
         state = 52;
         bpArea = gui->getBPArea();
         bpArea->setMsg("请禁用一角色");
@@ -253,6 +275,7 @@ void Logic::getCommand(QString command)
         gui->alert();
         break;
     case 55:
+        // TODO:BP模式，暂不可用
         state = 55;
         bpArea = gui->getBPArea();
         bpArea->setMsg("请选择一角色");
@@ -262,10 +285,12 @@ void Logic::getCommand(QString command)
         gui->alert();
         break;
     case 54:
+        //  TODO:BP模式，暂不可用
         bpArea = gui->getBPArea();
         bpArea->ban(arg[1].toInt(), arg[2].toInt());
         break;
     case 57:
+        //  TODO:BP模式，暂不可用
         bpArea = gui->getBPArea();
         bpArea->choose(arg[1].toInt(), arg[2].toInt());
         decisionArea = gui->getDecisionArea();
@@ -277,10 +302,13 @@ void Logic::getCommand(QString command)
         }
         break;
     case 59:
+        //  TODO:BP模式，暂不可用
         if(gui!=NULL)
             gui->chatAppend(arg[1].toInt(),arg[2]);
         break;
     }
+
+    delete proto;
 }
 void Logic::onOkClicked()
 {
@@ -289,15 +317,23 @@ void Logic::onOkClicked()
     QList<int> roles;
     BPArea* bpArea;
     RoleItem* role;
+
+    network::Pick* pick;
     switch(state)
     {
     case 46:
         tipArea=gui->getTipArea();
         chosen=tipArea->getBoxCurrentText().split(".");
-        emit sendCommand("47;"+chosen[0]+";");
+
+        pick = new network::Pick();
+        pick->set_role_id(chosen[0].toInt());
+
+        emit sendCommand(network::MSG_PICK, pick);
         disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));;
         gui->reset();
         break;
+    /*
+    TODO:BP
     case 52:
         bpArea=gui->getBPArea();
         roles = bpArea->getSelectedRoles();
@@ -316,6 +352,7 @@ void Logic::onOkClicked()
         bpArea->reset();
         gui->reset();
         break;
+    */
     }
 
 

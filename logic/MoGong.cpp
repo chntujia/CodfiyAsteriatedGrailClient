@@ -229,6 +229,10 @@ void MoGong::onOkClicked()
     QList<Card*> selectedCards = handArea->getSelectedCards();
     QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
     QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
+
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //NORMALACTION
@@ -245,103 +249,102 @@ void MoGong::onOkClicked()
         text=tipArea->getBoxCurrentText();
         switch (text[0].digitValue()){
         case 1:
-            emit sendCommand("2604;"+QString::number(myID)+";");
+            respond = newRespond(2604);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             DuoChongSheJi();
             break;
         }
         break;
     case 2601:
+        respond = newRespond(2601);
+        respond->add_args(selectedCoverCards[0]->getID());
+
         MoGuanChongJiUsed = true;
-        command="2601;1;";
-        cardID = QString::number(selectedCoverCards[0]->getID());
-        command += cardID + ";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2602:
-        cardID=QString::number(selectedCoverCards[0]->getID());
-        command="2602;1;"+cardID+";";
+        respond = newRespond(2602);
+        respond->add_args(selectedCoverCards[0]->getID());
+
+        MoGuanChongJiUsed = true;
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
-        emit sendCommand(command);
         break;
     case 2603:
+        action = newAction(2603);
         if(selectedPlayers.size()!=0)
-            targetID=QString::number(selectedPlayers[0]->getID());
+            action->add_dst_ids(selectedPlayers[0]->getID());
         else
             targetID=QString::number(-1);
-        sourceID=QString::number(myID);
-        command="2603;"+targetID+";"+sourceID+";"+QString::number(selectedCoverCards.size())+";";
         foreach(Card*ptr,selectedCoverCards)
-            command+=QString::number(ptr->getID())+":";
-        command+=";";
+            action->add_args(ptr->getID());
         gui->reset();
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         break;
     case 2605:
+        respond = newRespond(2605);
+        respond->add_args(selectedCoverCards[0]->getID());
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+
         DuoChongSheJiUsed = true;
         lastTarget = selectedPlayers[0]->getID();
-        cardID=QString::number(39);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        sourceID=QString::number(myID);
-        command="2605;"+cardID+";"+targetID+";"+sourceID+";"+QString::number(selectedCoverCards[0]->getID())+";";
         usedAttack=true;
         gui->reset();
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         break;
     case 2661:
         startChoice = tipArea->getBoxCurrentText()[0].digitValue();
         ChongNengMoYan2();
         break;
     case 2662:
-        command = "2606;";
+        respond = newRespond(2606);
+
         start = true;
         if(startChoice==1)
         {
-            command+="1;";
-            if(myself->getHandCardNum()<=4)
-                command+="0;";
-            else
-                command+=QString::number(myself->getHandCardNum()-4)+";";
+            respond->add_args(1);
             foreach(Card* ptr, selectedCards)
             {
-                command+=QString::number(ptr->getID())+":";
+                respond->add_args(ptr->getID());
                 dataInterface->removeHandCard(ptr);
             }
-            command+=";"+QString::number(tipArea->getBoxCurrentText()[0].digitValue())+";"+sourceID+";";
+            respond->add_args(100000);
             chongnengNum = tipArea->getBoxCurrentText()[0].digitValue();
             ChongNengUsed = true;
         }
         else
         {
-            command+="2;";
+            respond->add_args(2);
             if(selectedPlayers.size()>0)
-                command+=QString::number(selectedPlayers[0]->getID())+";";
-            else
-                command+=QString::number(-1)+";";
-            command+=sourceID+";";
+                respond->add_dst_ids(selectedPlayers[0]->getID());
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2607:
-        command="2607;"+QString::number(selectedCards.size())+";";
+        respond = newRespond(2607);
+
         foreach(Card* ptr, selectedCards)
         {
-            command+=QString::number(ptr->getID())+";";
+            respond->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2608:
+        respond = newRespond(2608);
+
         if(selectedCards.size()==0)
-            command="2608;-1;";
+            respond->add_args(100000);
         else
         {
-            command="2608;"+QString::number(selectedCards[0]->getID())+";";
+            respond->add_args(selectedCards[0]->getID());
             dataInterface->removeHandCard(selectedCards[0]);
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -352,28 +355,30 @@ void MoGong::onCancelClicked()
 {
     Role::onCancelClicked();
     static QString command;
+
+    network::Respond* respond;
     switch(state)
     {
     case 2601:
         MoGuanChongJiUsed = false;
-        command="2601;0;";
-        emit sendCommand(command);
+        respond = newRespond(2601);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2603:
         normal();
         break;
     case 2602:
-        command = "2602;0;-1;";
         gui->reset();
-        emit sendCommand(command);
+        respond = newRespond(2601);
+        emit sendCommand(network::MSG_RESPOND, respond);
         break;
     case 2605:
         DuoChongSheJi();
         break;
     case 2661:
-        command = "2606;0;";
-        emit sendCommand(command);
+        respond = newRespond(2606);
+        emit sendCommand(network::MSG_RESPOND, respond);
         break;
     case 2662:
         ChongNengMoYan1();

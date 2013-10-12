@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include <QTcpSocket>
+#include "codec.h"
 #include "client/ClientUI.h"
 
 class Client : public QTcpSocket
@@ -15,10 +16,10 @@ public:
     QString GetAddr() { return m_addr; }
 signals:
     void readyToStart();
-    void getMessage(QString message);
+    void getMessage(quint16 proto_type, google::protobuf::Message* proto);
 public slots:
     void readMessage();
-    void sendMessage(QString message);
+    void sendMessage(quint16 proto_type, google::protobuf::Message* proto);
     void onDisconnected();
 private:
     QString m_addr;

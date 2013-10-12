@@ -212,47 +212,44 @@ void ShenGuan::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     case 1502:
-        command = "1502;";
+        action = newAction(1502);
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        command+=QString::number(myID);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1531:
-        command = "1531;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+cardID+";"+sourceID+";";
+        action = newAction(1531);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1532:
-        command = "1532;";
-        cardID=QString::number(selectedCards[0]->getID());
-        command+=cardID+";";
+        respond = newRespond(1532);
+        respond->add_args(selectedCards[0]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1541:
-        command = "1504;1;";
         ShenShengQiYue2();
         break;
     case 1542:
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        text=tipArea->getBoxCurrentText();
-        command += targetID+";"+text+";"+sourceID+";";
+        respond = newRespond(1504);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+        respond->add_args(tipArea->getBoxCurrentText().toInt());
         start = true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1551:
@@ -263,18 +260,16 @@ void ShenGuan::onOkClicked()
         ShenShengLingYu2();
         break;
     case 1552:
-        command = "1505;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=QString::number(lingYu)+";"+targetID+";";
+        respond = newRespond(1505);
+        respond->add_args(lingYu);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            respond->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
         for(int i=0;i<(2-selectedCards.size());i++)
-            command+="-1;";
-        command+=sourceID+";";
-        emit sendCommand(command);
+            respond->add_args(100000);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -284,6 +279,9 @@ void ShenGuan::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
     case 1502:
@@ -293,8 +291,8 @@ void ShenGuan::onCancelClicked()
         normal();
         break;
     case 1541:
-        command = "1504;0;0;0;0;";
-        emit sendCommand(command);
+        respond = newRespond(1504);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1542:

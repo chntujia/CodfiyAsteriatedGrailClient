@@ -184,24 +184,26 @@ void XianZhe::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     case 1701:
         FaShuFanTan2();
         break;
     case 1751:
-        command="1701;1;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";"+QString::number(selectedCards.size())+";";
+        respond = newRespond(1701);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            respond->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1702:
+        action = newAction(1702);
         command="1702;";
         sourceID=QString::number(myID);
         targetID=QString::number(selectedPlayers[0]->getID());
@@ -211,22 +213,18 @@ void XianZhe::onOkClicked()
             dataInterface->removeHandCard(ptr);
         }
         command+=";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1703:
-        command="1703;";
-        sourceID=QString::number(myID);
-        command+=sourceID+";"+QString::number(selectedCards.size())+";"+QString::number(selectedPlayers.size())+";";
+        action = newAction(1703);
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+":";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        command+=";";
         foreach(Player*ptr,selectedPlayers)
-            command+=QString::number(ptr->getID())+":";
-        command+=";";
-        emit sendCommand(command);
+            action->add_dst_ids(ptr->getID());
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }
@@ -236,11 +234,13 @@ void XianZhe::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
     switch(state)
     {
     case 1701:
-        command="1701;0;";
-        emit sendCommand(command);
+        respond = newRespond(1701);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1751:

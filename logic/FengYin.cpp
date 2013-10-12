@@ -184,55 +184,69 @@ void FengYin::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //额外行动询问
     case 42:
         text=tipArea->getBoxCurrentText();
         if(text[0].digitValue()==1){
-            emit sendCommand("404;"+QString::number(myID)+";");            
+            respond = new network::Respond();
+            respond->set_src_id(myID);
+            respond->set_respond_id(404);
+            respond->add_args(1);
+
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
         }
         break;
 //封印法术
     case 401:
-        command="401;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(401);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
         usedMagic=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //五系束缚
     case 402:
-        command="402;";
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(402);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1')
-            command+="0;";
+            action->add_args(0);
         else
-            command+="1;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
+            action->add_args(1);
+
         usedMagic=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //封印破碎
     case 403:
-        command="403;";
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(403);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_args(tipArea->getSelectedCardID());
+
         if(usedGem)
-            command+="1;";
+            action->add_args(1);
         else
-            command+="0;";
-        command+=QString::number(selectedPlayers[0]->getID())+";";
-        command+=QString::number(myID)+";";
-        command+=QString::number(tipArea->getSelectedCardID())+";";
+            action->add_args(0);
+
         usedMagic=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }

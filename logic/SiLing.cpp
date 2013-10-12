@@ -133,37 +133,34 @@ void SiLing::onOkClicked()
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
+
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     case 1302:
-        command = "1302;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        command+=cardID+";"+sourceID+";";
+        action = newAction(1302);
+        action->add_args(selectedCards[0]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1303:
-        command = "1303;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        text=tipArea->getBoxCurrentText();
-        command+=targetID+";"+sourceID+";"+text+";";
-        command+=QString::number(selectedCards.size())+";";
+        action = newAction(1303);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_args(tipArea->getBoxCurrentText().toInt());
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+":";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        command+=";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1304:
-        command = "1304;";
-        sourceID=QString::number(myID);
-        command+=sourceID+";";
-        emit sendCommand(command);
+        action = newAction(1304);
+        action->add_args(1);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }

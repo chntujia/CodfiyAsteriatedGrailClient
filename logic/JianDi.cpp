@@ -123,18 +123,29 @@ void JianDi::onOkClicked()
     QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
     QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
 
+    network::Respond* respond;
+
     switch(state)
     {
     case 42:
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
-            emit sendCommand("1906;"+QString::number(myID)+";");
+            respond = new network::Respond();
+            respond->set_src_id(myID);
+            respond->set_respond_id(1906);
+            respond->add_args(1);
+
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
         }
         break;
     case 1901:
-        command="1901;1;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1901);
+        respond->add_args(1);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1902:
@@ -142,26 +153,31 @@ void JianDi::onOkClicked()
         JianQiZhan2();        
         break;
     case 1952:
-        command="1902;1;";
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";";
-        text=jianqiPoint;
-        command+=text+";";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1902);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+        respond->add_args(jianqiPoint.toInt());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1903:
-        command="1903;1;";
-        cardID = QString::number(selectedCoverCards[0]->getID());
-        command += cardID + ";";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1903);
+        respond->add_args(selectedCoverCards[0]->getID());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1904:
-        command="1904;1;";
-        cardID = QString::number(selectedCoverCards[0]->getID());
-        command += cardID + ";";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1904);
+        respond->add_args(selectedCoverCards[0]->getID());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -172,29 +188,44 @@ void JianDi::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
     case 1901:
-        command="1901;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1901);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1902:
-        command="1902;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1902);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1952:
         JianQiZhan(jianqiID);
         break;
     case 1903:
-        command="1903;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1903);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1904:
-        command="1904;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(1904);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

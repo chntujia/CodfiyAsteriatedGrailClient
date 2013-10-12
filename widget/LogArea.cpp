@@ -1,5 +1,4 @@
 ﻿#include "LogArea.h"
-#include "Logic.h"
 #include "DataInterface.h"
 LogArea::LogArea(QWidget *parent) :
     QTextEdit(parent)
@@ -38,13 +37,19 @@ ChatLine::ChatLine(QWidget *parent):
                   "background-color:transparent");
     setFixedSize(259,25);
     connect(this,SIGNAL(returnPressed()),this,SLOT(onReturnPressed()));
-    connect(this,SIGNAL(toChat(QString)),logic->getClient(),SLOT(sendMessage(QString)));
+    connect(this,SIGNAL(toChat(quint16, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(quint16, google::protobuf::Message*)));
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(onTextChanged(QString)));
 }
 void ChatLine::onReturnPressed()
 {    
     if(!text().isEmpty())
-    emit toChat("58;"+text());
+    {
+        network::Gossip* gossip = new network::Gossip();
+        gossip->set_type(network::GOSSIP_TALK);
+        QByteArray arr = text().toLatin1();
+        gossip->set_txt(arr.data(), arr.length());
+        emit toChat(network::MSG_GOSSIP, gossip);
+    }
     clear();
 }
 void ChatLine::onTextChanged(QString t)

@@ -89,7 +89,7 @@ StatusItem::StatusItem(Token* token)
         pic=QPixmap("resource/status/token2.png");
         break;
     }
-    setToolTip(token->tokenName+QStringLiteral("(上限为")+QString::number(token->max)+")");
+    setToolTip(token->tokenName+QStringLiteral("上限为")+QString::number(token->max)+")");
     Num[0]=QPixmap("resource/SmallNumber/Small0.png");
     Num[1]=QPixmap("resource/SmallNumber/Small1.png");
     Num[2]=QPixmap("resource/SmallNumber/Small2.png");

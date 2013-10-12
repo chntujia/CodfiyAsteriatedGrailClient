@@ -169,6 +169,9 @@ void MoDao::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //NORMALACTION
@@ -181,48 +184,46 @@ void MoDao::onOkClicked()
             firstMoDan=false;
         break;
 //魔弹融合(回合内）
-    case 801:        
-        command="801;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+    case 801:
+        action = newAction(801);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         firstMoDan=false;
         break;
 //魔弹融合(回合外）
     case 802:
-        command="802;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        respond = newRespond(802);
+        respond->add_args(selectedCards[0]->getID());
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //魔爆冲击
     case 803:
-        command="803;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        targetID2=QString::number(selectedPlayers[1]->getID());
-        command+=cardID+";"+targetID+";"+targetID2+";"+sourceID+";";
+        action = newAction(803);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_dst_ids(selectedPlayers[1]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //毁灭风暴
     case 804:
-        command="804;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        targetID2=QString::number(selectedPlayers[1]->getID());
-        command+=targetID+";"+targetID2+";"+sourceID+";";
-        emit sendCommand(command);
+        action = newAction(803);
+        action->add_args(1);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_dst_ids(selectedPlayers[1]->getID());
+
+        dataInterface->removeHandCard(selectedCards[0]);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }

@@ -85,6 +85,9 @@ void YongZhe::onOkClicked()
 
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     //额外行动询问
@@ -92,27 +95,29 @@ void YongZhe::onOkClicked()
         text=tipArea->getBoxCurrentText();
         if(text[0].digitValue()==1)
         {
-            emit sendCommand("2103;"+QString::number(myID)+";");
+            respond = newRespond(2103);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             jinDuanZhiLi--;                     
             attackAction();
         }
         break;
     //挑衅
     case 2101:
-        command="2101;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
-        emit sendCommand(command);
+        action = newAction(2101);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_args(1);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     //禁断之力
     case 2102:
+        respond = newRespond(2102);
+        respond->add_args(1);
         jinDuanZhiLi++;
-        command="2102;1;";
         foreach(Card*ptr,dataInterface->getHandCards())
             dataInterface->removeHandCard(ptr);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -122,6 +127,8 @@ void YongZhe::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
     switch(state)
     {
     case 2101:
@@ -129,8 +136,8 @@ void YongZhe::onCancelClicked()
         break;
     //禁断之力
     case 2102:
-        command="2102;0;";
-        emit sendCommand(command);
+        respond = newRespond(2102);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

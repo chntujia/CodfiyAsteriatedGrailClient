@@ -100,34 +100,40 @@ void MoJian::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //额外行动询问
     case 42:
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
-            emit sendCommand("901;"+QString::number(myID)+";");            
+            respond = newRespond(901);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             XiuLuoLianZhan();
         }
         break;
 //暗影流星
     case 902:
-        command="902;";
-        cardID=QString::number(selectedCards[0]->getID());
-        cardID2=QString::number(selectedCards[1]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+cardID2+";"+targetID+";"+sourceID+";";
+        action = newAction(902);
+        action->add_args(selectedCards[0]->getID());
+        action->add_args(selectedCards[1]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
         dataInterface->removeHandCard(selectedCards[1]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //暗影凝聚
     case 903:
-        command="903;1;";
+        respond = newRespond(903);
+        respond->add_args(1);
+
         start=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -137,6 +143,8 @@ void MoJian::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
     switch(state)
     {
 //暗影流星
@@ -145,9 +153,10 @@ void MoJian::onCancelClicked()
         break;
 //暗影凝聚
     case 903:
-        command="903;0;";
+        respond = newRespond(903);
+
         start=false;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

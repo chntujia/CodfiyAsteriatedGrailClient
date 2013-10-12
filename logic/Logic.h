@@ -14,11 +14,11 @@ public:
     void readyToStart();
     Client* getClient(){return socket;}
 signals:
-    void sendCommand(QString);
+    void sendCommand(quint16 proto_type, google::protobuf::Message* proto);
     void gameStart();    
 public slots:
     void onOkClicked();
-    void getCommand(QString command);
+    void getCommand(quint16 proto_type, google::protobuf::Message* proto);
     void roleAnalyse();
 private:
     Client* socket;

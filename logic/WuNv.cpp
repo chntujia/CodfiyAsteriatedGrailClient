@@ -162,74 +162,69 @@ void WuNv::onOkClicked()
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
+
+    network::Action* action;
+    network::Respond* respond;
     switch(state)
     {
     case 2301:
-        command = "2301;";
-        targetID=QString::number(selectedPlayers[0]->getID());
-        sourceID=QString::number(myID);
-        command+=targetID+";"+sourceID+";";
+        action = newAction(2301);
+        action->add_args(1);
+        action->add_dst_ids(selectedPlayers[0]->getID());
         tongShengID = selectedPlayers[0]->getID();
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2302:
-        command = "2302;1;";
+        respond = newRespond(2302);
+        respond->add_args(1);
         start = true;
         if(selectedPlayers.size()!=0)
         {
-            targetID=QString::number(selectedPlayers[0]->getID());
+            respond->add_dst_ids(selectedPlayers[0]->getID());
             tongShengID = selectedPlayers[0]->getID();
         }
         else
         {
-            targetID=QString::number(-1);
             tongShengID = -1;
         }
-        command+=targetID+";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2303:
-        command = "2303;";
-        sourceID=QString::number(myID);
-        command+=sourceID+";";
+        action = newAction(2303);
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        emit sendCommand(command);
+        action->add_args(100000);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2304:
-        command = "2304;";
-        targetID=QString::number(selectedPlayers[0]->getID());
-        cardID=QString::number(selectedCards[0]->getID());
+        action = newAction(2304);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_args(selectedCards[0]->getID());
+        action->add_args(tipArea->getBoxCurrentText().toInt());
         dataInterface->removeHandCard(selectedCards[0]);
-        text=tipArea->getBoxCurrentText();
-        sourceID=QString::number(myID);
-        command+=targetID+";"+cardID+";"+text+";"+sourceID+";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2305:
-        command = "2305;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
-        emit sendCommand(command);
+        action = newAction(2305);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_args(1);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2306:
-        command = "2306;";
-        command+= QString::number(selectedCards.size())+";";
+        respond = newRespond(2306);
         foreach(Card*ptr,selectedCards)
         {
-            command+=QString::number(ptr->getID())+":";
+            respond->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        command+=";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -239,6 +234,8 @@ void WuNv::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
     switch(state)
     {
     case 2301:
@@ -248,8 +245,8 @@ void WuNv::onCancelClicked()
         normal();
         break;
     case 2302:
-        command = "2302;0;-1;";
-        emit sendCommand(command);
+        respond = newRespond(2302);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

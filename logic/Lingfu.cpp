@@ -56,59 +56,50 @@ void LingFu::onOkClicked()
     QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
     QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     //念咒
     case 1801:
-        command = "1801;1;";
-        command += QString::number(selectedCards[0]->getID()) + ";";
+        respond = newRespond(1801);
+        respond->add_args(selectedCards[0]->getID());
 
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //灵符
     case 1802:
-        command="1802;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";";
-        targetID = QString::number(selectedPlayers[1]->getID());
-        command += targetID + ";" + sourceID + ";";
-        dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
-        gui->reset();
-        break;
     case 1803:
-        command="1803;";
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";";
-        targetID = QString::number(selectedPlayers[1]->getID());
-        command += targetID + ";" + sourceID + ";";
+        action = newAction(state);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_dst_ids(selectedPlayers[1]->getID());
+
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     //灵力崩解
     case 1804:
-        command = "1804;1;";
+        respond = newRespond(1804);
+
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1')
-            command+="0;";
+            respond->add_args(0);
         else
-            command+="1;";
-        emit sendCommand(command);
+            respond->add_args(1);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //百鬼夜行
     case 1805:
-        command = "1805;1;";
-        cardID = QString::number(selectedCoverCards[0]->getID());
-        command += cardID + ";";
-        emit sendCommand(command);
+        respond = newRespond(1805);
+        respond->add_args(selectedCoverCards[0]->getID());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
 
         dataInterface->removeCoverCard(selectedCoverCards[0]);
         coverArea->reset();
@@ -121,11 +112,13 @@ void LingFu::onOkClicked()
         break;
     //百鬼夜行-(火)选择目标
     case 180502:
-        command = "180502;";
-        command += QString::number(selectedPlayers.count()-1) + ";" + QString::number(selectedPlayers[0]->getID()) + ";";
+        respond = newRespond(180502);
+        respond->add_args(1);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
         if(selectedPlayers.count() > 1)
-            command += QString::number(selectedPlayers[1]->getID()) + ";";
-        emit sendCommand(command);
+            respond->add_dst_ids(selectedPlayers[1]->getID());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
 //        coverArea->removeCardItem(selectedCoverCards[0]);
 //        coverArea->reset();
         gui->showCoverArea(false);
@@ -133,13 +126,11 @@ void LingFu::onOkClicked()
         break;
     //百鬼夜行-（普）选择目标
     case 180504:
-        command = "180504;" + QString::number(selectedPlayers[0]->getID()) + ";";
-//        coverArea->removeCardItem(selectedCoverCards[0]);
-//        coverArea->reset();
+        respond = newRespond(180504);
+        respond->add_args(1);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
 
-        emit sendCommand(command);
-
-
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->showCoverArea(false);
         gui->reset();
         break;
@@ -150,15 +141,17 @@ void LingFu::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
-
-
     {    
 
     //念咒
     case 1801:
-        command = "1801;0;;";
-        emit sendCommand(command);
+        respond = newRespond(1801);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1:
@@ -169,14 +162,16 @@ void LingFu::onCancelClicked()
         break;
     //灵力崩解
     case 1804:
-        command = "1804;0;;";
-        emit sendCommand(command);
+        respond = newRespond(1804);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //百鬼夜行
     case 1805:
-        command = "1805;0;";
-        emit sendCommand(command);
+        respond = newRespond(1805);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         coverArea->reset();
         gui->showCoverArea(false);
         gui->reset();
@@ -343,22 +338,38 @@ void LingFu::cardAnalyse()
     }
 }
 
-void LingFu::decipher(QString command)
+void LingFu::decipher(uint16_t proto_type, google::protobuf::Message* proto)
 {
-    Role::decipher(command);
-    this->command=command;
-    QStringList arg=command.split(';');
-
-    switch(arg[0].toInt())
+    if (proto_type == network::MSG_CMD_REQ)
     {
-    //百鬼夜行-火妖力-展示及目标询问
-    case 180501:
-        this->baiGuiYeXing2();
-        break;
-    //百鬼夜行-普通妖力-目标询问
-    case 180503:
-        this->baiGuiYeXing4();
-        break;
-    }
+        google::protobuf::Message* proto2 = new network::CommandRequest();
+        proto2->CopyFrom(*proto);
+        Role::decipher(proto_type, proto2);
 
+        network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
+        if (cmd_req->cmd_type() == network::CMD_RESPOND)
+        {
+            for (int i = 0; i < cmd_req->commands_size(); ++i)
+            {
+                network::Command* cmd = (network::Command*)&(cmd_req->commands(i));
+                switch(cmd->respond_id())
+                {
+    //百鬼夜行-火妖力-展示及目标询问
+                case 180501:
+                    this->baiGuiYeXing2();
+                    break;
+    //百鬼夜行-普通妖力-目标询问
+                case 180503:
+                    this->baiGuiYeXing4();
+                    break;
+                }
+            }
+        }
+
+        delete proto;
+    }
+    else
+    {
+        Role::decipher(proto_type, proto);
+    }
 }

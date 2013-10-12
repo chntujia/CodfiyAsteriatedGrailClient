@@ -30,6 +30,7 @@ public:
     QList<Card*> getSelectedCards();
     void addCardItem(Card* card);
     void removeCardItem(Card* card);
+    void cleanCardItem();
     void setQuota(int howMany){least=most=howMany;}
     void setQuota(int least,int most){this->least=least;this->most=most;}
     QList<CardItem*> getHandCardItems(){return cardItems;}

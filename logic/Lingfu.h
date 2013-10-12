@@ -22,7 +22,7 @@ public slots:
     void onCancelClicked();
     void leiMing();
     void fengXing();
-    void decipher(QString command);
+    void decipher(quint16, google::protobuf::Message*);
 private:
 
 };

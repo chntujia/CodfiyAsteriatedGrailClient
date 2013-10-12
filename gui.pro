@@ -6,12 +6,17 @@ TEMPLATE = app
 TARGET = gui
 INCLUDEPATH += . widget data client logic
 QT += network widgets multimedia
+
+INCLUDEPATH += include
+LIBS += F:\Codify_Pro\gui\lib\libprotobuf.lib
+
 CONFIG += static
 RC_FILE = grail.rc
 # Input
 HEADERS += client/Client.h \
            client/ClientUI.h \
            client/ui_ClientUI.h \
+           client/codec.h \
            data/Card.h \
            data/DataInterface.h \
            data/Player.h \
@@ -61,6 +66,8 @@ HEADERS += client/Client.h \
            widget/ShowArea.h \
            widget/TeamArea.h \
            widget/TipArea.h \
+           protocol/action_respond.pb.h \
+           protocol/base.pb.h \
     client/Lobby.h \
     client/RoomUI.h
 FORMS += client/ClientUI.ui \
@@ -68,6 +75,7 @@ FORMS += client/ClientUI.ui \
 SOURCES += main.cpp \
            client/Client.cpp \
            client/ClientUI.cpp \
+           client/codec.cpp \
            data/Card.cpp \
            data/DataInterface.cpp \
            data/Player.cpp \
@@ -117,5 +125,7 @@ SOURCES += main.cpp \
            widget/ShowArea.cpp \
            widget/TeamArea.cpp \
            widget/TipArea.cpp \
+	   protocol/action_respond.pb.cc \
+           protocol/base.pb.cc \
     client/Lobby.cpp \
     client/RoomUI.cpp

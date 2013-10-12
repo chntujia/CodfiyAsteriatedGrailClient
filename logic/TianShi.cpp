@@ -233,44 +233,39 @@ void TianShi::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
 //风之洁净
     case 701:
-        command="701;";
-        cardID=QString::number(selectedCards[0]->getID());
-        command+=cardID+";";
-        command+=QString::number(selectedPlayers[0]->getID())+";";
-        command+=QString::number(myID)+";";
-        command+=QString::number(tipArea->getSelectedCardID())+";";
+        action = newAction(701);
+        action->add_args(selectedCards[0]->getID());
+        action->add_args(tipArea->getSelectedCardID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //天使祝福
     case 702:
-        command="702;";
-        cardID=QString::number(selectedCards[0]->getID());
-        command+=cardID+";";
-        command+=QString::number(myID)+";";
-        n=selectedPlayers.size();
-        command+=QString::number(n)+";";
-        command+=QString::number(selectedPlayers[0]->getID())+";";
-        if(n>1)
-            command+=QString::number(selectedPlayers[1]->getID())+";";
+        action = newAction(702);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        if(selectedPlayers.size()>1)
+            action->add_dst_ids(selectedPlayers[1]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //天使之墙
     case 703:
-        command="703;";
-        cardID=QString::number(selectedCards[0]->getID());
-        targetID=QString::number(selectedPlayers[0]->getID());
-        sourceID=QString::number(myID);
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        action = newAction(703);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //天使之歌1
@@ -300,59 +295,68 @@ void TianShi::onOkClicked()
     tipArea->addBoxItem(QStringLiteral("8.一个宝石"));
     tipArea->addBoxItem(QStringLiteral("9.一个水晶"));*/
     case 705:
-        command="705;1;";
+        respond = newRespond(705);
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
         {
         case 1:
-            command+="3;0;";
+            respond->add_args(3);
+            respond->add_args(0);
             break;
         case 2:
-            command+="0;3;";
+            respond->add_args(0);
+            respond->add_args(3);
             break;
         case 3:
-            command+="2;1;";
+            respond->add_args(2);
+            respond->add_args(1);
             break;
         case 4:
-            command+="1;2;";
+            respond->add_args(1);
+            respond->add_args(2);
             break;
         case 5:
-            command+="2;0;";
+            respond->add_args(2);
+            respond->add_args(0);
             break;
         case 6:
-            command+="0;2;";
+            respond->add_args(0);
+            respond->add_args(2);
             break;
         case 7:
-            command+="1;1;";
+            respond->add_args(1);
+            respond->add_args(1);
             break;
         case 8:
-            command+="1;0;";
+            respond->add_args(1);
+            respond->add_args(0);
             break;
         case 9:
-            command+="0;1;";
+            respond->add_args(0);
+            respond->add_args(1);
             break;
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //天使之歌2
     case 706:
-        command="704;1;";
+        respond = newRespond(704);
         if(usedGem)
-            command+="1;";
+            respond->add_args(1);
         else
-            command+="0;";
-        command+=QString::number(selectedPlayers[0]->getID())+";";
-        command+=QString::number(tipArea->getSelectedCardID())+";";
-        emit sendCommand(command);
+            respond->add_args(0);
+        respond->add_args(tipArea->getSelectedCardID());
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //天使羁绊
     case 707:
-        command="707;";
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";";
-        emit sendCommand(command);
+        respond = newRespond(707);
+        respond->add_args(1);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -362,6 +366,8 @@ void TianShi::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
     switch(state)
     {
 //风之洁净
@@ -375,14 +381,14 @@ void TianShi::onCancelClicked()
         break;
 //天使之歌1
     case 704:
-        command="704;0;";
-        emit sendCommand(command);
+        respond = newRespond(704);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //神之庇护
     case 705:
-        command="705;0;";
-        emit sendCommand(command);
+        respond = newRespond(7-5);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //天使之歌2

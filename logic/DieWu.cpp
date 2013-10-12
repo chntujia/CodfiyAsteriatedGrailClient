@@ -187,15 +187,21 @@ void DieWu::onOkClicked()
     QList<Card*> selectedCards = handArea->getSelectedCards();
     QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
     QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
+
+    network::Action *action;
+    network::Respond *respond;
+
     switch(state)
     {
     case 2411:
-        command="2401;0;";
         if(tipArea->getBoxCurrentText()[0].digitValue()==1)
         {
             wudongmopai = true;
-            command+=sourceID+";-1;";
-            emit sendCommand(command);
+            action = new network::Action();
+            action->set_src_id(myID);
+            action->set_action_id(2401);
+            action->add_args(0);
+            emit sendCommand(network::MSG_ACTION, action);
             gui->reset();
         }
         else
@@ -205,111 +211,128 @@ void DieWu::onOkClicked()
         }
         break;
     case 2412:
-        command="2401;1;";
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(2401);
+        action->add_args(1);
+
         if(dataInterface->getHandCards().size()!=0)
         {
-            cardID = QString::number(selectedCards[0]->getID());
+            action->add_args(selectedCards[0]->getID());
             dataInterface->removeHandCard(selectedCards[0]);
         }
         else
-            cardID = -1;
-        command+=sourceID+";"+cardID+";";
-        emit sendCommand(command);
+            cardID = "-1";
+
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2402:
-        command="2402;1;";
-        cardID = QString::number(selectedCoverCards[0]->getID());
-        command+=sourceID+";"+cardID+";";
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2402);
+        //respond->add_dst_ids(sourceID);
+        respond->add_args(selectedCoverCards[0]->getID());
+
         dataInterface->removeCoverCard(selectedCoverCards[0]);
         coverArea->reset();
         gui->showCoverArea(false);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2403:
-        command="2403;1;";
-        cardID = QString::number(selectedCoverCards[0]->getID());
-        command+=sourceID+";"+cardID+";";
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2403);
+        respond->add_args(selectedCoverCards[0]->getID());
+
         dataInterface->removeCoverCard(selectedCoverCards[0]);
         coverArea->reset();
         gui->showCoverArea(false);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2404:
-        command="2404;1;";
-        cardID = QString::number(selectedCoverCards[0]->getID());
-        command+=sourceID+";"+cardID+";";
-        cardID = QString::number(selectedCoverCards[1]->getID());
-        command+=cardID+";";
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2404);
+        respond->add_args(selectedCoverCards[0]->getID());
+        respond->add_args(selectedCoverCards[1]->getID());
+
         dataInterface->removeCoverCard(selectedCoverCards[0]);
         dataInterface->removeCoverCard(selectedCoverCards[1]);
         coverArea->reset();
         gui->showCoverArea(false);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2405:
-        command="2405;1;";
-        targetID = QString::number(selectedPlayers[0]->getID());
-        command+=sourceID+";"+targetID+";";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2405);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2406:
-        command="2406;"+sourceID+";";
-        emit sendCommand(command);
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(2406);
+
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2471:
         daoNiZhiDieFlag = tipArea->getBoxCurrentText()[0].digitValue();
         if(daoNiZhiDieFlag == 3)
         {
-            command="2407;";
+            action = new network::Action();
+            action->set_src_id(myID);
+            action->set_action_id(2407);
+
+            action->add_args(daoNiZhiDieFlag);
+
             foreach(Card*ptr,selectedCards){
-                command+=QString::number(ptr->getID())+";";
+                action->add_args(ptr->getID());
                 dataInterface->removeHandCard(ptr);
             }
-            for(int i=0;i<(2-selectedCards.size());i++)
-                command+="-1;";
 
-            command+=QString::number(daoNiZhiDieFlag)+";"+sourceID+";";
-            command+="-1;-1;-1;";
-            emit sendCommand(command);
+            emit sendCommand(network::MSG_ACTION, action);
             gui->reset();
         }
         else
             DaoNiZhiDie2();
         break;
     case 2472:
-        command="2407;";
+        action = new network::Action();
+        action->set_src_id(myID);
+        action->set_action_id(2407);
+
+        action->add_args(daoNiZhiDieFlag);
+
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
         for(int i=0;i<(2-selectedCards.size());i++)
-            command+="-1;";
-        command+=QString::number(daoNiZhiDieFlag)+";"+sourceID+";";
+            action->add_args(10000);
 
         if(daoNiZhiDieFlag==1)
         {
-            targetID = QString::number(selectedPlayers[0]->getID());
-            command+=targetID+";"+"-1;-1;";
+            action->add_dst_ids(selectedPlayers[0]->getID());
         }
         else
         {
-            command+="-1;";
             foreach(Card*ptr,selectedCards){
-                command+=QString::number(ptr->getID())+";";
+                action->add_args(ptr->getID());
                 dataInterface->removeHandCard(ptr);
             }
-            for(int i=0;i<(2-selectedCards.size());i++)
-                command+="-1;";
+
             coverArea->reset();
             gui->showCoverArea(false);
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();;
         break;
     }
@@ -318,6 +341,10 @@ void DieWu::onOkClicked()
 void DieWu::onCancelClicked()
 {
     Role::onCancelClicked();
+
+    network::Action *action;
+    network::Respond *respond;
+
     switch(state)
     {
     case 2411:
@@ -326,29 +353,33 @@ void DieWu::onCancelClicked()
         normal();
         break;
     case 2402:
-        command="2402;0;-1;-1;";
+        respond = newRespond(2402);
+
         coverArea->reset();
         gui->showCoverArea(false);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2403:
-        command="2403;0;"+QString::number(myID)+";-1;";
+        respond = newRespond(2403);
+
         coverArea->reset();
         gui->showCoverArea(false);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2404:
-        command="2404;0;-1;-1;-1;";
+        respond = newRespond(2404);
+
         coverArea->reset();
         gui->showCoverArea(false);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2405:
-        command="2405;0;"+QString::number(myID)+";-1;";
-        emit sendCommand(command);
+        respond = newRespond(2405);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2412:
@@ -408,24 +439,40 @@ void DieWu::askForSkill(QString skill)
         JingHuaShuiYue();
 }
 
-void DieWu::decipher(QString command)
+void DieWu::decipher(uint16_t proto_type, google::protobuf::Message* proto)
 {
-    Role::decipher(command);
-    this->command=command;
-    QStringList arg=command.split(';');
-
-    switch(arg[0].toInt())
+    if (proto_type == network::MSG_CMD_REQ)
     {
-    //法术牌凋零询问
-    case 2451:
-        diaoLingFlag = true;
-        DiaoLing();
-        break;
-    //非法术牌凋零询问
-    case 2452:
-        diaoLingFlag = false;
-        DiaoLing();
-        break;
-    }
+        google::protobuf::Message* proto2 = new network::CommandRequest();
+        proto2->CopyFrom(*proto);
+        Role::decipher(proto_type, proto2);
 
+        network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
+        if (cmd_req->cmd_type() == network::CMD_RESPOND)
+        {
+            for (int i = 0; i < cmd_req->commands_size(); ++i)
+            {
+                network::Command* cmd = (network::Command*)&(cmd_req->commands(i));
+                switch(cmd->respond_id())
+                {
+                //法术牌凋零询问
+                case 2451:
+                    diaoLingFlag = true;
+                    DiaoLing();
+                    break;
+                //非法术牌凋零询问
+                case 2452:
+                    diaoLingFlag = false;
+                    DiaoLing();
+                    break;
+                }
+            }
+        }
+
+        delete proto;
+    }
+    else
+    {
+        Role::decipher(proto_type, proto);
+    }
 }

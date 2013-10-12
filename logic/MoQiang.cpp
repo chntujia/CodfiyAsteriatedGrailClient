@@ -210,64 +210,67 @@ void MoQiang::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     case 42:
         chongYingUsed=false;
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
-            emit sendCommand("2906;"+QString::number(myID)+";");
+            respond = newRespond(2906);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
         }
         break;
     case 2901:
-        command="2901;1;";
+        respond = newRespond(2901);
+        respond->add_args(1);
+
         start=true;
         jieFangFirst=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2902:
-        command="2902;1;";
+        respond = newRespond(2902);
+        respond->add_args(huanYingFlag);
         start=true;
-        command+=QString::number(huanYingFlag)+";";
         if(huanYingFlag==1)
         {
-            targetID=QString::number(selectedPlayers[0]->getID());
-            sourceID=QString::number(myID);
-            command+=targetID+";"+sourceID+";";
+            respond->add_dst_ids(selectedPlayers[0]->getID());
         }
-        emit sendCommand(command);buttonArea->setEnabled(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+
+        buttonArea->setEnabled(0);
         gui->reset();
         break;
     case 2903:
-        command="2903;1;";
-        command+=QString::number(selectedCards.size())+";";
+        respond = newRespond(2903);
+
         for(int i=0;i<selectedCards.size();i++)
         {
-            command+=QString::number(selectedCards[i]->getID())+":";
+            respond->add_args(selectedCards[i]->getID());
             dataInterface->removeHandCard(selectedCards[i]);
         }
-        command+=";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2904:
-        command="2904;1;";
-        text=tipArea->getBoxCurrentText();
-        command+=text+";";
-        emit sendCommand(command);
+        respond = newRespond(2904);
+        respond->add_args(tipArea->getBoxCurrentText().toInt());
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2905:
+        action = newAction(2905);
+        action->add_args(selectedCards[0]->getID());
         chongYingUsed=true;
-        command="2905;";
-        sourceID=QString::number(myID);
-        command+=sourceID+";";
-        cardID=QString::number(selectedCards[0]->getID());
-        command+=cardID+";";
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }
@@ -278,26 +281,28 @@ void MoQiang::onCancelClicked()
     Role::onCancelClicked();
     QString command;
 
+    network::Respond* respond;
+
     switch(state)
     {
     case 2901:
-        command="2901;0;";
-        emit sendCommand(command);
+        respond = newRespond(2901);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2902:
-        command="2902;0;";
-        emit sendCommand(command);
+        respond = newRespond(2902);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2903:
-        command="2903;0;";
-        emit sendCommand(command);
+        respond = newRespond(2903);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2904:
-        command="2904;0;";
-        emit sendCommand(command);
+        respond = newRespond(2904);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2905:

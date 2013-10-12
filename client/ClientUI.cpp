@@ -39,7 +39,7 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(tcpSocket,SIGNAL(readyToStart()),this,SLOT(startGame()));
     connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
              this,SLOT(displayError(QAbstractSocket::SocketError)));
-    connect(tcpSocket,SIGNAL(getMessage(QString)),this,SLOT(showMessage(QString)));
+    connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),this,SLOT(showMessage(quint16, google::protobuf::Message*)));
     //merged
     connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(UserLogin()));
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
@@ -71,21 +71,19 @@ ClientUI::~ClientUI()
 {
     delete ui;
 }
-void ClientUI::showMessage(QString msg)
+void ClientUI::showMessage(quint16 proto_type, google::protobuf::Message* proto)
 {
-    QStringList arg=msg.split(';');
-    switch (arg[0].toInt())
+    network::LoginReply* login_rep;
+    switch (proto_type)
     {
-    case 1:
-        ui->board->append(QStringLiteral("你的ID是：")+arg[1]);
-        myID=arg[1].toInt();
-        break;
-    case 2:
-        break;
-        // 登入返回
-    case 9001:
+    case network::MSG_LOGIN_REP:
     {
-        int result = arg[1].toInt();
+        login_rep = (network::LoginReply*)proto;
+        myID=login_rep->serial_num();
+        ui->board->append(QStringLiteral("你的ID是：")+myID);
+
+        // TODO: 登陆失败
+        int result = login_rep->state();
         switch (result)
         {
         case 0: // 成功
@@ -93,7 +91,7 @@ void ClientUI::showMessage(QString msg)
             ui->frameLogin->hide();
             ui->frameRegist->hide();
             ui->frameLobby->show();
-            ui->nickname->setText(arg[2]);
+            ui->nickname->setText(QString::fromStdString(login_rep->nickname()));
             ui->nickname->setEnabled(0);
             break;
         case 1: // 帐号错误
@@ -107,6 +105,7 @@ void ClientUI::showMessage(QString msg)
         }
         break;
     }
+    /*
 // 注册返回
     case 9002:
     {
@@ -136,9 +135,12 @@ void ClientUI::showMessage(QString msg)
         }
         break;
     }
+    */
     default:
-        ui->board->append(msg);
+        ui->board->append(QString::fromStdString(((network::Gossip*)proto)->txt()));
     }
+
+    delete proto;
 }
 
 void ClientUI::startGame()
@@ -159,8 +161,7 @@ void ClientUI::link()
     tcpSocket->nickname=ui->nickname->text();
     tcpSocket->isRed=ui->comboBox->currentIndex()-1;
 
-    QString message = "0;0;";
-    tcpSocket->sendMessage(message);
+    tcpSocket->sendMessage(network::MSG_LOGIN_REQ, new network::LoginRequest());
 //    QFile *fp=new QFile("account");
 //    QTextStream account(fp);
 //    fp->open(QIODevice::WriteOnly);
@@ -172,7 +173,11 @@ void ClientUI::link()
 
 void ClientUI::displayError(QAbstractSocket::SocketError)
 {
-     showMessage(tcpSocket->errorString()); //输出错误信息
+    network::Gossip error_msg;
+    error_msg.set_type(network::GOSSIP_NOTICE);
+    QString txt = tcpSocket->errorString();
+    error_msg.set_txt(txt.toLatin1().data(), txt.length());
+    showMessage(0, &error_msg); //输出错误信息
 }
 
 void ClientUI::UserLogin()
@@ -210,11 +215,10 @@ void ClientUI::UserLogin()
     // 发送数据包
     ui->LabError->setText("正在验证，请稍后......");
 
-    QString message = "8001;";
-    message += username;
-    message += ";";
-    message += password;
-    tcpSocket->sendMessage(message);
+    network::LoginRequest* login_req = new network::LoginRequest();
+    login_req->set_user_id(username.toLatin1().data(), username.length());
+    login_req->set_user_password(password.toLatin1().data(), password.length());
+    tcpSocket->sendMessage(network::MSG_LOGIN_REQ, login_req);
 }
 
 void ClientUI::UserRegistShow()
@@ -265,18 +269,14 @@ void ClientUI::UserRegist()
     // 发送数据包
     ui->LabErrorReg->setText("正在验证，请稍后...");
 
-    QString message = "8002;";
-    message += username;
-    message += ";";
-    message += nickname;
-    message += ";";
-    message += password;
-    message += ";";
-    message += mobile;
-    message += ";";
-    message += email;
+    network::RegisterRequest* register_req = new network::RegisterRequest();
+    register_req->set_user_id((const char*) username.toLocal8Bit());
+    register_req->set_user_password((const char*) password.toLocal8Bit());
+    register_req->set_nickname((const char*) nickname.toLocal8Bit());
+    register_req->set_mobile((const char*) mobile.toLocal8Bit());
+    register_req->set_email((const char*) email.toLocal8Bit());
 
-    tcpSocket->sendMessage(message);
+    tcpSocket->sendMessage(network::MSG_REGISTER_REQ, register_req);
 }
 
 void ClientUI::UserBackLogin()

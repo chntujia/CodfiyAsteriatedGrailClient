@@ -5,6 +5,8 @@
 #include "data/Player.h"
 #include "data/Team.h"
 #include "data/Card.h"
+#include "protocol/action_respond.pb.h"
+#include "protocol/base.pb.h"
 
 class DataInterface : public QObject
 {
@@ -12,7 +14,7 @@ class DataInterface : public QObject
 public:
     explicit DataInterface(QObject *parent = 0);    
     void initCardDB();
-    void initPlayerList(QString msg, QStringList nicknames);
+    void initPlayerList(network::GameInfo* game_info);
     void initRoleList();
     void initRoleSkillDB();
     void initButtonDB();
@@ -20,7 +22,8 @@ public:
     void sortPlayers();
     void addCoverCard(Card* card);
     void addHandCard(Card* card);
-
+    void cleanHandCard();
+    void cleanCoverCard();
     void removeHandCard(Card *card);
     void removeCoverCard(Card *card);
     void setMyself(Player* player);

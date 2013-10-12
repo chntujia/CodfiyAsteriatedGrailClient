@@ -116,6 +116,13 @@ void HongLian::onOkClicked()
     selectedPlayers=playerArea->getSelectedPlayers();
     Player* myself=dataInterface->getMyself();
 
+    network::Action* action;
+    network::Respond* respond;
+
+    static int DaoYan_count;
+    static int DaoYan_dst[2];
+    static int DaoYan_num[2];
+
     switch(state)
     {
     //额外行动询问
@@ -123,43 +130,66 @@ void HongLian::onOkClicked()
         text=tipArea->getBoxCurrentText();
         switch (text[0].digitValue()){
         case 1:
-            emit sendCommand("2802;"+QString::number(myID)+";");
+            respond = new network::Respond();
+            respond->set_src_id(myID);
+            respond->set_respond_id(2802);
+            respond->add_args(1);
+
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackOrMagic();
             break;
         }
         break;
     case 2811:
-        command = "2801;1;";
-        command+=QString::number(selectedPlayers[0]->getID())+";"+tipArea->getBoxCurrentText()+";";
-        dst[0] = selectedPlayers[0]->getID();
         cross[0] = tipArea->getBoxCurrentText().toInt();
         if(myself->getCrossNum()>cross[0])
+        {
+            DaoYan_dst[0] = selectedPlayers[0]->getID();
+            DaoYan_num[0] = tipArea->getBoxCurrentText().toInt();
+            DaoYan_count = 1;
             XueXingDaoYan2();
+        }
         else
         {
-            command +="-1;0;";
+            respond = new network::Respond();
+            respond->set_src_id(myID);
+            respond->set_respond_id(2801);
+            respond->add_dst_ids(selectedPlayers[0]->getID());
+            respond->add_args(tipArea->getBoxCurrentText().toInt());
+
             start = true;
-            emit sendCommand(command);
+            emit sendCommand(network::MSG_RESPOND, respond);
         }
         break;
     case 2812:
         if(selectedPlayers.size()>0)
-            command+=QString::number(selectedPlayers[0]->getID())+";"+tipArea->getBoxCurrentText()+";";
-        else
-            command+="-1;0;";
+        {
+            DaoYan_dst[DaoYan_count] = selectedPlayers[0]->getID();
+            DaoYan_num[DaoYan_count] = tipArea->getBoxCurrentText().toInt();
+            DaoYan_count += 1;
+        }
         start = true;
-        emit sendCommand(command);
+
+        respond = newRespond(2801);
+        for (int i = 0; i < DaoYan_count; ++i)
+        {
+            respond->add_dst_ids(DaoYan_dst[i]);
+            respond->add_args(DaoYan_num[i]);
+        }
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2803:
-        command = "2803;";
-        command+=QString::number(selectedPlayers[0]->getID())+";"+QString::number(myID)+";";
+        action = newAction(2803);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+";";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
         gui->reset();
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         break;
     }
 }
@@ -168,11 +198,17 @@ void HongLian::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    static network::Respond* respond;
+
     switch(state)
     {
     case 2811:
-        command = "2801;0;-1;0;-1;0;";
-        emit sendCommand(command);
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(2801);
+
+        emit sendCommand(network::MSG_RESPOND, respond);
         break;
     case 2812:
         XueXingDaoYan1();

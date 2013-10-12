@@ -134,40 +134,43 @@ void ZhongCai::onOkClicked()
 
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     case 1401:
-        command="1401;1;";
+        respond = newRespond(1401);
+        respond->add_args(1);
         start=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1402:
-        command="1402;1;";
+        respond = newRespond(1402);
+        respond->add_args(1);
         start=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1403:
-        command="1403;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
-        emit sendCommand(command);
+        action = newAction(1403);
+        action->add_args(1);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1404:
-        command="1404;";
+        action = newAction(1404);
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
-            command+="0;";
+            action->add_args(0);
             foreach(Card*ptr,dataInterface->getHandCards())
                 dataInterface->removeHandCard(ptr);
         }
         else
-            command+="1;";
-        command+=QString::number(myID)+";";
-        emit sendCommand(command);
+            action->add_args(1);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }
@@ -177,6 +180,8 @@ void ZhongCai::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
     switch(state)
     {
     //末日审判
@@ -187,14 +192,14 @@ void ZhongCai::onCancelClicked()
         break;
     //仪式中断
     case 1401:
-        command="1401;0;";
-        emit sendCommand(command);
+        respond = newRespond(1401);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //仲裁仪式
     case 1402:
-        command="1402;0;";
-        emit sendCommand(command);
+        respond = newRespond(1402);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

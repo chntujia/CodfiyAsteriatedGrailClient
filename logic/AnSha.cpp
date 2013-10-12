@@ -70,30 +70,32 @@ void AnSha::onOkClicked()
     QList<Card*>selectedCards;
     int howMany,i;
     QString command;
+    network::Respond* respond;
 
     selectedCards=handArea->getSelectedCards();
     switch(state)
     {
     //水影询问
     case 502:
-        command="502;";
-        howMany=selectedCards.size();
-        command+=QString::number(howMany)+";";
-        for(i=0;i<howMany-1;i++)
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(502);
+        for(i=0;i<howMany;i++)
         {
-            command+=QString::number(selectedCards[i]->getID())+",";
+            respond->add_args(selectedCards[i]->getID());
             dataInterface->removeHandCard(selectedCards[i]);
         }
-        command+=QString::number(selectedCards[i]->getID())+";";
-        dataInterface->removeHandCard(selectedCards[i]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //潜行询问
     case 503:
-        command="503;1;";
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(503);
+        respond->add_args(1);
         start=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -104,20 +106,26 @@ void AnSha::onCancelClicked()
     Role::onCancelClicked();
     QList<Card*>selectedCards;
     QString command;
+    network::Respond* respond;
 
     selectedCards=handArea->getSelectedCards();
     switch(state)
     {
     //水影询问
     case 502:
-        command="502;0;";
-        emit sendCommand(command);
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(502);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //潜行询问
     case 503:
-        command="503;0;";
-        emit sendCommand(command);
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(503);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

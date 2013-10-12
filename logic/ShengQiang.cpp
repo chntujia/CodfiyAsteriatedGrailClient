@@ -148,59 +148,63 @@ void ShengQiang::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     case 42:
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
             HuiYaoAddition=false;
-            emit sendCommand("1003;"+QString::number(myID)+";");            
+            respond = newRespond(1003);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
         }
         else if(text[0]=='2'){
             ChengJieAddition=false;
-            emit sendCommand("1004;"+QString::number(myID)+";");           
+            respond = newRespond(1004);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
         }
         else if(text[0]=='3'){
             ShengGuangQiYuAddition=false;
-            emit sendCommand("1007;"+QString::number(myID)+";");            
+            respond = newRespond(1007);
+            respond->add_args(1);
+            emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
         }
         break;
     case 1001:
-        command="1001;";
+        action = newAction(1001);
+        action->add_args(selectedCards[0]->getID());
+
         HuiYaoAddition=true;
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        command+=cardID+";"+sourceID+";";
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1002:
-        command="1002;";
-        ChengJieAddition=true;
-        cardID=QString::number(selectedCards[0]->getID());
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=cardID+";"+targetID+";"+sourceID+";";
+        action = newAction(1002);
+        action->add_args(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
         dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 1005:
-        command="1005;";
-        command+=tipArea->getBoxCurrentText();
-        emit sendCommand(command);
+        respond = newRespond(1005);
+        respond->add_args(tipArea->getBoxCurrentText().toInt());
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1006:
+        action = newAction(1006);
+        action->add_args(1);
         ShengGuangQiYuAddition=true;
-        command="1006;";
-        sourceID=QString::number(myID);
-        command+=sourceID+";";
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();;
         break;
     }
@@ -210,11 +214,14 @@ void ShengQiang::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
     case 1005:
-        command="1005;0;";
-        emit sendCommand(command);
+        respond = newRespond(1005);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 1001:

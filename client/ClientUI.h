@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QtNetwork>
 #include "client/Client.h"
+
 namespace Ui {
 class ClientUI;
 }
@@ -20,7 +21,7 @@ public:
 private slots:
     void link();
     void startGame();
-    void showMessage(QString);
+    void showMessage(quint16 proto_type, google::protobuf::Message* proto);
     void displayError(QAbstractSocket::SocketError);
 
     void UserLogin();

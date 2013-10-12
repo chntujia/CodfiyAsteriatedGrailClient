@@ -205,94 +205,92 @@ void LingHun::onOkClicked()
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
+    network::Action* action;
+    network::Respond* respond;
+
     switch(state)
     {
     case 2201:
-        command="2201;";
-        sourceID=QString::number(myID);
-        command+=sourceID+";"+QString::number(selectedCards.size())+";";
+        action = newAction(2201);
         foreach(Card*ptr,selectedCards){
-            command+=QString::number(ptr->getID())+":";
+            action->add_args(ptr->getID());
             dataInterface->removeHandCard(ptr);
         }
-        command+=";";
-        emit sendCommand(command);
+
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2202:
-        command="2202;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        command+=targetID+";"+sourceID+";";
+        action = newAction(2202);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+
         if(handArea->getHandCardItems().size()<=3)
         {
-            command+="0";
+            action->add_args(100000);
             foreach(Card*ptr,dataInterface->getHandCards())
                 dataInterface->removeHandCard(ptr);
         }
         else
         {
-            command+=QString::number(selectedCards.size())+";";
             foreach(Card*ptr,selectedCards){
-                command+=QString::number(ptr->getID())+":";
+                action->add_args(ptr->getID());
                 dataInterface->removeHandCard(ptr);
             }
             command+=";";
         }
-        emit sendCommand(command);
+
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2203:
-        command="2203;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        cardID=QString::number(selectedCards[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
-        command+=targetID+";"+sourceID+";"+cardID+";";
-        emit sendCommand(command);
+        action = newAction(2203);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_args(selectedCards[0]->getID());
+
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2204:
-        command="2204;";
-        sourceID=QString::number(myID);
-        targetID=QString::number(selectedPlayers[0]->getID());
-        cardID=QString::number(selectedCards[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
-        command+=targetID+";"+sourceID+";"+cardID+";";
-        emit sendCommand(command);
+        action = newAction(2204);
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_args(selectedCards[0]->getID());
+
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     case 2205:
-        command="2205;1;";
+        respond = newRespond(2205);
+
         text=tipArea->getBoxCurrentText();
         if(text[0].digitValue()==1)
-            command+="0;";
+            respond->add_args(0);
         else
-            command+="1;";
-        emit sendCommand(command);
+            respond->add_args(1);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2206:
-        command="2206;1;";
+        respond = newRespond(2206);
+
         if(!lianJieUsed)
         {
-            targetID=QString::number(selectedPlayers[0]->getID());
+            respond->add_dst_ids(selectedPlayers[0]->getID());
+            respond->add_args(1);
             start=true;
             lianJieUsed=true;
-            command+=targetID+";";
         }
         else
         {
-            text=tipArea->getBoxCurrentText();
-            command+=text+";";
+            respond->add_args(tipArea->getBoxCurrentText().toInt());
         }
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2207:
-        command="2207;1;";
+        respond = newRespond(2207);
+        respond->add_args(1);
         start=true;
-        emit sendCommand(command);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
@@ -302,6 +300,9 @@ void LingHun::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
+
+    network::Respond* respond;
+
     switch(state)
     {
     case 2201:
@@ -311,18 +312,18 @@ void LingHun::onCancelClicked()
         normal();
         break;
     case 2205:
-        command="2205;0;";
-        emit sendCommand(command);
+        respond = newRespond(2205);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2206:
-        command="2206;0;";
-        emit sendCommand(command);
+        respond = newRespond(2206);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     case 2207:
-        command="2207;0;";
-        emit sendCommand(command);
+        respond = newRespond(2207);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }

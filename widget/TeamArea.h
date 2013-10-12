@@ -15,6 +15,8 @@ public:
     void changeLeftCardNum(int delta){leftCardNum+=delta;}
     void setDroppedCardNum(int howMany){droppedCardNum=howMany;}
     void setLeftCardNum(int howMany){leftCardNum=howMany;}
+    int getDroppedCardNum(){return droppedCardNum;}
+    int getleftCardNum(){return leftCardNum;}
 private:
     Team* red,*blue;
     QPixmap background;

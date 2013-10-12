@@ -100,31 +100,31 @@ void DataInterface::initRoleSkillDB()
     fp.close();
 }
 
-void DataInterface::initPlayerList(QString msg,QStringList nicknames)
+void DataInterface::initPlayerList(network::GameInfo* game_info)
 {
     int i,isRed,pID,myPos;
-    queue=msg;
+    //queue=msg;
     //find myPos
     for(i=0;i<playerMax;i++)
-        if(msg[i].digitValue()==id)
+        if(game_info->player_infos(i).id()==id)
             break;
     myPos=i;
     //设置座次，分队    
     for(;i<playerMax;i++)
     {
-        pID=msg[i].digitValue();
-        isRed=msg[i+playerMax].digitValue();
+        pID=game_info->player_infos(i).id();
+        isRed=game_info->player_infos(i).team();
         playerList<<new Player(pID,isRed,"");
 
     }
 
-    pID=msg[0].digitValue();
+    pID=game_info->player_infos(0).id();
     firstPlayerID=pID;
 
     for(i=0;i<myPos;i++)
     {
-        pID=msg[i].digitValue();
-        isRed=msg[i+playerMax].digitValue();
+        pID=game_info->player_infos(i).id();
+        isRed=game_info->player_infos(i).team();
         playerList<<new Player(pID,isRed,"");
 
     }
@@ -197,6 +197,19 @@ void DataInterface::removeCoverCard(Card *card)
     coverCards.removeOne(card);
     gui->getCoverArea()->removeCardItem(card);
 }
+
+void DataInterface::cleanHandCard()
+{
+    handcards.clear();
+    gui->getHandArea()->cleanCardItem();
+}
+
+void DataInterface::cleanCoverCard()
+{
+    coverCards.clear();
+    gui->getCoverArea()->cleanCardItem();
+}
+
 Player* DataInterface::getPlayerById(int id)
 {
     for(int i = 0;i < playerList.length();i++)
