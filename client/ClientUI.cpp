@@ -1,4 +1,5 @@
 ﻿#include <QMessageBox>
+#include "Logic.h"
 #include "client/ClientUI.h"
 #include "client/ui_ClientUI.h"
 #include "data/DataInterface.h"
@@ -40,6 +41,7 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
              this,SLOT(displayError(QAbstractSocket::SocketError)));
     connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),this,SLOT(showMessage(quint16, google::protobuf::Message*)));
+    connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),logic,SLOT(getCommand(quint16, google::protobuf::Message*)));
     //merged
     connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(UserLogin()));
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
@@ -136,11 +138,9 @@ void ClientUI::showMessage(quint16 proto_type, google::protobuf::Message* proto)
         break;
     }
     */
-    default:
-        ui->board->append(QString::fromStdString(((network::Gossip*)proto)->txt()));
+  //  default:
+//        ui->board->append(QString::fromStdString(((network::Gossip*)proto)->txt()));
     }
-
-    delete proto;
 }
 
 void ClientUI::startGame()
@@ -157,11 +157,13 @@ void ClientUI::link()
 {
     //tcpSocket->link("192.168.56.1",50000);
     //tcpSocket->link("211.152.34.94",60000);
-    ui->connectButton->setEnabled(0);
+   // ui->connectButton->setEnabled(0);
     tcpSocket->nickname=ui->nickname->text();
     tcpSocket->isRed=ui->comboBox->currentIndex()-1;
 
-    tcpSocket->sendMessage(network::MSG_LOGIN_REQ, new network::LoginRequest());
+    network::EnterRoom *enter= new network::EnterRoom();
+    enter->set_room_id(0);
+    tcpSocket->sendMessage(network::MSG_ENTER_ROOM, enter);
 //    QFile *fp=new QFile("account");
 //    QTextStream account(fp);
 //    fp->open(QIODevice::WriteOnly);
@@ -173,11 +175,11 @@ void ClientUI::link()
 
 void ClientUI::displayError(QAbstractSocket::SocketError)
 {
-    network::Gossip error_msg;
-    error_msg.set_type(network::GOSSIP_NOTICE);
+    network::Gossip* error_msg = new network::Gossip;
+    error_msg->set_type(network::GOSSIP_NOTICE);
     QString txt = tcpSocket->errorString();
-    error_msg.set_txt(txt.toLatin1().data(), txt.length());
-    showMessage(0, &error_msg); //输出错误信息
+    error_msg->set_txt(txt.toLatin1().data(), txt.length());
+    showMessage(0, error_msg); //输出错误信息
 }
 
 void ClientUI::UserLogin()

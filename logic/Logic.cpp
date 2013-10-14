@@ -161,7 +161,7 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         emit sendCommand("0;"+QString::number(socket->isRed)+";"+socket->nickname+";");
         */
         break;
-    case network::MSG_LOGIN_REP:
+    case network::MSG_SINGLE_ROOM:
         myID=((network::LoginReply*)proto)->serial_num();
         dataInterface->setID(myID);
         break;

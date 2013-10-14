@@ -1,14 +1,14 @@
 ﻿#include "codec.h"
 
-bool proto_encoder(uint16_t type, google::protobuf::Message& body, string& msg)
+bool proto_encoder(uint16_t type, google::protobuf::Message *body, string& msg)
 {
 	MsgHeader header;
 
 	string str;
-	body.SerializeToString(&str);
+    body->SerializeToString(&str);
 	header.len = str.length() + SIZEOF_HEADER;
 	header.type = type;
-	
+
 	msg.clear();
 	msg.append((char*)&header, SIZEOF_HEADER);
 	msg.append(str);

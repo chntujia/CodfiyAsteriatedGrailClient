@@ -1,4 +1,4 @@
-﻿#include "protocol/action_respond.pb.h"
+﻿#include <protocol/action_respond.pb.h>
 #include "protocol/base.pb.h"
 
 using namespace std;
@@ -39,7 +39,7 @@ struct MsgHeader {
 };
 const int SIZEOF_HEADER = sizeof(MsgHeader);
 
-bool proto_encoder(uint16_t type, google::protobuf::Message& body, string& msg);
+bool proto_encoder(uint16_t type, google::protobuf::Message* body, string& msg);
 
 /*
 msg：接收到的信息

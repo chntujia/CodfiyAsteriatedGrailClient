@@ -9,7 +9,6 @@ Client::Client()
     connect(this,SIGNAL(readyRead()),this,SLOT(readMessage()));
     connect(logic,SIGNAL(gameStart()),this,SIGNAL(readyToStart()));
     connect(logic,SIGNAL(sendCommand(quint16, google::protobuf::Message*)),this,SLOT(sendMessage(quint16, google::protobuf::Message*)));
-    connect(this,SIGNAL(getMessage(quint16, google::protobuf::Message*)),logic,SLOT(getCommand(quint16, google::protobuf::Message*)));
     connect(this,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     logic->setClient(this);
 }
@@ -56,10 +55,11 @@ void Client::readMessage()
 void Client::sendMessage(quint16 proto_type, google::protobuf::Message* proto)
 {
     string message;
-    proto_encoder(proto_type, *proto, message);
+    proto_encoder(proto_type, proto, message);
     delete proto;
-
     QByteArray packet;
+    qint32 len = message.size();
+    packet.append((char*)&len, sizeof(qint32));
     packet.append(QString::fromStdString(message));
     write(packet);
 }
