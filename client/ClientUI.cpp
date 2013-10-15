@@ -42,6 +42,7 @@ ClientUI::ClientUI(QWidget *parent) :
              this,SLOT(displayError(QAbstractSocket::SocketError)));
     connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),this,SLOT(showMessage(quint16, google::protobuf::Message*)));
     connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),logic,SLOT(getCommand(quint16, google::protobuf::Message*)));
+    connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),logic,SLOT(delete_proto(quint16, google::protobuf::Message*)));
     //merged
     connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(UserLogin()));
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
@@ -175,7 +176,7 @@ void ClientUI::link()
 
 void ClientUI::displayError(QAbstractSocket::SocketError)
 {
-    network::Gossip* error_msg = new network::Gossip;
+    network::Gossip* error_msg = new network::Gossip();
     error_msg->set_type(network::GOSSIP_NOTICE);
     QString txt = tcpSocket->errorString();
     error_msg->set_txt(txt.toLatin1().data(), txt.length());

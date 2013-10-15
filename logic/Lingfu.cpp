@@ -338,13 +338,11 @@ void LingFu::cardAnalyse()
     }
 }
 
-void LingFu::decipher(uint16_t proto_type, google::protobuf::Message* proto)
+void LingFu::decipher(quint16 proto_type, google::protobuf::Message* proto)
 {
     if (proto_type == network::MSG_CMD_REQ)
     {
-        google::protobuf::Message* proto2 = new network::CommandRequest();
-        proto2->CopyFrom(*proto);
-        Role::decipher(proto_type, proto2);
+        Role::decipher(proto_type, proto);
 
         network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
         if (cmd_req->cmd_type() == network::CMD_RESPOND)
@@ -365,8 +363,6 @@ void LingFu::decipher(uint16_t proto_type, google::protobuf::Message* proto)
                 }
             }
         }
-
-        delete proto;
     }
     else
     {
