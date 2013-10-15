@@ -22,7 +22,7 @@ BPArea::BPArea():least(1),most(1)
 
 void BPArea::BPStart(int num, QList<int> roles)
 {
-    QString queue = dataInterface->getQueue();
+/*    QString queue = dataInterface->getQueue();
     int red =0, blue = 0, max = queue.size()/2;
     for(int i =0;i<max;i++)
     {
@@ -55,6 +55,7 @@ void BPArea::BPStart(int num, QList<int> roles)
     }
     setVisible(true);
     reset();
+    */
 }
 
 void BPArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

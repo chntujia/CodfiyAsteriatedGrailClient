@@ -23,13 +23,13 @@ MoDao::MoDao()
 
     int myColor=myself->getColor();
 
-    QString queue=dataInterface->getQueue();
-    int playerMax=queue.count()/2;
+    network::GameInfo* gameInfo=dataInterface->getGameInfo();
+    int playerMax=dataInterface->getPlayerMax();
     QList<Player*>playerList=dataInterface->getPlayerList();
     int i;
     //find myPos
     for(i=0;i<playerMax;i++)
-        if(queue[i].digitValue()==myID)
+        if(gameInfo->player_infos(i).id()==myID)
             break;
     int ptr;
     do
@@ -37,7 +37,7 @@ MoDao::MoDao()
         i--;
         if(i==-1)
             i=playerMax-1;
-        ptr=queue[i].digitValue();
+        ptr=gameInfo->player_infos(i).id();
     }while(playerList[ptr]->getColor()==myColor);
     nextClockwise=ptr;
 }

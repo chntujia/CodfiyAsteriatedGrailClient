@@ -162,7 +162,7 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         */
         break;
     case network::MSG_SINGLE_ROOM:
-        myID=((network::LoginReply*)proto)->serial_num();
+        myID=((network::SingleRoom*)proto)->player_id();
         dataInterface->setID(myID);
         break;
     case network::MSG_GAME:
@@ -217,6 +217,7 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
                     for(int i=0;i<dataInterface->getPlayerMax();i++){
                         gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
                     }
+                    gui->getPlayerArea()->update();
                 }
             }
         }

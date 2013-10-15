@@ -103,7 +103,8 @@ void DataInterface::initRoleSkillDB()
 void DataInterface::initPlayerList(network::GameInfo* game_info)
 {
     int i,isRed,pID,myPos;
-    //queue=msg;
+    gameInfo = new network::GameInfo;
+    gameInfo->CopyFrom(*game_info);
     //find myPos
     for(i=0;i<playerMax;i++)
         if(game_info->player_infos(i).id()==id)

@@ -42,7 +42,7 @@ public:
     QList<Player*> getPlayerList();
     Team* getRedTeam();
     Team* getBlueTeam();
-    QString getQueue(){return queue;}
+    network::GameInfo* getGameInfo(){return gameInfo;}
     QString getRoleName(int roleID){return roleList[roleID];}
     QString getButtonInfo(QString skill){return buttonDB[skill];}
     QString getRoleSkillInfo(int roleID){return roleSkillDB[roleID];}
@@ -55,12 +55,11 @@ private:
     QList<Card*> coverCards;
     Player* myself;
     Team *red,*blue,*otherTeam,*myTeam;
-    QString queue;
     QStringList roleList;
     int id;
     int playerMax;
     int firstPlayerID;
-
+    network::GameInfo* gameInfo;
 };
 extern DataInterface *dataInterface;
 #endif // DATAINTERFACE_H

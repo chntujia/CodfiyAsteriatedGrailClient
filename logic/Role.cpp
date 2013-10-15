@@ -12,15 +12,15 @@ Role::Role(QObject *parent) :
     myID=myself->getID();
     int myColor=myself->getColor();
 
-    QString queue=dataInterface->getQueue();
-    int playerMax=queue.count()/2;
+    network::GameInfo* gameInfo=dataInterface->getGameInfo();
+    int playerMax=dataInterface->getPlayerMax();
     red=dataInterface->getRedTeam();
     blue=dataInterface->getBlueTeam();
     playerList=dataInterface->getPlayerList();
     int i;
     //find myPos
     for(i=0;i<playerMax;i++)
-        if(queue[i].digitValue()==myID)
+        if(gameInfo->player_infos(i).id()==myID)
             break;
     int ptr;
     do
@@ -28,7 +28,7 @@ Role::Role(QObject *parent) :
         i++;
         if(i==playerMax)
             i=0;
-        ptr=queue[i].digitValue();        
+        ptr=gameInfo->player_infos(i).id();
 
     }while(playerList[ptr]->getColor()==myColor);
     nextCounterClockwise=ptr;
