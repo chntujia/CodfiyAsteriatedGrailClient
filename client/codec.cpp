@@ -1,4 +1,5 @@
 ﻿#include "codec.h"
+#include <QDebug>
 
 bool proto_encoder(uint16_t type, google::protobuf::Message *body, string& msg)
 {
@@ -88,5 +89,10 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		return NULL;
 		break;
 	}
+
+    char str[10000];
+    sprintf(str, "Recieve:\n%s", proto->DebugString());
+    qDebug(str);
+
     return proto;
 }
