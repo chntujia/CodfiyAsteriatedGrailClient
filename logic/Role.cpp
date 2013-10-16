@@ -1602,8 +1602,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     default:
         break;
     }
-
-    delete proto;
 }
 
 
