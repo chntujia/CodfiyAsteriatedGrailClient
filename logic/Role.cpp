@@ -44,8 +44,8 @@ Role::Role(QObject *parent) :
 }
 void Role::makeConnection()
 {
-    connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(decipher(uint16_t, google::protobuf::Message*)));
-    connect(this,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
+    connect(logic->getClient(),SIGNAL(getMessage(quint16, google::protobuf::Message*)),this,SLOT(decipher(quint16, google::protobuf::Message*)));
+    connect(this,SIGNAL(sendCommand(quint16, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(quint16, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
     connect(decisionArea,SIGNAL(cancelClicked()),this,SLOT(onCancelClicked()));
     connect(decisionArea,SIGNAL(exchangeClicked()),this,SLOT(exchangeCards()));
@@ -907,7 +907,7 @@ network::Respond* Role::newRespond(uint32_t respond_id)
     return respond;
 }
 
-void Role::decipher(uint16_t proto_type, google::protobuf::Message* proto)
+void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 {
     this->command=command;
     QStringList arg=command.split(';');
