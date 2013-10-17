@@ -34,8 +34,8 @@ typedef unsigned long		uint64_t;
 消息长度 | 协议序号 | 协议串化字符串
 */
 struct MsgHeader {
-	uint16_t len;
-	uint16_t type;
+    uint16_t len;
+    uint16_t type;
 };
 const int SIZEOF_HEADER = sizeof(MsgHeader);
 

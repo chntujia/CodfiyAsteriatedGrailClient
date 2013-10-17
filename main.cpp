@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 //GUI初始化完成
         /**/
         logic->readyToStart();
-        gui->logAppend("请相信这不是卡，这是在等那个还没点Start的二货╮(╯▽╰)╭");
+        gui->logAppend(QStringLiteral("请相信这不是卡，这是在等那个还没点Start的二货╮(╯▽╰)╭"));
 
         return a.exec();
     }

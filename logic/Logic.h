@@ -14,12 +14,12 @@ public:
     void readyToStart();
     Client* getClient(){return socket;}
 signals:
-    void sendCommand(quint16 proto_type, google::protobuf::Message* proto);
+    void sendCommand(uint16_t proto_type, google::protobuf::Message* proto);
     void gameStart();    
 public slots:
     void onOkClicked();
-    void getCommand(quint16 proto_type, google::protobuf::Message* proto);
-    void delete_proto(quint16 type, google::protobuf::Message *proto);
+    void getCommand(uint16_t proto_type, google::protobuf::Message* proto);
+    void delete_proto(uint16_t type, google::protobuf::Message *proto);
     void roleAnalyse();
 private:
     Client* socket;

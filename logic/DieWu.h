@@ -20,7 +20,7 @@ public slots:
     void onCancelClicked();
     void cardAnalyse();
     void coverCardAnalyse();
-    void decipher(quint16, google::protobuf::Message*);
+    void decipher(uint16_t, google::protobuf::Message*);
     void WuDong1();
     void YongHua();
     void DaoNiZhiDie1();

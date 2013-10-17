@@ -33,10 +33,10 @@ public:
     network::Action* newAction(uint32_t action_id);
     network::Respond* newRespond(uint32_t respond_id);
 signals:
-    void sendCommand(quint16 proto_type, google::protobuf::Message* proto);
+    void sendCommand(uint16_t proto_type, google::protobuf::Message* proto);
 
 public slots:
-    virtual void decipher(quint16, google::protobuf::Message*);
+    virtual void decipher(uint16_t, google::protobuf::Message*);
     virtual void onOkClicked();
     virtual void onCancelClicked();
     virtual void cardAnalyse();

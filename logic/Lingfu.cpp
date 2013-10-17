@@ -338,7 +338,7 @@ void LingFu::cardAnalyse()
     }
 }
 
-void LingFu::decipher(quint16 proto_type, google::protobuf::Message* proto)
+void LingFu::decipher(uint16_t proto_type, google::protobuf::Message* proto)
 {
     if (proto_type == network::MSG_CMD_REQ)
     {

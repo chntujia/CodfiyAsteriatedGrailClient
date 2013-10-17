@@ -21,7 +21,7 @@ public:
 private slots:
     void link();
     void startGame();
-    void showMessage(quint16 proto_type, google::protobuf::Message* proto);
+    void showMessage(uint16_t proto_type, google::protobuf::Message* proto);
     void displayError(QAbstractSocket::SocketError);
 
     void UserLogin();

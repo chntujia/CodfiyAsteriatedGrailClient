@@ -1406,18 +1406,18 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             showArea->showCards(cards);
 
         }
-        // 清空数组
-        if (game_info->delete_field_size() > 0)
-        {
-            for (int i = 0; i < game_info->delete_field_size(); ++i)
-            {
-                if (strcmp(game_info->delete_field(i).c_str(), "show_cards") == 0)
-                {
-                    cards.clear();
-                    showArea->showCards(cards);
-                }
-            }
-        }
+//        // 清空数组
+//        if (game_info->delete_field_size() > 0)
+//        {
+//            for (int i = 0; i < game_info->delete_field_size(); ++i)
+//            {
+//                if (strcmp(game_info->delete_field(i).c_str(), "show_cards") == 0)
+//                {
+//                    cards.clear();
+//                    showArea->showCards(cards);
+//                }
+//            }
+//        }
         // 更新玩家信息
         if (game_info->player_infos_size() > 0)
         {
@@ -1428,16 +1428,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 // TODO:
                 targetID = player_info->id();
 
-                player = nullptr;
-                for (int j =0; j < playerList.size(); ++j)
-                    if (targetID == playerList[j]->getID())
-                        player = playerList[i];
-                        break;
-                if (player == nullptr)
-                {
-                    gui->logAppend("Get Error ID");
-                    continue;
-                }
+                player = playerList[game_info->player_infos(i).id()];
 
                 // 更新手牌
                 if (player_info->has_hand_count())
@@ -1576,25 +1567,25 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     howMany=player_info->max_hand();
                     player->setHandCardsMax(howMany);
                 }
-                // 清空数组
-                if (player_info->delete_field_size() > 0)
-                {
-                    for (int j = 0; j < player_info->delete_field_size(); ++j)
-                    {
-                        if (strcmp(player_info->delete_field(i).c_str(), "my_ex_card_place") == 0)
-                        {
-                            // TODO:清空专属
-                        }
-                        else if (strcmp(player_info->delete_field(i).c_str(), "gain_ex_card") == 0)
-                        {
-                            player->cleanSpecial();
-                        }
-                        else if (strcmp(player_info->delete_field(i).c_str(), "basic_cards") == 0)
-                        {
-                            player->cleanBasicStatus();
-                        }
-                    }
-                }
+//                // 清空数组
+//                if (player_info->delete_field_size() > 0)
+//                {
+//                    for (int j = 0; j < player_info->delete_field_size(); ++j)
+//                    {
+//                        if (strcmp(player_info->delete_field(i).c_str(), "my_ex_card_place") == 0)
+//                        {
+//                            // TODO:清空专属
+//                        }
+//                        else if (strcmp(player_info->delete_field(i).c_str(), "gain_ex_card") == 0)
+//                        {
+//                            player->cleanSpecial();
+//                        }
+//                        else if (strcmp(player_info->delete_field(i).c_str(), "basic_cards") == 0)
+//                        {
+//                            player->cleanBasicStatus();
+//                        }
+//                    }
+//                }
                 playerArea->update();
             }
         }

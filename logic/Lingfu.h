@@ -22,7 +22,7 @@ public slots:
     void onCancelClicked();
     void leiMing();
     void fengXing();
-    void decipher(quint16, google::protobuf::Message*);
+    void decipher(uint16_t, google::protobuf::Message*);
 private:
 
 };

@@ -439,7 +439,7 @@ void DieWu::askForSkill(QString skill)
         JingHuaShuiYue();
 }
 
-void DieWu::decipher(quint16 proto_type, google::protobuf::Message* proto)
+void DieWu::decipher(uint16_t proto_type, google::protobuf::Message* proto)
 {
     if (proto_type == network::MSG_CMD_REQ)
     {

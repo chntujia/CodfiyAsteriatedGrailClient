@@ -40,9 +40,9 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(tcpSocket,SIGNAL(readyToStart()),this,SLOT(startGame()));
     connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
              this,SLOT(displayError(QAbstractSocket::SocketError)));
-    connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),this,SLOT(showMessage(quint16, google::protobuf::Message*)));
-    connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),logic,SLOT(getCommand(quint16, google::protobuf::Message*)));
-    connect(tcpSocket,SIGNAL(getMessage(quint16, google::protobuf::Message*)),logic,SLOT(delete_proto(quint16, google::protobuf::Message*)));
+    connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(showMessage(uint16_t, google::protobuf::Message*)));
+    connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(getCommand(uint16_t, google::protobuf::Message*)));
+    connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
     //merged
     connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(UserLogin()));
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
@@ -74,7 +74,7 @@ ClientUI::~ClientUI()
 {
     delete ui;
 }
-void ClientUI::showMessage(quint16 proto_type, google::protobuf::Message* proto)
+void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto)
 {
     network::LoginReply* login_rep;
     switch (proto_type)
