@@ -47,8 +47,8 @@ public:
     void addToken(int id,Token *token){this->token[id]=token;emit addTokenSIG(token);}
     void changeHandCardNum(int increase){handCardsNum+=increase;}
     void changeCoverCardNum(int increase){coverCardsNum += increase;}
-    void changeHandCardNumTo(int num){handCardsNum+=num;}
-    void changeCoverCardNumTo(int num){coverCardsNum += num;}
+    void changeHandCardNumTo(int num){handCardsNum = num;}
+    void changeCoverCardNumTo(int num){coverCardsNum = num;}
     void addBasicStatus(int type,Card* card);
     void removeBasicStatus(Card* card);
     void cleanBasicStatus();

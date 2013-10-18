@@ -89,10 +89,7 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		return NULL;
 		break;
 	}
-
-    char str[10000];
-    sprintf(str, "Recieve:\n%s", proto->DebugString());
-    qDebug(str);
+    qDebug( "Recieve:\n%s", proto->DebugString().c_str());
 
     return proto;
 }

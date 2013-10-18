@@ -44,8 +44,8 @@ Role::Role(QObject *parent) :
 }
 void Role::makeConnection()
 {
-    connect(logic->getClient(),SIGNAL(getMessage(quint16, google::protobuf::Message*)),this,SLOT(decipher(quint16, google::protobuf::Message*)));
-    connect(this,SIGNAL(sendCommand(quint16, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(quint16, google::protobuf::Message*)));
+    connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(decipher(uint16_t, google::protobuf::Message*)));
+    connect(this,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
     connect(decisionArea,SIGNAL(cancelClicked()),this,SLOT(onCancelClicked()));
     connect(decisionArea,SIGNAL(exchangeClicked()),this,SLOT(exchangeCards()));
@@ -1063,6 +1063,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 break;
             }
             case network::ACTION_ANY:
+                targetID = cmd->args(0);
                 if(targetID!=myID)
                 {
                     isMyTurn=0;
@@ -1428,27 +1429,25 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 // TODO:
                 targetID = player_info->id();
 
-                player = playerList[game_info->player_infos(i).id()];
+                player = playerList[targetID];
 
                 // 更新手牌
                 if (player_info->has_hand_count())
                 {
-                    char str[10];
-                    sprintf(str, "%d", player_info->hand_count());
-                    QString q_str(str);
-                    gui->logAppend(player->getRoleName()+QStringLiteral("的手牌变为")+q_str+QStringLiteral("张"));
-
+                    if(player_info->hand_count()!=player->getHandCardNum())
+                    {
+                        gui->logAppend(player->getRoleName()+QStringLiteral("的手牌变为")+QString::number(player_info->hand_count())+QStringLiteral("张"));
+                        player->changeHandCardNumTo(player_info->hand_count());
+                    }
                     if (targetID == myID)
                     {
                         dataInterface->cleanHandCard();
                         for (int k = 0; k < player_info->hand_count(); ++k)
+                        {
                             cardID=player_info->hands(k);
                             card=dataInterface->getCard(cardID);
                             dataInterface->addHandCard(card);
-                    }
-                    else
-                    {
-                        player->changeHandCardNumTo(player_info->hand_count());
+                        }
                     }
                 }
                 // 更新盖牌
