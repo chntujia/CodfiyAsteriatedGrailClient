@@ -28,6 +28,7 @@ private:
     int roles[8];
     int myID;
     bool hasShownRole;
+    bool hasSetRole;
 };
 extern Logic* logic;
 #endif // LOGIC_H

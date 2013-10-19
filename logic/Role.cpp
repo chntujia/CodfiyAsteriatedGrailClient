@@ -179,8 +179,6 @@ void Role::exchangeCards()
     QList<Card*> handcards=dataInterface->getHandCards();
     int i;
     int n=handcards.count();
-    for(i=0;i<n;i++)
-        dataInterface->removeHandCard(handcards[i]);
     emit sendCommand(network::MSG_ACTION, action);
 }
 
@@ -658,7 +656,6 @@ void Role::onOkClicked()
             usedMagic=true;
             usedAttack=usedSpecial=false;
         }
-        dataInterface->removeHandCard(selectedCards[0]);
         gui->reset();
         emit sendCommand(network::MSG_ACTION, action);
         break;
@@ -677,7 +674,6 @@ void Role::onOkClicked()
             respond->add_args(1);
             respond->add_args(selectedCards[0]->getID());
         }
-        dataInterface->removeHandCard(selectedCards[0]);
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -690,10 +686,6 @@ void Role::onOkClicked()
             respond->add_args(selectedCards[i]->getID());
         }
         command+=";";
-        for(i=0;i<selectedCards.count();i++)
-        {
-            dataInterface->removeHandCard(selectedCards[i]);
-        }
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -811,7 +803,6 @@ void Role::onOkClicked()
             respond->add_args(selectedCards[0]->getID());
             respond->add_dst_ids(selectedPlayers[0]->getID());
         }
-        dataInterface->removeHandCard(selectedCards[0]);
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -850,10 +841,6 @@ void Role::onOkClicked()
             respond->add_args(selectedCards[i]->getID());
         }
         command+=";";
-        for(i=0;i<selectedCards.count();i++)
-        {
-            dataInterface->removeHandCard(selectedCards[i]);
-        }
         coverArea->reset();
         gui->showCoverArea(false);
         gui->reset();
@@ -863,12 +850,6 @@ void Role::onOkClicked()
     case 751:
         respond = newRespond(751);
         respond->add_args(selectedCards[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
-        if(selectedCards.size()==2)
-        {
-            respond->add_args(selectedCards[1]->getID());
-            dataInterface->removeHandCard(selectedCards[1]);
-        }
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -876,7 +857,6 @@ void Role::onOkClicked()
     case 851:
         respond = newRespond(851);
         respond->add_args(selectedCards[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -884,8 +864,6 @@ void Role::onOkClicked()
     case 2951:
         respond = newRespond(2951);
         respond->add_args(selectedCards[0]->getID());
-
-        dataInterface->removeHandCard(selectedCards[0]);
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;

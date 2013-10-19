@@ -39,6 +39,7 @@ Logic::Logic(QObject *parent) :
 {
     count=0;
     hasShownRole=false;
+    hasSetRole=false;
     state = -1;
     memset(roles,-1,sizeof(roles));
 }
@@ -49,90 +50,120 @@ void Logic::readyToStart()
 }
 void Logic::setMyRole(int roleID)
 {
+    if(hasSetRole)
+        return;
     switch(roleID)
     {
     case 1:
         new JianSheng;
+        hasSetRole = true;
         break;
     case 2:
         new KuangZhan;
+        hasSetRole = true;
         break;
     case 3:
         new GongNv;
+        hasSetRole = true;
         break;
     case 4:
         new FengYin;
+        hasSetRole = true;
         break;
     case 5:
         new AnSha;
+        hasSetRole = true;
         break;
     case 6:
         new ShengNv;
+        hasSetRole = true;
         break;
     case 7:
         new TianShi;
+        hasSetRole = true;
         break;
     case 8:
         new MoDao;
+        hasSetRole = true;
         break;
     case 9:
         new MoJian;
+        hasSetRole = true;
         break;
     case 10:
         new ShengQiang;
+        hasSetRole = true;
         break;
     case 11:
         new YuanSu;
+        hasSetRole = true;
         break;
     case 12:
         new MaoXian;
+        hasSetRole = true;
         break;
     case 13:
         new SiLing;
+        hasSetRole = true;
         break;
     case 14:
         new ZhongCai;
+        hasSetRole = true;
         break;
     case 15:
         new ShenGuan;
+        hasSetRole = true;
         break;
     case 16:
         new QiDao;
+        hasSetRole = true;
         break;
     case 17:
         new XianZhe;
+        hasSetRole = true;
         break;
     case 18:
         new LingFu;
+        hasSetRole = true;
         break;
     case 19:
         new JianDi;
+        hasSetRole = true;
         break;
     case 20:
         new GeDouJia;
+        hasSetRole = true;
         break;
     case 21:
         new YongZhe;
+        hasSetRole = true;
         break;
     case 22:
         new LingHun;
+        hasSetRole = true;
         break;
     case 23:
         new WuNv;
+        hasSetRole = true;
         break;
     case 24:
         new DieWu;
+        hasSetRole = true;
         break;
     case 26:
         new MoGong;
+        hasSetRole = true;
         break;
     case 28:
         new HongLian;
+        hasSetRole = true;
         break;
     case 29:
         new MoQiang;
+        hasSetRole = true;
         break;
     }
+
 }
 
 void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
