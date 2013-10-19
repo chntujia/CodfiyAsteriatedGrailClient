@@ -79,7 +79,7 @@ void* proto_decoder(const char* msg, uint16_t& type)
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
     case MSG_HIT:
-		proto = new Action();
+        proto = new HitMsg();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
 	case MSG_RESPOND:
