@@ -358,21 +358,21 @@ class TurnBegin : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 index = 1;
-  inline bool has_index() const;
-  inline void clear_index();
-  static const int kIndexFieldNumber = 1;
-  inline ::google::protobuf::uint32 index() const;
-  inline void set_index(::google::protobuf::uint32 value);
+  // optional uint32 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::uint32 id() const;
+  inline void set_id(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:network.TurnBegin)
  private:
-  inline void set_has_index();
-  inline void clear_has_index();
+  inline void set_has_id();
+  inline void clear_has_id();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::uint32 index_;
+  ::google::protobuf::uint32 id_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
@@ -989,6 +989,13 @@ class HitMsg : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 dst_id() const;
   inline void set_dst_id(::google::protobuf::uint32 value);
 
+  // optional uint32 damage = 5;
+  inline bool has_damage() const;
+  inline void clear_damage();
+  static const int kDamageFieldNumber = 5;
+  inline ::google::protobuf::uint32 damage() const;
+  inline void set_damage(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:network.HitMsg)
  private:
   inline void set_has_cmd_id();
@@ -999,6 +1006,8 @@ class HitMsg : public ::google::protobuf::Message {
   inline void clear_has_src_id();
   inline void set_has_dst_id();
   inline void clear_has_dst_id();
+  inline void set_has_damage();
+  inline void clear_has_damage();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1006,9 +1015,10 @@ class HitMsg : public ::google::protobuf::Message {
   ::google::protobuf::uint32 hit_;
   ::google::protobuf::uint32 src_id_;
   ::google::protobuf::uint32 dst_id_;
+  ::google::protobuf::uint32 damage_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
@@ -1079,26 +1089,26 @@ inline void Pick::set_role_id(::google::protobuf::uint32 value) {
 
 // TurnBegin
 
-// optional uint32 index = 1;
-inline bool TurnBegin::has_index() const {
+// optional uint32 id = 1;
+inline bool TurnBegin::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void TurnBegin::set_has_index() {
+inline void TurnBegin::set_has_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void TurnBegin::clear_has_index() {
+inline void TurnBegin::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void TurnBegin::clear_index() {
-  index_ = 0u;
-  clear_has_index();
+inline void TurnBegin::clear_id() {
+  id_ = 0u;
+  clear_has_id();
 }
-inline ::google::protobuf::uint32 TurnBegin::index() const {
-  return index_;
+inline ::google::protobuf::uint32 TurnBegin::id() const {
+  return id_;
 }
-inline void TurnBegin::set_index(::google::protobuf::uint32 value) {
-  set_has_index();
-  index_ = value;
+inline void TurnBegin::set_id(::google::protobuf::uint32 value) {
+  set_has_id();
+  id_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -1542,6 +1552,28 @@ inline ::google::protobuf::uint32 HitMsg::dst_id() const {
 inline void HitMsg::set_dst_id(::google::protobuf::uint32 value) {
   set_has_dst_id();
   dst_id_ = value;
+}
+
+// optional uint32 damage = 5;
+inline bool HitMsg::has_damage() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void HitMsg::set_has_damage() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void HitMsg::clear_has_damage() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void HitMsg::clear_damage() {
+  damage_ = 0u;
+  clear_has_damage();
+}
+inline ::google::protobuf::uint32 HitMsg::damage() const {
+  return damage_;
+}
+inline void HitMsg::set_damage(::google::protobuf::uint32 value) {
+  set_has_damage();
+  damage_ = value;
 }
 
 

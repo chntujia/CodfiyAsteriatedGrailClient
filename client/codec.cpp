@@ -14,6 +14,8 @@ bool proto_encoder(uint16_t type, google::protobuf::Message *body, string& msg)
 	msg.append((char*)&header, SIZEOF_HEADER);
 	msg.append(str);
 	
+    qDebug( "Send:\n%s", body->DebugString().c_str());
+
 	return true;
 }
 

@@ -581,6 +581,7 @@ void Role::onCancelClicked()
     case 8:
         respond = newRespond(network::RESPOND_BULLET);
         respond->add_args(2);
+        respond->add_args(100000);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -932,7 +933,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     {
     case network::MSG_TURN_BEGIN:
         //回合开始
-        targetID=((network::TurnBegin*)proto)->index();
+        targetID=((network::TurnBegin*)proto)->id();
         gui->logAppend("--------------------------------------");
         gui->logAppend(playerList[targetID]->getRoleName()+QStringLiteral("回合开始"));
         playerArea->setCurrentPlayerID(targetID);
@@ -1254,8 +1255,12 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了魔弹，目前伤害为：")+QString::number(howMany)+QStringLiteral("点"));
             break;
         case network::RESPOND_REPLY_ATTACK:
-            cardID=respond->args(0);
-            targetID=respond->dst_ids(0);
+            if (respond->args(0) == 2)
+                gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("放弃应战和抵挡"));
+            if (respond->args(0) != 2)
+                cardID=respond->args(1);
+            if (respond->args(0) == 0)
+                targetID=respond->dst_ids(0);
             sourceID=respond->src_id();
 
             card=dataInterface->getCard(cardID);

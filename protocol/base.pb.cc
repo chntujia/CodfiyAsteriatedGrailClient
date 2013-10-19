@@ -302,7 +302,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SinglePlayerInfo));
   GameInfo_descriptor_ = file->message_type(12);
-  static const int GameInfo_offsets_[13] = {
+  static const int GameInfo_offsets_[14] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, player_infos_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, red_morale_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, blue_morale_),
@@ -315,6 +315,7 @@ void protobuf_AssignDesc_base_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, pile_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, discard_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, show_cards_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, show_from_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, delete_field_),
   };
   GameInfo_reflection_ =
@@ -476,25 +477,26 @@ void protobuf_AddDesc_base_2eproto() {
     "nergy\030\014 \001(\r\022\023\n\013blue_energy\030\r \001(\r\022\025\n\rcove"
     "red_count\030\016 \001(\r\022\020\n\010is_knelt\030\003 \001(\010\022\r\n\005han"
     "ds\030\017 \003(\r\022\020\n\010covereds\030\020 \003(\r\022\020\n\010max_hand\030\026"
-    " \001(\r\022\024\n\014delete_field\030\036 \003(\t\"\242\002\n\010GameInfo\022"
+    " \001(\r\022\024\n\014delete_field\030\036 \003(\t\"\265\002\n\010GameInfo\022"
     "/\n\014player_infos\030\001 \003(\0132\031.network.SinglePl"
     "ayerInfo\022\022\n\nred_morale\030\002 \001(\r\022\023\n\013blue_mor"
     "ale\030\003 \001(\r\022\017\n\007red_gem\030\004 \001(\r\022\020\n\010blue_gem\030\005"
     " \001(\r\022\023\n\013red_crystal\030\006 \001(\r\022\024\n\014blue_crysta"
     "l\030\007 \001(\r\022\021\n\tred_grail\030\010 \001(\r\022\022\n\nblue_grail"
     "\030\t \001(\r\022\014\n\004pile\030\n \001(\r\022\017\n\007discard\030\013 \001(\r\022\022\n"
-    "\nshow_cards\030\014 \003(\r\022\024\n\014delete_field\030\r \003(\t\""
-    "\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\"D\n\006Gossip\022!\n\004type\030\001"
-    " \001(\0162\023.network.GossipType\022\013\n\003txt\030\002 \001(\t\022\n"
-    "\n\002id\030\003 \001(\r*\244\002\n\013MessageType\022\021\n\rMSG_LOGIN_"
-    "REQ\020\001\022\021\n\rMSG_LOGIN_REP\020\002\022\r\n\tMSG_READY\020\003\022"
-    "\021\n\rMSG_START_REP\020\004\022\025\n\021MSG_SINGLE_PLAYER\020"
-    "\005\022\014\n\010MSG_GAME\020\006\022\014\n\010MSG_TALK\020\007\022\016\n\nMSG_GOS"
-    "SIP\020\010\022\022\n\016MSG_ENTER_ROOM\020\t\022\023\n\017MSG_SINGLE_"
-    "ROOM\020\n\022\r\n\tMSG_ROOMS\020\013\022\022\n\016MSG_LOGOUT_REQ\020"
-    "\014\022\022\n\016MSG_LOGOUT_REP\020\r\022\024\n\020MSG_REGISTER_RE"
-    "Q\020\016\022\024\n\020MSG_REGISTER_REP\020\017*0\n\nGossipType\022"
-    "\017\n\013GOSSIP_TALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 1715);
+    "\nshow_cards\030\014 \003(\r\022\021\n\tshow_from\030\r \001(\r\022\024\n\014"
+    "delete_field\030\017 \003(\t\"\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\""
+    "D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.network.Gossip"
+    "Type\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*\244\002\n\013Messag"
+    "eType\022\021\n\rMSG_LOGIN_REQ\020\001\022\021\n\rMSG_LOGIN_RE"
+    "P\020\002\022\r\n\tMSG_READY\020\003\022\021\n\rMSG_START_REP\020\004\022\025\n"
+    "\021MSG_SINGLE_PLAYER\020\005\022\014\n\010MSG_GAME\020\006\022\014\n\010MS"
+    "G_TALK\020\007\022\016\n\nMSG_GOSSIP\020\010\022\022\n\016MSG_ENTER_RO"
+    "OM\020\t\022\023\n\017MSG_SINGLE_ROOM\020\n\022\r\n\tMSG_ROOMS\020\013"
+    "\022\022\n\016MSG_LOGOUT_REQ\020\014\022\022\n\016MSG_LOGOUT_REP\020\r"
+    "\022\024\n\020MSG_REGISTER_REQ\020\016\022\024\n\020MSG_REGISTER_R"
+    "EP\020\017*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021\n\rG"
+    "OSSIP_NOTICE\020\002", 1734);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -4512,6 +4514,7 @@ const int GameInfo::kBlueGrailFieldNumber;
 const int GameInfo::kPileFieldNumber;
 const int GameInfo::kDiscardFieldNumber;
 const int GameInfo::kShowCardsFieldNumber;
+const int GameInfo::kShowFromFieldNumber;
 const int GameInfo::kDeleteFieldFieldNumber;
 #endif  // !_MSC_VER
 
@@ -4541,6 +4544,7 @@ void GameInfo::SharedCtor() {
   blue_grail_ = 0u;
   pile_ = 0u;
   discard_ = 0u;
+  show_from_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -4588,6 +4592,7 @@ void GameInfo::Clear() {
     blue_grail_ = 0u;
     pile_ = 0u;
     discard_ = 0u;
+    show_from_ = 0u;
   }
   player_infos_.Clear();
   show_cards_.Clear();
@@ -4795,12 +4800,28 @@ bool GameInfo::MergePartialFromCodedStream(
           goto handle_uninterpreted;
         }
         if (input->ExpectTag(96)) goto parse_show_cards;
-        if (input->ExpectTag(106)) goto parse_delete_field;
+        if (input->ExpectTag(104)) goto parse_show_from;
         break;
       }
 
-      // repeated string delete_field = 13;
+      // optional uint32 show_from = 13;
       case 13: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_show_from:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &show_from_)));
+          set_has_show_from();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(122)) goto parse_delete_field;
+        break;
+      }
+
+      // repeated string delete_field = 15;
+      case 15: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_delete_field:
@@ -4813,7 +4834,7 @@ bool GameInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(106)) goto parse_delete_field;
+        if (input->ExpectTag(122)) goto parse_delete_field;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -4898,13 +4919,18 @@ void GameInfo::SerializeWithCachedSizes(
       12, this->show_cards(i), output);
   }
 
-  // repeated string delete_field = 13;
+  // optional uint32 show_from = 13;
+  if (has_show_from()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(13, this->show_from(), output);
+  }
+
+  // repeated string delete_field = 15;
   for (int i = 0; i < this->delete_field_size(); i++) {
   ::google::protobuf::internal::WireFormat::VerifyUTF8String(
     this->delete_field(i).data(), this->delete_field(i).length(),
     ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      13, this->delete_field(i), output);
+      15, this->delete_field(i), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -4978,13 +5004,18 @@ void GameInfo::SerializeWithCachedSizes(
       WriteUInt32ToArray(12, this->show_cards(i), target);
   }
 
-  // repeated string delete_field = 13;
+  // optional uint32 show_from = 13;
+  if (has_show_from()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(13, this->show_from(), target);
+  }
+
+  // repeated string delete_field = 15;
   for (int i = 0; i < this->delete_field_size(); i++) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->delete_field(i).data(), this->delete_field(i).length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(13, this->delete_field(i), target);
+      WriteStringToArray(15, this->delete_field(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -5070,6 +5101,13 @@ int GameInfo::ByteSize() const {
           this->discard());
     }
 
+    // optional uint32 show_from = 13;
+    if (has_show_from()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->show_from());
+    }
+
   }
   // repeated .network.SinglePlayerInfo player_infos = 1;
   total_size += 1 * this->player_infos_size();
@@ -5089,7 +5127,7 @@ int GameInfo::ByteSize() const {
     total_size += 1 * this->show_cards_size() + data_size;
   }
 
-  // repeated string delete_field = 13;
+  // repeated string delete_field = 15;
   total_size += 1 * this->delete_field_size();
   for (int i = 0; i < this->delete_field_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -5157,6 +5195,9 @@ void GameInfo::MergeFrom(const GameInfo& from) {
     if (from.has_discard()) {
       set_discard(from.discard());
     }
+    if (from.has_show_from()) {
+      set_show_from(from.show_from());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -5192,6 +5233,7 @@ void GameInfo::Swap(GameInfo* other) {
     std::swap(pile_, other->pile_);
     std::swap(discard_, other->discard_);
     show_cards_.Swap(&other->show_cards_);
+    std::swap(show_from_, other->show_from_);
     delete_field_.Swap(&other->delete_field_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

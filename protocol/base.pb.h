@@ -1656,10 +1656,17 @@ class GameInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_show_cards();
 
-  // repeated string delete_field = 13;
+  // optional uint32 show_from = 13;
+  inline bool has_show_from() const;
+  inline void clear_show_from();
+  static const int kShowFromFieldNumber = 13;
+  inline ::google::protobuf::uint32 show_from() const;
+  inline void set_show_from(::google::protobuf::uint32 value);
+
+  // repeated string delete_field = 15;
   inline int delete_field_size() const;
   inline void clear_delete_field();
-  static const int kDeleteFieldFieldNumber = 13;
+  static const int kDeleteFieldFieldNumber = 15;
   inline const ::std::string& delete_field(int index) const;
   inline ::std::string* mutable_delete_field(int index);
   inline void set_delete_field(int index, const ::std::string& value);
@@ -1694,6 +1701,8 @@ class GameInfo : public ::google::protobuf::Message {
   inline void clear_has_pile();
   inline void set_has_discard();
   inline void clear_has_discard();
+  inline void set_has_show_from();
+  inline void clear_has_show_from();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1710,9 +1719,10 @@ class GameInfo : public ::google::protobuf::Message {
   ::google::protobuf::uint32 discard_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > show_cards_;
   ::google::protobuf::RepeatedPtrField< ::std::string> delete_field_;
+  ::google::protobuf::uint32 show_from_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(13 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(14 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -3580,7 +3590,29 @@ GameInfo::mutable_show_cards() {
   return &show_cards_;
 }
 
-// repeated string delete_field = 13;
+// optional uint32 show_from = 13;
+inline bool GameInfo::has_show_from() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void GameInfo::set_has_show_from() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void GameInfo::clear_has_show_from() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void GameInfo::clear_show_from() {
+  show_from_ = 0u;
+  clear_has_show_from();
+}
+inline ::google::protobuf::uint32 GameInfo::show_from() const {
+  return show_from_;
+}
+inline void GameInfo::set_show_from(::google::protobuf::uint32 value) {
+  set_has_show_from();
+  show_from_ = value;
+}
+
+// repeated string delete_field = 15;
 inline int GameInfo::delete_field_size() const {
   return delete_field_.size();
 }
