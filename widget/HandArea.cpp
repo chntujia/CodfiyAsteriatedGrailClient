@@ -10,6 +10,7 @@ static QRectF HandAreaRect(0, 0, 750, 150);
 HandArea::HandArea()
 {
     least=most=1;
+    selectedCards.clear();
 }
 
 QRectF HandArea::boundingRect() const
@@ -226,7 +227,7 @@ void HandArea::cleanCardItem()
         delete ptr;
     }
     cardItems.clear();
-
+    selectedCards.clear();
     adjustCards();
 }
 

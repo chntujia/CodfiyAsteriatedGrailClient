@@ -42,7 +42,7 @@ ClientUI::ClientUI(QWidget *parent) :
              this,SLOT(displayError(QAbstractSocket::SocketError)));
     connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(showMessage(uint16_t, google::protobuf::Message*)));
     connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(getCommand(uint16_t, google::protobuf::Message*)));
-    connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
+   // connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
     //merged
     connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(UserLogin()));
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
@@ -68,6 +68,9 @@ ClientUI::ClientUI(QWidget *parent) :
     ui->comboBox->addItem(QStringLiteral("蓝队"));
     ui->comboBox->addItem(QStringLiteral("红队"));
    // tcpSocket->sendMessage("60");
+
+    //FIXME: AUTO CONNECT FOR DEBUG
+    ui->connectButton->click();
 }
 
 ClientUI::~ClientUI()
@@ -146,11 +149,13 @@ void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto
 
 void ClientUI::startGame()
 {
-    QMessageBox *prop=new QMessageBox(QMessageBox::Critical,"Warning","人齐开饭，请点击Start。");
-    QSound::play("sound/Game start.wav");
-    prop->exec();
+    //FIXME: 先自动开始
+//    QMessageBox *prop=new QMessageBox(QMessageBox::Critical,"Warning",QStringLiteral("人齐开饭，请点击Start。"));
+//    QSound::play("sound/Game start.wav");
+//    prop->exec();
     ui->board->append(QStringLiteral("请开始游戏"));
     ui->startButton->setEnabled(1);
+    ui->startButton->click();
     disconnect(this);
 }
 
@@ -158,7 +163,7 @@ void ClientUI::link()
 {
     //tcpSocket->link("192.168.56.1",50000);
     //tcpSocket->link("211.152.34.94",60000);
-   // ui->connectButton->setEnabled(0);
+    ui->connectButton->setEnabled(0);
     tcpSocket->nickname=ui->nickname->text();
     tcpSocket->isRed=ui->comboBox->currentIndex()-1;
 
