@@ -1354,12 +1354,12 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         }
         if (game_info->has_red_crystal())
         {
-            red->setGem(game_info->red_crystal());
+            red->setCrystal(game_info->red_crystal());
             QSound::play("sound/Stone.wav");
         }
         if (game_info->has_blue_crystal())
         {
-            blue->setGem(game_info->blue_crystal());
+            blue->setCrystal(game_info->blue_crystal());
             QSound::play("sound/Stone.wav");
         }
         // 更新牌堆、弃牌堆
