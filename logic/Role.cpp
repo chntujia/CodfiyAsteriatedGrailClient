@@ -45,6 +45,8 @@ Role::Role(QObject *parent) :
 void Role::makeConnection()
 {
     connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(decipher(uint16_t, google::protobuf::Message*)));
+    connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
+
     connect(this,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
     connect(decisionArea,SIGNAL(cancelClicked()),this,SLOT(onCancelClicked()));
@@ -681,11 +683,10 @@ void Role::onOkClicked()
     case 3:
         respond = newRespond(network::RESPOND_DISCARD);
 
-        for(i=1;i<selectedCards.count();i++)
+        for(i=0;i<selectedCards.count();i++)
         {
             respond->add_args(selectedCards[i]->getID());
         }
-        command+=";";
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -1235,6 +1236,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         case network::RESPOND_REPLY_ATTACK:
             if (respond->args(0) == 2)
                 gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("放弃应战和抵挡"));
+                break;
             if (respond->args(0) != 2)
                 cardID=respond->args(1);
             if (respond->args(0) == 0)
