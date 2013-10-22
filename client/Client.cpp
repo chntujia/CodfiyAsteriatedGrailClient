@@ -60,6 +60,6 @@ void Client::sendMessage(uint16_t proto_type, google::protobuf::Message* proto)
     QByteArray packet;
     qint32 len = message.size();
     packet.append((char*)&len, sizeof(qint32));
-    packet.append(QString::fromStdString(message));
+    packet.append(message.c_str(), message.size());
     write(packet);
 }
