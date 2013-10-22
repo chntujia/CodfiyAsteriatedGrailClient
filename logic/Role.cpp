@@ -44,6 +44,8 @@ Role::Role(QObject *parent) :
 }
 void Role::makeConnection()
 {
+    disconnect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
+
     connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(decipher(uint16_t, google::protobuf::Message*)));
     connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
 
