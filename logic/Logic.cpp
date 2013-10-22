@@ -224,31 +224,24 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
                 roleID=player_info->role_id();
 
                 roles[targetID]=roleID;
-
-//                dataInterface->getPlayerList().at(targetID)->setRole(roleID);
-//                gui->getPlayerArea()->update();
-//                hasShownRole=true;
-
-                if(targetID==myID){
-                    dataInterface->getPlayerList().at(targetID)->setRole(roleID);
-                    setMyRole(roleID);
-                    gui->getPlayerArea()->getPlayerItem(targetID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
-                    gui->getPlayerArea()->update();
-                }               
             }
             count++;
             if(count==dataInterface->getPlayerMax())
             {
                 disconnect(getClient(),0,this,0);
 
-                    for(int i=0;i<dataInterface->getPlayerMax();i++)
-                        dataInterface->getPlayerList().at(i)->setRole(roles[i]);
-                    gui->getPlayerArea()->update();
-
+                for(int i=0;i<dataInterface->getPlayerMax();i++)
+                    dataInterface->getPlayerList().at(i)->setRole(roles[i]);
 
                 for(int i=0;i<dataInterface->getPlayerMax();i++){
                     gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
                 }
+
+                roleID = roles[myID];
+                dataInterface->getPlayerList().at(myID)->setRole(roleID);
+                setMyRole(roleID);
+                gui->getPlayerArea()->getPlayerItem(myID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
+
                 gui->getPlayerArea()->update();
             }
         }
