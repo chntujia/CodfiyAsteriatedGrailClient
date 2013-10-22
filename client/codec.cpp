@@ -14,7 +14,7 @@ bool proto_encoder(uint16_t type, google::protobuf::Message *body, string& msg)
 	msg.append((char*)&header, SIZEOF_HEADER);
 	msg.append(str);
 	
-    qDebug( "Send:\n%s", body->DebugString().c_str());
+    qDebug( "Send: size:%d, type:%d \n%s", header.len, header.type, body->DebugString().c_str());
 
 	return true;
 }
@@ -91,7 +91,7 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		return NULL;
 		break;
 	}
-    qDebug( "Recieve:\n%s", proto->DebugString().c_str());
+    qDebug( "Recieve: size:%d, type:%d \n%s", header_ptr->len, header_ptr->type, proto->DebugString().c_str());
 
     return proto;
 }

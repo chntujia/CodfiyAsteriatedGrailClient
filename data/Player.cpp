@@ -116,13 +116,13 @@ void Player::setRole(int roleID)
         tapSource="resource/tap/LiuXue.png";
         break;
     case 24:
-        roleName=("[蝶舞者]");
+        roleName=QStringLiteral("[蝶舞者]");
         tapSource="resource/tap/DiaoLing.png";
         addToken(0,new Token(QStringLiteral("蛹"),99,0));
         addToken(2,new Token(QStringLiteral("茧"),8,2));
         break;
     case 26:
-        roleName=("[魔弓]");
+        roleName=QStringLiteral("[魔弓]");
         addToken(2,new Token(QStringLiteral("充能"),8,2));
         break;
     case 28:
