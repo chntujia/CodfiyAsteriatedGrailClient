@@ -1166,6 +1166,24 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         break;
     }
 
+    case network::MSG_USE_CARD:
+    {
+        network::UseCard* use_card = (network::UseCard*)proto;
+        cardID=use_card->card_id();
+        targetID=use_card->dst_id();
+        sourceID=use_card->src_id();
+        card=dataInterface->getCard(cardID);
+
+        if(targetID!=network::PLAYER_NONE_ID && targetID!=sourceID)
+            playerArea->drawLineBetween(sourceID,targetID);
+
+        cards.clear();
+        cards<<card;
+        showArea->showCards(cards);
+
+        gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了<font color=\'orange\'>")+card->getInfo()+"</font>");
+        break;
+    }
     case network::MSG_ACTION:
     {
         network::Action* action = (network::Action*)proto;
@@ -1173,38 +1191,12 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         switch (action->action_id())
         {
         case network::ACTION_ATTACK:
-            cardID=action->args(0);
-            targetID=action->dst_ids(0);
-            sourceID=action->src_id();
-            card=dataInterface->getCard(cardID);
-
-            if(targetID!=-1 && targetID!=sourceID)
-                playerArea->drawLineBetween(sourceID,targetID);
-
-            cards.clear();
-            cards<<card;
-            showArea->showCards(cards);
-
-            gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了<font color=\'orange\'>")+card->getInfo()+"</font>");
             break;
         case network::ACTION_BUY:
             break;
         case network::ACTION_COMPOSE:
             break;
         case network::ACTION_MAGIC:
-            cardID=action->args(0);
-            targetID=action->dst_ids(0);
-            sourceID=action->src_id();
-            card=dataInterface->getCard(cardID);
-
-            if(targetID!=-1 && targetID!=sourceID)
-                playerArea->drawLineBetween(sourceID,targetID);
-
-            cards.clear();
-            cards<<card;
-            showArea->showCards(cards);
-
-            gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了<font color=\'orange\'>")+card->getInfo()+"</font>");
             break;
         case network::ACTION_REFINE:
             break;
@@ -1236,28 +1228,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了魔弹，目前伤害为：")+QString::number(howMany)+QStringLiteral("点"));
             break;
         case network::RESPOND_REPLY_ATTACK:
-            if (respond->args(0) == 2)
-                gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("放弃应战和抵挡"));
-                break;
-            if (respond->args(0) != 2)
-                cardID=respond->args(1);
-            if (respond->args(0) == 0)
-                targetID=respond->dst_ids(0);
-            sourceID=respond->src_id();
-
-            card=dataInterface->getCard(cardID);
-
-            if(targetID!=-1 && targetID!=sourceID)
-                playerArea->drawLineBetween(sourceID,targetID);
-
-            cards.clear();
-            cards<<card;
-            showArea->showCards(cards);
-
-            if(card->getElement()!="light")
-                gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了<font color=\'orange\'>")+card->getInfo()+"</font>");
-            else
-                gui->logAppend(playerList[sourceID]->getRoleName()+"使用<font color=\'orange\'>"+card->getInfo()+"</font>抵挡");
             break;
         default:
             break;

@@ -86,6 +86,14 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		proto = new Respond();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
+    case MSG_USE_CARD:
+        proto = new UseCard();
+        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+        break;
+    case MSG_HURT:
+        proto = new HurtMsg();
+        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+        break;
 	default:
 		type = 0;
 		return NULL;
