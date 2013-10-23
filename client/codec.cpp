@@ -94,6 +94,10 @@ void* proto_decoder(const char* msg, uint16_t& type)
         proto = new HurtMsg();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
+    case MSG_TURN_BEGIN:
+        proto = new TurnBegin();
+        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+        break;
 	default:
 		type = 0;
 		return NULL;
