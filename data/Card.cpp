@@ -37,19 +37,19 @@ QString Card::getElement()
 QString Card::getChineseElement()
 {
     if (element=="earth")
-        return "地";
+        return QStringLiteral("地");
     else if (element=="fire")
-        return "火";
+        return QStringLiteral("火");
     else if (element=="water")
-        return "水";
+        return QStringLiteral("水");
     else if (element=="thunder")
-        return "雷";
+        return QStringLiteral("雷");
     else if (element=="wind")
-        return "风";
+        return QStringLiteral("风");
     else if (element=="darkness")
-        return "暗";
+        return QStringLiteral("暗");
     else if (element=="light")
-        return "光";
+        return QStringLiteral("光");
 
 }
 

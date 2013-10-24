@@ -2,6 +2,7 @@
 #include <QStringList>
 #include <QSound>
 #include "data/DataInterface.h"
+#include "data/Common.h"
 #include "widget/GUI.h"
 #include "logic/Logic.h"
 
@@ -568,7 +569,7 @@ void Role::onCancelClicked()
 //ATTACKEDREPLY
     case 2:
         respond = newRespond(network::RESPOND_REPLY_ATTACK);
-        respond->add_args(2);
+        respond->add_args(RA_GIVEUP);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -582,8 +583,7 @@ void Role::onCancelClicked()
 //魔弹应答
     case 8:
         respond = newRespond(network::RESPOND_BULLET);
-        respond->add_args(2);
-        respond->add_args(100000);
+        respond->add_args(RA_GIVEUP);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -669,13 +669,13 @@ void Role::onOkClicked()
 
         if(selectedCards[0]->getType()=="attack")
         {
-            respond->add_args(0);
+            respond->add_args(RA_ATTACK);
             respond->add_args(selectedCards[0]->getID());
             respond->add_dst_ids(selectedPlayers[0]->getID());
         }
         else if(selectedCards[0]->getElement()=="light")
         {
-            respond->add_args(1);
+            respond->add_args(RA_BLOCK);
             respond->add_args(selectedCards[0]->getID());
         }
         gui->reset();
@@ -799,10 +799,12 @@ void Role::onOkClicked()
         respond = newRespond(network::RESPOND_BULLET);
         if(selectedCards[0]->getName()==QStringLiteral("圣光"))
         {
+            respond->add_args(RA_BLOCK);
             respond->add_args(selectedCards[0]->getID());
         }
         else if(selectedCards[0]->getName()==QStringLiteral("魔弹"))
         {
+            respond->add_args(RA_ATTACK);
             respond->add_args(selectedCards[0]->getID());
             respond->add_dst_ids(selectedPlayers[0]->getID());
         }
@@ -1250,6 +1252,23 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         QSound::play("sound/Hit.wav");
         break;
     }
+
+    case network::MSG_HURT:
+    {
+        network::HurtMsg* hurt_msg = (network::HurtMsg*)proto;
+        sourceID = hurt_msg->src_id();
+        targetID = hurt_msg->dst_id();
+        if(hurt_msg->type() == HARM_ATTACK){
+            msg=playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("造成了")+QString::number(hurt_msg->hurt())+QStringLiteral("点攻击伤害");
+        }
+        else{
+            msg=playerList[sourceID]->getRoleName()+QStringLiteral("的")+getCauseString(hurt_msg->cause())+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("造成了")+QString::number(hurt_msg->hurt())+QStringLiteral("点法术伤害");
+        }
+        gui->logAppend(msg);
+        playerArea->drawLineBetween(sourceID, targetID);
+        QSound::play("sound/Hurt.wav");
+        break;
+    }
     case network::MSG_GOSSIP:
     // 对话及公告
     {
@@ -1523,25 +1542,25 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     howMany=player_info->max_hand();
                     player->setHandCardsMax(howMany);
                 }
-//                // 清空数组
-//                if (player_info->delete_field_size() > 0)
-//                {
-//                    for (int j = 0; j < player_info->delete_field_size(); ++j)
-//                    {
-//                        if (strcmp(player_info->delete_field(i).c_str(), "my_ex_card_place") == 0)
-//                        {
-//                            // TODO:清空专属
-//                        }
-//                        else if (strcmp(player_info->delete_field(i).c_str(), "gain_ex_card") == 0)
-//                        {
-//                            player->cleanSpecial();
-//                        }
-//                        else if (strcmp(player_info->delete_field(i).c_str(), "basic_cards") == 0)
-//                        {
-//                            player->cleanBasicStatus();
-//                        }
-//                    }
-//                }
+                // 清空数组
+                if (player_info->delete_field_size() > 0)
+                {
+                    for (int j = 0; j < player_info->delete_field_size(); ++j)
+                    {
+                        if (strcmp(player_info->delete_field(i).c_str(), "my_ex_card_place") == 0)
+                        {
+                            // TODO:清空专属
+                        }
+                        else if (strcmp(player_info->delete_field(i).c_str(), "gain_ex_card") == 0)
+                        {
+                            player->cleanSpecial();
+                        }
+                        else if (strcmp(player_info->delete_field(i).c_str(), "basic_cards") == 0)
+                        {
+                            player->cleanBasicStatus();
+                        }
+                    }
+                }
                 playerArea->update();
             }
         }
