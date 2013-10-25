@@ -576,7 +576,7 @@ void Role::onCancelClicked()
 //虚弱
     case 7:
         respond = newRespond(network::RESPOND_WEAKEN);
-        respond->add_args(1);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -790,7 +790,7 @@ void Role::onOkClicked()
 //虚弱
     case 7:
         respond = newRespond(network::RESPOND_WEAKEN);
-        respond->add_args(0);
+        respond->add_args(1);
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -937,7 +937,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         break;
 
     case network::MSG_CMD_REQ:
-        // 应战询问
+
     {
         network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
         for (int i = 0; i < cmd_req->commands_size(); ++i)
@@ -946,6 +946,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             switch (cmd->respond_id())
             {
             case network::RESPOND_REPLY_ATTACK:
+                // 应战询问
                 hitRate=cmd->args(0);
                 cardID=cmd->args(1);
                 targetID=cmd->args(2);
@@ -1011,7 +1012,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     state=7;
                     decisionArea->enable(0);
                     decisionArea->enable(1);
-                    tipArea->setMsg(QStringLiteral("你被虚弱了，请选择跳过行动或者摸取")+arg[2]+QStringLiteral("张牌"));
+                    tipArea->setMsg(QStringLiteral("你被虚弱了，要强摸")+QString::number(cmd->args(1))+QStringLiteral("张牌么？"));
                 }
                 break;
             case network::RESPOND_HEAL:
