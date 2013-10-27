@@ -694,7 +694,7 @@ void Role::onOkClicked()
         break;
 //BUY
     case 4:
-        action = newAction(network::ACTION_BUY);
+        //action = newAction(network::ACTION_BUY);
         boxCurrentIndex=tipArea->getBoxCurrentIndex();
 
         switch(boxCurrentIndex)
@@ -727,7 +727,7 @@ void Role::onOkClicked()
         break;
 //SYNTHETIZE
     case 5:
-        action = newAction(network::ACTION_COMPOSE);
+        //action = newAction(network::ACTION_COMPOSE);
 
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
@@ -756,7 +756,7 @@ void Role::onOkClicked()
         break;
 //EXTRACT
     case 6:
-        action = newAction(network::ACTION_REFINE);
+        //action = newAction(network::ACTION_REFINE);
 
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
@@ -879,7 +879,7 @@ network::Action* Role::newAction(uint32_t action_id)
 {
     network::Action* action = new network::Action();
     action->set_src_id(myID);
-    action->set_action_id(action_id);
+    action->set_action_type(action_id);
     return action;
 }
 
@@ -1195,14 +1195,14 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         {
         case network::ACTION_ATTACK:
             break;
-        case network::ACTION_BUY:
-            break;
-        case network::ACTION_COMPOSE:
-            break;
-        case network::ACTION_MAGIC:
-            break;
-        case network::ACTION_REFINE:
-            break;
+//        case network::ACTION_BUY:
+//            break;
+//        case network::ACTION_COMPOSE:
+//            break;
+//        case network::ACTION_MAGIC:
+//            break;
+//        case network::ACTION_REFINE:
+//            break;
         case network::ACTION_NONE:
             targetID=action->src_id();
             msg=playerList[targetID]->getRoleName()+QStringLiteral("宣告无法行动");

@@ -381,7 +381,7 @@ void MaoXian::onOkClicked()
         break;
 //购买
     case 1205:
-        action = newAction(network::ACTION_BUY);
+//        action = newAction(network::ACTION_BUY);
         int stone=dataInterface->getMyTeam()->getEnergy();
         if(stone<4)
         {
