@@ -694,7 +694,8 @@ void Role::onOkClicked()
         break;
 //BUY
     case 4:
-        //action = newAction(network::ACTION_BUY);
+        action = newAction(network::ACTION_SPECIAL);
+        action->set_action_id(SPECIAL_BUY);
         boxCurrentIndex=tipArea->getBoxCurrentIndex();
 
         switch(boxCurrentIndex)
@@ -727,8 +728,8 @@ void Role::onOkClicked()
         break;
 //SYNTHETIZE
     case 5:
-        //action = newAction(network::ACTION_COMPOSE);
-
+        action = newAction(network::ACTION_SPECIAL);
+        action->set_action_id(SPECIAL_SYNTHESIZE);
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
         {
@@ -756,8 +757,8 @@ void Role::onOkClicked()
         break;
 //EXTRACT
     case 6:
-        //action = newAction(network::ACTION_REFINE);
-
+        action = newAction(network::ACTION_SPECIAL);
+        action->set_action_id(SPECIAL_EXTRACT);
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
         {
@@ -1191,18 +1192,21 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     {
         network::Action* action = (network::Action*)proto;
 
-        switch (action->action_id())
+        switch (action->action_type())
         {
         case network::ACTION_ATTACK:
             break;
-//        case network::ACTION_BUY:
-//            break;
-//        case network::ACTION_COMPOSE:
-//            break;
-//        case network::ACTION_MAGIC:
-//            break;
-//        case network::ACTION_REFINE:
-//            break;
+        case network::ACTION_SPECIAL:
+            targetID = action->src_id();
+            msg = playerList[targetID]->getRoleName();
+            if(action->action_id() == SPECIAL_BUY)
+                msg += QStringLiteral("执行购买");
+            else if(action->action_id() == SPECIAL_SYNTHESIZE)
+                msg += QStringLiteral("执行合成");
+            else if(action->action_id() == SPECIAL_EXTRACT)
+                msg += QStringLiteral("执行提炼");
+            gui->logAppend(msg);
+            break;
         case network::ACTION_NONE:
             targetID=action->src_id();
             msg=playerList[targetID]->getRoleName()+QStringLiteral("宣告无法行动");

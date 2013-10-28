@@ -98,8 +98,13 @@ void* proto_decoder(const char* msg, uint16_t& type)
         proto = new TurnBegin();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
+    case MSG_ACTION:
+        proto = new Action();
+        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+        break;
 	default:
 		type = 0;
+        qDebug("codec.cpp:: Cannot find matched type");
 		return NULL;
 		break;
 	}
