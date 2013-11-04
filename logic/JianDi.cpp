@@ -81,12 +81,13 @@ void JianDi::EMoZhiHun()
 
 void JianDi::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
-    if(skill==QStringLiteral("剑魂守护"))
-        JianHunShouHu(command.split(';').at(3).toInt());
-    else if(skill==QStringLiteral("剑气斩"))
-        JianQiZhan(command.split(';').at(3).toInt());
-    else if(skill==QStringLiteral("天使之魂"))
+    //Role::askForSkill(skill);
+//    if(skill==QStringLiteral("剑魂守护"))
+//        JianHunShouHu(command.split(';').at(3).toInt());
+//    else if(skill==QStringLiteral("剑气斩"))
+//        JianQiZhan(command.split(';').at(3).toInt());
+    //else
+    if(skill==QStringLiteral("天使之魂"))
         TianShiZhiHun();
     else if(skill==QStringLiteral("恶魔之魂"))
         EMoZhiHun();
@@ -95,7 +96,7 @@ void JianDi::askForSkill(QString skill)
 
 void JianDi::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(usedAttack && dataInterface->getMyself()->getEnergy()>0)
         tipArea->addBoxItem(QStringLiteral("1.不屈意志"));
 }

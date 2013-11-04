@@ -163,7 +163,7 @@ void MoJian::onCancelClicked()
 }
 void MoJian::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("暗影凝聚"))
         AnYingNingJu();
     else if(skill==QStringLiteral("黑暗震颤"))
@@ -172,7 +172,7 @@ void MoJian::askForSkill(QString skill)
 
 void MoJian::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(usedAttack&&!onceUsed)
         tipArea->addBoxItem(QStringLiteral("1.修罗连斩"));
 }

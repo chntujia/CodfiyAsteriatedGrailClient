@@ -430,7 +430,7 @@ void DieWu::coverCardAnalyse()
 
 void DieWu::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("毒粉"))
         DuFen();
     else if(skill==QStringLiteral("朝圣"))

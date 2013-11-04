@@ -260,7 +260,7 @@ void YuanSu::onCancelClicked()
 }
 void YuanSu::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(earth)
         tipArea->addBoxItem(QStringLiteral("1.法术行动（陨石）"));
     if(ignite)

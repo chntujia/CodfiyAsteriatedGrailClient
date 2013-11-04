@@ -150,7 +150,7 @@ void YongZhe::turnBegin()
 
 void YongZhe::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("怒吼"))
         NuHou();
     else if(skill==QStringLiteral("明镜止水"))
@@ -163,7 +163,7 @@ void YongZhe::askForSkill(QString skill)
 
 void YongZhe::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(jinDuanZhiLi>0)
         tipArea->addBoxItem(QStringLiteral("1.攻击行动（精疲力竭）"));
 }

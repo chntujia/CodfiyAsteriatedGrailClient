@@ -414,11 +414,11 @@ void TianShi::onUnready()
 }
 void TianShi::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("天使之歌"))
         TianShiZhiGe1();
-    else if(skill==QStringLiteral("神之庇护"))
-        ShenZhiBiHu(command.split(';').at(3).toInt());
+//    else if(skill==QStringLiteral("神之庇护"))
+//        ShenZhiBiHu(command.split(';').at(3).toInt());
     else if(skill==QStringLiteral("天使羁绊"))
         TianShiJiBan();
 }

@@ -33,7 +33,7 @@ void KuangZhan::XueYingKuangDao()
 
 void KuangZhan::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("撕裂"))
         SiLie();
     else if(skill==QStringLiteral("血腥咆哮"))

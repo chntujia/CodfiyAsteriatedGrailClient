@@ -238,7 +238,7 @@ void HongLian::attackOrMagic()
 
 void HongLian::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("腥红圣约"))
         XingHongShengYue();
     else if(skill==QStringLiteral("杀戮盛宴"))
@@ -249,7 +249,7 @@ void HongLian::askForSkill(QString skill)
 
 void HongLian::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     Player* myself=dataInterface->getMyself();
     if(myself->getEnergy()>0 && myself->getTap())
         tipArea->addBoxItem(QStringLiteral("1.戒骄戒躁"));

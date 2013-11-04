@@ -254,7 +254,7 @@ void WuNv::onCancelClicked()
 
 void WuNv::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("血之哀伤"))
         XueZhiAiShang();
     else if(skill==QStringLiteral("血之诅咒弃牌"))

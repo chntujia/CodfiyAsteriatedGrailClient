@@ -17,18 +17,17 @@ public:
     virtual void attackAction();
     virtual void magicAction();
     virtual void attackOrMagic();
-    virtual void additionalAction();
+    virtual void additionalAction(Command *cmd);
     virtual void attacked(QString element,int hitRate);
     virtual void moDaned(int nextID, int sourceID, int howMany);
     virtual void cure(int cross,int harmPoint,int type, int crossAvailable);
-    virtual void askForSkill(QString skill);
+    virtual void askForSkill(network::Command* cmd);
     void setAttackTarget();
     void drop(int howMany);
     void dropCover(int howMany);
     void unactionalCheck();
     void TianShiZhuFu(int n);
     void MoBaoChongJi();
-    void WeiLi();
     void ChongYing(int color);
     network::Action* newAction(uint32_t action_id);
     network::Respond* newRespond(uint32_t respond_id);
@@ -67,9 +66,10 @@ protected:
     TeamArea*teamArea;
     ShowArea* showArea;
     bool usedAttack,usedMagic,usedSpecial,start;
-    QString command;
     Role* myRole;
     Team*blue,*red;
+    google::protobuf::Message* proto;
+    network::Command* cmd;
 };
 
 

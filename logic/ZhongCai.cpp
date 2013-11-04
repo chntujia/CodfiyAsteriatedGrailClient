@@ -206,7 +206,7 @@ void ZhongCai::onCancelClicked()
 }
 void ZhongCai::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("仪式中断"))
         YiShiZhongDuan();
     else if(skill==QStringLiteral("仲裁仪式"))

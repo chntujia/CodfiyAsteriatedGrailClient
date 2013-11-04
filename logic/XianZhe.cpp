@@ -255,7 +255,7 @@ void XianZhe::onCancelClicked()
 
 void XianZhe::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("法术反弹"))
         FaShuFanTan1();
 }

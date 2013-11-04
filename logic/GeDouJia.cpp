@@ -404,7 +404,7 @@ void GeDouJia::onCancelClicked()
 
 void GeDouJia::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("苍炎蓄力"))
         CangYanXuLi();
     else if(skill==QStringLiteral("念弹"))

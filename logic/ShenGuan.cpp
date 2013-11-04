@@ -304,7 +304,7 @@ void ShenGuan::onCancelClicked()
 
 void ShenGuan::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("神圣启示"))
         ShenShengQiShi();
     else if(skill==QStringLiteral("神圣契约"))

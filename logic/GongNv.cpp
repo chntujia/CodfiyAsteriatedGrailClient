@@ -30,7 +30,7 @@ void GongNv::normal()
 
 void GongNv::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("贯穿射击"))
         GuanChuanSheJi();
     else if(skill==QStringLiteral("精准射击"))
@@ -39,7 +39,7 @@ void GongNv::askForSkill(QString skill)
 
 void GongNv::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(JuJiAdditon)
         tipArea->addBoxItem(QStringLiteral("1.攻击行动（狙击）"));
 }

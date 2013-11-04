@@ -298,7 +298,7 @@ void LingFu::baiGuiYeXing4()
 
 void LingFu::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("念咒"))
         nianZhou();
     else if(skill==QStringLiteral("灵力崩解"))

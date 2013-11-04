@@ -327,7 +327,7 @@ void ShengNv::onCancelClicked()
 
 void ShengNv::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("冰霜祷言"))
         BingShuangDaoYan();
     else if(skill==QStringLiteral("怜悯"))
@@ -336,7 +336,7 @@ void ShengNv::askForSkill(QString skill)
 
 void ShengNv::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(ShengLiaoAddition)
         tipArea->addBoxItem(QStringLiteral("1.攻击或法术行动（圣疗）"));
 }

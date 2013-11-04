@@ -48,7 +48,7 @@ void Role::makeConnection()
     disconnect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
 
     connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(decipher(uint16_t, google::protobuf::Message*)));
-    connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
+    //connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
 
     connect(this,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
@@ -189,8 +189,14 @@ void Role::exchangeCards()
 
 void Role::resign()
 {
-    network::Action* action = newAction(0);
-    emit sendCommand(network::MSG_ACTION, action);
+    if(state == 42){
+        network::Respond *respond = newRespond(ACTION_NONE);
+        emit sendCommand(network::MSG_RESPOND, respond);
+    }
+    else{
+        network::Action* action = newAction(ACTION_NONE);
+        emit sendCommand(network::MSG_ACTION, action);
+    }
     gui->reset();
 }
 
@@ -472,12 +478,13 @@ void Role::turnBegin()
     QSound::play("sound/Warning.wav");
 }
 
-void Role::additionalAction(){
+void Role::additionalAction(network::Command* cmd){
     gui->reset();
-    tipArea->setMsg(QStringLiteral("是否执行额外行动？"));
-    if(dataInterface->getMyself()->checkBasicStatus(5))
-        gui->getTipArea()->addBoxItem("0.迅捷赐福");
     state=42;
+    tipArea->setMsg(QStringLiteral("是否执行额外行动？"));
+    for(int i = 0; i < cmd->args_size(); i++){
+        tipArea->addBoxItem(getCauseString(cmd->args(i)));
+    }
     tipArea->showBox();
     decisionArea->enable(0);
     decisionArea->enable(3);
@@ -485,11 +492,13 @@ void Role::additionalAction(){
     QSound::play("sound/Warning.wav");
 }
 
-void Role::askForSkill(QString skill)
+void Role::askForSkill(Command *cmd)
 {
     gui->reset();
-    if(skill==QStringLiteral("威力赐福"))
-        WeiLi();
+    state=36;
+    tipArea->setMsg(QStringLiteral("是否发动") + getCauseString(cmd->respond_id()) + "?");
+    decisionArea->enable(0);
+    decisionArea->enable(1);
     gui->alert();
     QSound::play("sound/Warning.wav");
 }
@@ -515,14 +524,6 @@ void Role::MoBaoChongJi()
     decisionArea->enable(1);
     gui->alert();
     QSound::play("sound/Warning.wav");
-}
-
-void Role::WeiLi()
-{
-    state=36;
-    tipArea->setMsg(QStringLiteral("是否发动威力赐福？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
 }
 
 void Role::ChongYing(int color)
@@ -596,7 +597,8 @@ void Role::onCancelClicked()
         break;
 //简单的技能发动询问
     case 36:
-        respond = newRespond(36);
+        respond = newRespond(cmd->respond_id());
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -822,20 +824,17 @@ void Role::onOkClicked()
         break;
 //简单的技能发动询问
     case 36:
-        respond = newRespond(36);
+        respond = newRespond(cmd->respond_id());
         respond->add_args(1);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-//额外行动（迅捷）
+//额外行动
     case 42:
-        if(tipArea->getBoxCurrentText().at(0).digitValue()==0)
-        {
-            respond = newRespond(1607);
-            respond->add_args(1);
-            emit sendCommand(network::MSG_RESPOND, respond);
-            myRole->attackAction();
-        }
+        respond = newRespond(RESPOND_ADDITIONAL_ACTION);
+        respond->add_args(cmd->args(tipArea->getBoxCurrentIndex()));
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
         break;
 //弃盖牌
     case 50:
@@ -894,22 +893,16 @@ network::Respond* Role::newRespond(uint32_t respond_id)
 
 void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 {
-    this->command=command;
-    QStringList arg=command.split(';');
-    QStringList cardIDList;
-    int targetID,targetArea;
-    int sourceArea;
+    this->proto = proto;
+    int targetID;
     int cardID;
     int hitRate;
     int i,howMany;
-    int team,gem,crystal;
-    int dir,show;
 
     Card*card;
     Player*player;    
     QList<Card*> cards;
     QString msg;
-    QString flag;
     QString cardName;
 
 
@@ -943,7 +936,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
         for (int i = 0; i < cmd_req->commands_size(); ++i)
         {
-            network::Command* cmd = (network::Command*)&(cmd_req->commands(i));
+            cmd = (network::Command*)&(cmd_req->commands(i));
             switch (cmd->respond_id())
             {
             case network::RESPOND_REPLY_ATTACK:
@@ -1100,6 +1093,16 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     gui->setEnable(1);
                     myRole->magicAction();
                 }
+                break;
+            case network::RESPOND_ADDITIONAL_ACTION:
+                targetID = cmd->src_id();
+                msg=QStringLiteral("等待")+playerList[targetID]->getRoleName()+QStringLiteral("额外行动响应");
+                gui->logAppend(msg);
+                if(targetID == myID){
+                    gui->setEnable(1);
+                    additionalAction(cmd);
+                }
+                break;
             case 750:
                 // 天使祝福
                 targetID=cmd->args(0);
@@ -1154,16 +1157,18 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             }
             default:
                 // 其他技能
-                msg=QStringLiteral("等待")+playerList[targetID]->getRoleName()+QStringLiteral("的技能响应");
+                targetID = cmd->src_id();
+                msg = QStringLiteral("等待") + playerList[targetID]->getRoleName() + getCauseString(cmd->respond_id()) + QStringLiteral("响应");
                 gui->logAppend(msg);
+
                 if(targetID==myID)
                 {
                     gui->setEnable(1);
-                    // TODO:编号到技能名称转换或改成使用技能编号
-                    //myRole->askForSkill(cmd->respond_id);
+                    myRole->askForSkill(cmd);
                 }
-                else
+                else{
                     gui->setEnable(0);
+                }
                 break;
             }
         }

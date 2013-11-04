@@ -181,7 +181,7 @@ void SiLing::onCancelClicked()
 
 void SiLing::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("不朽"))
         BuXiu();
 }

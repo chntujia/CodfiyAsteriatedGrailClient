@@ -236,7 +236,7 @@ void ShengQiang::onCancelClicked()
 }
 void ShengQiang::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("天枪"))
         TianQiang();
     else if(skill==QStringLiteral("地枪"))
@@ -244,7 +244,7 @@ void ShengQiang::askForSkill(QString skill)
 }
 void ShengQiang::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(HuiYaoAddition)
         tipArea->addBoxItem(QStringLiteral("1.攻击行动(辉耀)"));
     if(ChengJieAddition)

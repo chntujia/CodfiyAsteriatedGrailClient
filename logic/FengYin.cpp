@@ -128,7 +128,7 @@ void FengYin::onUnready()
 
 void FengYin::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(usedMagic)
         tipArea->addBoxItem(QStringLiteral("1.法术激荡"));
 }

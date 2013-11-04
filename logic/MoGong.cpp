@@ -388,7 +388,7 @@ void MoGong::onCancelClicked()
 
 void MoGong::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(usedAttack && !MoGuanChongJiUsed && dataInterface->getCoverCards().size()>0)
         tipArea->addBoxItem(QStringLiteral("1.多重射击"));
 }
@@ -403,7 +403,7 @@ void MoGong::turnBegin()
 
 void MoGong::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("充能/魔眼"))
         ChongNengMoYan1();
     else if(skill==QStringLiteral("魔贯冲击命中"))

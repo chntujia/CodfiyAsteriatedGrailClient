@@ -292,13 +292,13 @@ void QiDao::onCancelClicked()
 }
 void QiDao::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("祈祷"))
         QiDong();
 }
 void QiDao::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(usedMagic && dataInterface->getMyself()->getEnergy()>0 && !onceUsed)
         tipArea->addBoxItem(QStringLiteral("1.法力潮汐"));
 }

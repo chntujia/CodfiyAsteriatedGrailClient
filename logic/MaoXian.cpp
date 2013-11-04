@@ -442,7 +442,7 @@ void MaoXian::onCancelClicked()
 
 void MaoXian::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(TeShuJiaGongAddition)
         tipArea->addBoxItem(QStringLiteral("1.攻击或法术行动（特殊加工）"));
     if(TouTianHuanRiAddition)

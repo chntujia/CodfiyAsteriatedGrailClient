@@ -331,11 +331,11 @@ void LingHun::onCancelClicked()
 
 void LingHun::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("灵魂转换"))
         LingHunZhuanHuan();
-    else if(skill==QStringLiteral("灵魂链接"))
-        LingHunLianJie(command.split(';').at(3).toInt());
+//    else if(skill==QStringLiteral("灵魂链接"))
+//        LingHunLianJie(command.split(';').at(3).toInt());
     else if(skill==QStringLiteral("灵魂增幅"))
         LingHunZengFu();
 }

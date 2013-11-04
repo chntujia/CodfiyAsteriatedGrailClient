@@ -44,7 +44,7 @@ void AnSha::QianXing()
 
 void AnSha::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("水影"))
         ShuiYing();
     else if(skill==QStringLiteral("潜行"))

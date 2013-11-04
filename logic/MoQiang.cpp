@@ -165,7 +165,7 @@ void MoQiang::turnBegin()
 
 void MoQiang::additionalAction()
 {
-    Role::additionalAction();
+    //Role::additionalAction();
     if(chongYingUsed)
         tipArea->addBoxItem("1.额外攻击行动（充盈）");
 }
@@ -184,11 +184,11 @@ void MoQiang::attacked(QString element, int hitRate)
 
 void MoQiang::askForSkill(QString skill)
 {
-    Role::askForSkill(skill);
+    //Role::askForSkill(skill);
     if(skill==QStringLiteral("暗之解放"))
         AnZhiJieFang();
-    else if(skill==QStringLiteral("幻影星辰"))
-        HuanYingXingChen(command.split(';').at(3).toInt());
+//    else if(skill==QStringLiteral("幻影星辰"))
+//        HuanYingXingChen(command.split(';').at(3).toInt());
     else if(skill==QStringLiteral("暗之壁障"))
         AnZhiBiZhang();
     else if(skill==QStringLiteral("漆黑之枪"))
