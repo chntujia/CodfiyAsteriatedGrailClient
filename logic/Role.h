@@ -68,6 +68,7 @@ protected:
     bool usedAttack,usedMagic,usedSpecial,start;
     Role* myRole;
     Team*blue,*red;
+    int chosenAction;
     google::protobuf::Message* proto;
     network::Command* cmd;
 };

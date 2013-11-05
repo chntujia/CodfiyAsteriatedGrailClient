@@ -7,6 +7,7 @@ class JianSheng : public Role
 public:
     JianSheng();
     void LianXuJi();
+    void attackAction();
 };
 
 #endif // JIANSHENG_H

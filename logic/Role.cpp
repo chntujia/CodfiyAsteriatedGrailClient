@@ -1,8 +1,8 @@
 ﻿#include "Role.h"
 #include <QStringList>
 #include <QSound>
-#include "data/DataInterface.h"
 #include "data/Common.h"
+#include "data/DataInterface.h"
 #include "widget/GUI.h"
 #include "logic/Logic.h"
 
@@ -190,7 +190,8 @@ void Role::exchangeCards()
 void Role::resign()
 {
     if(state == 42){
-        network::Respond *respond = newRespond(ACTION_NONE);
+        network::Respond *respond = newRespond(RESPOND_ADDITIONAL_ACTION);
+        respond->add_args(ACTION_NONE);
         emit sendCommand(network::MSG_RESPOND, respond);
     }
     else{
@@ -832,7 +833,8 @@ void Role::onOkClicked()
 //额外行动
     case 42:
         respond = newRespond(RESPOND_ADDITIONAL_ACTION);
-        respond->add_args(cmd->args(tipArea->getBoxCurrentIndex()));
+        chosenAction = cmd->args(tipArea->getBoxCurrentIndex());
+        respond->add_args(chosenAction);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -1042,7 +1044,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 break;
             }
             case network::ACTION_ANY:
-                targetID = cmd->args(0);
+                targetID = cmd->src_id();
                 if(targetID!=myID)
                 {
                     isMyTurn=0;
@@ -1056,6 +1058,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 }
                 break;
             case network::ACTION_ATTACK_MAGIC:
+                targetID = cmd->src_id();
                 if(targetID!=myID)
                 {
                     isMyTurn=0;
@@ -1069,6 +1072,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 }
                 break;
             case network::ACTION_ATTACK:
+                targetID = cmd->src_id();
                 if(targetID!=myID)
                 {
                     isMyTurn=0;
@@ -1082,6 +1086,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 }
                 break;
             case network::ACTION_MAGIC:
+                targetID = cmd->src_id();
                 if(targetID!=myID)
                 {
                     isMyTurn=0;
@@ -1092,6 +1097,20 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 {
                     gui->setEnable(1);
                     myRole->magicAction();
+                }
+                break;
+            case network::ACTION_NONE:
+                targetID = cmd->src_id();
+                if(targetID!=myID)
+                {
+                    isMyTurn=0;
+                    gui->setEnable(0);
+                    actionFlag=-1;
+                }
+                else
+                {
+                    gui->setEnable(1);
+                    decisionArea->enable(3);
                 }
                 break;
             case network::RESPOND_ADDITIONAL_ACTION:
@@ -1277,6 +1296,19 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         gui->logAppend(msg);
         playerArea->drawLineBetween(sourceID, targetID);
         QSound::play("sound/Hurt.wav");
+        break;
+    }
+    case network::MSG_SKILL:
+    {
+        network::SkillMsg* skill = (network::SkillMsg*)proto;
+        sourceID = skill->src_id();
+        msg = playerList[sourceID]->getRoleName()+QStringLiteral("对");
+        for(i = 0; i < skill->dst_ids_size()-1; i++){
+            targetID = skill->dst_ids(i);
+            msg += playerList[targetID]->getRoleName()+"、";
+        }
+        msg += playerList[skill->dst_ids(i)]->getRoleName() + QStringLiteral("发动") + getCauseString(skill->skill_id());
+        gui->logAppend(msg);
         break;
     }
     case network::MSG_GOSSIP:

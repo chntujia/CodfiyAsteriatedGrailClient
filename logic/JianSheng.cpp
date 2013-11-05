@@ -1,4 +1,11 @@
 ﻿#include "JianSheng.h"
+enum CAUSE{
+    JI_FENG_JI = 101,
+    LIE_FENG_JI = 102,
+    LIAN_XU_JI = 103,
+    SHENG_JIAN = 104,
+    JIAN_YING = 105
+};
 
 JianSheng::JianSheng()
 {
@@ -16,4 +23,14 @@ void JianSheng::LianXuJi()
     handArea->disableMagic();
     playerArea->setQuota(1);
     decisionArea->enable(3);
+}
+
+void JianSheng::attackAction()
+{
+    if(LIAN_XU_JI == chosenAction){
+        LianXuJi();
+    }
+    else{
+        Role::attackAction();
+    }
 }
