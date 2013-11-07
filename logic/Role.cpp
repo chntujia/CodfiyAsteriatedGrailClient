@@ -45,10 +45,7 @@ Role::Role(QObject *parent) :
 }
 void Role::makeConnection()
 {
-    disconnect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
-
     connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(decipher(uint16_t, google::protobuf::Message*)));
-    //connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(delete_proto(uint16_t, google::protobuf::Message*)));
 
     connect(this,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
@@ -598,7 +595,7 @@ void Role::onCancelClicked()
         break;
 //简单的技能发动询问
     case 36:
-        respond = newRespond(cmd->respond_id());
+        respond = newRespond(skillCmd.respond_id());
         respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
@@ -825,7 +822,7 @@ void Role::onOkClicked()
         break;
 //简单的技能发动询问
     case 36:
-        respond = newRespond(cmd->respond_id());
+        respond = newRespond(skillCmd.respond_id());
         respond->add_args(1);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
@@ -833,7 +830,7 @@ void Role::onOkClicked()
 //额外行动
     case 42:
         respond = newRespond(RESPOND_ADDITIONAL_ACTION);
-        chosenAction = cmd->args(tipArea->getBoxCurrentIndex());
+        chosenAction = skillCmd.args(tipArea->getBoxCurrentIndex());
         respond->add_args(chosenAction);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
@@ -895,7 +892,6 @@ network::Respond* Role::newRespond(uint32_t respond_id)
 
 void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 {
-    this->proto = proto;
     int targetID;
     int cardID;
     int hitRate;
@@ -938,7 +934,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
         for (int i = 0; i < cmd_req->commands_size(); ++i)
         {
-            cmd = (network::Command*)&(cmd_req->commands(i));
+            network::Command*cmd = (network::Command*)&(cmd_req->commands(i));
             switch (cmd->respond_id())
             {
             case network::RESPOND_REPLY_ATTACK:
@@ -1115,6 +1111,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 break;
             case network::RESPOND_ADDITIONAL_ACTION:
                 targetID = cmd->src_id();
+                skillCmd.CopyFrom(*cmd);
                 msg=QStringLiteral("等待")+playerList[targetID]->getRoleName()+QStringLiteral("额外行动响应");
                 gui->logAppend(msg);
                 if(targetID == myID){
@@ -1183,6 +1180,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 if(targetID==myID)
                 {
                     gui->setEnable(1);
+                    skillCmd.CopyFrom(*cmd);
                     myRole->askForSkill(cmd);
                 }
                 else{
@@ -1610,6 +1608,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     default:
         break;
     }
+    delete proto;
 }
 
 

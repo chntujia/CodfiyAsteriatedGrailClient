@@ -332,10 +332,6 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
             gui->chatAppend(arg[1].toInt(),arg[2]);
         break;
     }
-}
-
-void Logic::delete_proto(uint16_t type, google::protobuf::Message *proto)
-{
     delete proto;
 }
 

@@ -19,7 +19,6 @@ signals:
 public slots:
     void onOkClicked();
     void getCommand(uint16_t proto_type, google::protobuf::Message* proto);
-    void delete_proto(uint16_t type, google::protobuf::Message *proto);
     void roleAnalyse();
 private:
     Client* socket;

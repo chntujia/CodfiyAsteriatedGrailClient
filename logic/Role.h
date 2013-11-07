@@ -69,8 +69,8 @@ protected:
     Role* myRole;
     Team*blue,*red;
     int chosenAction;
-    google::protobuf::Message* proto;
-    network::Command* cmd;
+	//FIXME: 暂时只保存了额外行动跟响应类技能时的CMD
+    network::Command skillCmd;
 };
 
 
