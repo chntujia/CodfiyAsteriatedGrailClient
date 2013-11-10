@@ -27,6 +27,7 @@ void JianSheng::LianXuJi()
 
 void JianSheng::attackAction()
 {
+    //若是连续技的额外行动，则只能用风系
     if(LIAN_XU_JI == chosenAction){
         LianXuJi();
     }

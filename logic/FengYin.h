@@ -7,7 +7,6 @@ class FengYin : public Role
 public:
     FengYin();
     void normal();
-    void additionalAction();
 public slots:
     void onOkClicked();
     void onCancelClicked();
@@ -18,7 +17,7 @@ public slots:
     void FengYinPoSui();
     void onUnready();
 private:
-    bool usedGem;
+    int getMapping(QString element);
 };
 
 #endif // FENGYIN_H

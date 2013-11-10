@@ -874,11 +874,20 @@ void Role::onOkClicked()
     }
 }
 
-network::Action* Role::newAction(uint32_t action_id)
+network::Action* Role::newAction(uint32_t action_type)
 {
     network::Action* action = new network::Action();
     action->set_src_id(myID);
-    action->set_action_type(action_id);
+    action->set_action_type(action_type);
+    return action;
+}
+
+network::Action* Role::newAction(uint32_t action_type, uint32_t action_id)
+{
+    network::Action* action = new network::Action();
+    action->set_src_id(myID);
+    action->set_action_type(action_type);
+    action->set_action_id(action_id);
     return action;
 }
 
@@ -1501,16 +1510,12 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     QSound::play("sound/Cure.wav");
                 }
                 // 更新专属
-                if (player_info->my_ex_card_place_size() > 0)
-                {
-                    // TODO:更新专属
-                }
-                if (player_info->gain_ex_card_size() > 0)
+                if (player_info->ex_cards_size() > 0)
                 {
                     player->cleanSpecial();
-                    for (int j = 0; j < player_info->gain_ex_card_size(); ++j)
+                    for (int j = 0; j < player_info->ex_cards_size(); ++j)
                     {
-                        player->setSpecial(player_info->gain_ex_card(j), 1);
+                        player->setSpecial(player_info->ex_cards(j), 1);
                     }
                 }
                 // 更新基础效果
@@ -1587,11 +1592,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 {
                     for (int j = 0; j < player_info->delete_field_size(); ++j)
                     {
-                        if (strcmp(player_info->delete_field(i).c_str(), "my_ex_card_place") == 0)
-                        {
-                            // TODO:清空专属
-                        }
-                        else if (strcmp(player_info->delete_field(i).c_str(), "gain_ex_card") == 0)
+                        if (strcmp(player_info->delete_field(i).c_str(), "ex_cards") == 0)
                         {
                             player->cleanSpecial();
                         }

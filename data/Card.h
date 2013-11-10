@@ -2,6 +2,14 @@
 #define CARD_H
 #include <QList>
 #include <QStringList>
+#define EXCLUSIVE_NUM 4
+enum Exclusive{
+    EX_WU_XI_SHU_FU,
+    EX_TIAO_XIN,
+    EX_LING_HUN_LIAN_JIE,
+    EX_TONG_SHENG_GONG_SI
+};
+
 class Card
 {
 public:

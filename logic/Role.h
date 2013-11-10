@@ -29,7 +29,8 @@ public:
     void TianShiZhuFu(int n);
     void MoBaoChongJi();
     void ChongYing(int color);
-    network::Action* newAction(uint32_t action_id);
+    network::Action* newAction(uint32_t action_type);
+    network::Action* newAction(uint32_t action_type, uint32_t action_id);
     network::Respond* newRespond(uint32_t respond_id);
 signals:
     void sendCommand(uint16_t proto_type, google::protobuf::Message* proto);

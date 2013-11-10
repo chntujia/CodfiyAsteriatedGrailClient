@@ -1,11 +1,22 @@
 ﻿#include "FengYin.h"
 
+enum CAUSE{
+    FENG_ZHI_FENG_YIN = 401,
+    SHUI_ZHI_FENG_YIN = 402,
+    HUO_ZHI_FENG_YIN = 403,
+    DI_ZHI_FENG_YIN = 404,
+    LEI_ZHI_FENG_YIN = 405,
+    FA_SHU_JI_DONG = 406,
+    WU_XI_SHU_FU = 407,
+    FENG_YIN_PO_SUI = 408
+};
+
 FengYin::FengYin()
 {
     makeConnection();
-setMyRole(this);
+    setMyRole(this);
     connect(playerArea,SIGNAL(playerUnready()),this,SLOT(onUnready()));
-
+//新建技能按钮
     Button *fengYinFaShu,*wuXiShuFu,*fengYinPoSui;
     fengYinFaShu=new Button(3,QStringLiteral("封印法术"));
     buttonArea->addButton(fengYinFaShu);
@@ -20,6 +31,7 @@ setMyRole(this);
     connect(fengYinPoSui,SIGNAL(buttonSelected(int)),this,SLOT(FengYinPoSui()));
 }
 
+//用来检测当前可以发动的技能，几乎都是法术技能
 void FengYin::normal()
 {
     Role::normal();
@@ -43,7 +55,8 @@ void FengYin::normal()
 
 void FengYin::FengYinFaShu()
 {
-    state=401;
+    //反正都一样，就都叫风封印
+    state = FENG_ZHI_FENG_YIN;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -60,12 +73,7 @@ void FengYin::FengYinFaShu()
 
 void FengYin::WuXiShuFu()
 {
-    state=402;
-    int gem,crystal;
-    Player*myself=dataInterface->getMyself();
-
-    gem=myself->getGem();
-    crystal=myself->getCrystal();
+    state = WU_XI_SHU_FU;
 
     handArea->reset();
     playerArea->reset();
@@ -75,25 +83,12 @@ void FengYin::WuXiShuFu()
     decisionArea->disable(0);
     playerArea->setQuota(1);
     playerArea->enableEnemy();
-
-    tipArea->setMsg(QStringLiteral("请选择使用的能量："));
-    if(crystal>=1)
-        tipArea->addBoxItem(QStringLiteral("1.水晶"));
-    if(gem>=1)
-        tipArea->addBoxItem(QStringLiteral("2.宝石"));
-
-    tipArea->showBox();
 }
 
 void FengYin::FengYinPoSui()
 {
-    state=403;
-    int gem,crystal;
-    Player*myself=dataInterface->getMyself();
-    QList<Player*>players=dataInterface->getPlayerList();
-
-    gem=myself->getGem();
-    crystal=myself->getCrystal();
+    state = FENG_YIN_PO_SUI;
+    QList<Player*>players = dataInterface->getPlayerList();
 
     handArea->reset();
     playerArea->reset();
@@ -102,65 +97,55 @@ void FengYin::FengYinPoSui()
     decisionArea->enable(1);
     decisionArea->disable(0);
     playerArea->setQuota(1);
-    for(int i=0;i<players.size();i++)
-        if(players[i]->hasStatus())
+
+    for(int i=0;i<players.size();i++){
+        if(players[i]->hasStatus()){
             playerArea->enablePlayerItem(i);
-
-    tipArea->setMsg(QStringLiteral("请选择使用的能量："));
-    if(crystal>=1)
-        tipArea->addBoxItem(QStringLiteral("1.水晶"));
-    if(gem>=1)
-        tipArea->addBoxItem(QStringLiteral("2.宝石"));
-
-    tipArea->showBox();
+        }
+    }
 }
 
 void FengYin::onUnready()
 {
     switch(state)
     {
-    case 403:
+    case FENG_YIN_PO_SUI:
         tipArea->reset();
         FengYinPoSui();
         break;
     }
 }
 
-void FengYin::additionalAction()
-{
-    //Role::additionalAction();
-    if(usedMagic)
-        tipArea->addBoxItem(QStringLiteral("1.法术激荡"));
-}
-
+//当选的牌达到最低要求（quota）时，触发
 void FengYin::cardAnalyse()
 {
     Role::cardAnalyse();
 
     switch (state)
     {
-    case 401:
+    case FENG_ZHI_FENG_YIN:
         QList<Player*>players=dataInterface->getPlayerList();
         QList<Card*>selectedCards=handArea->getSelectedCards();
         playerArea->enableEnemy();
-        for(int i=0;i<players.size();i++)
-            for(int j=0;j<players[i]->getBasicStatus().size();j++)
-                if(players[i]->checkBasicStatus(selectedCards[0]->getSpecialityList().at(0)))
+        //检测是否已有相同的封印
+        for(int i=0;i<players.size();i++){
+            for(int j=0;j<players[i]->getBasicStatus().size();j++){
+                if(players[i]->checkBasicStatus(selectedCards[0]->getSpecialityList().at(0))){
                     playerArea->disablePlayerItem(i);
+                }
+            }
+        }
         break;
     }
 }
+
+//一般不用覆写这个函数，基类的功能是当选的人达到最低要求（quota），enable确认键（0）
 void FengYin::playerAnalyse()
 {
-    QString text;
     switch (state)
     {
-    case 403:
-        text=tipArea->getBoxCurrentText();
-        if(text[0].digitValue()==1)
-            usedGem=0;
-        else
-            usedGem=1;
+    case FENG_YIN_PO_SUI:
+        //展示基本状态区，一般用不到
         tipArea->showStatus(playerArea->getSelectedPlayers().at(0)->getID());
         break;
     default:
@@ -175,83 +160,38 @@ void FengYin::onOkClicked()
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
 
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
-    QString text;
-
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
-    network::Respond* respond;
 
     switch(state)
     {
-//额外行动询问
-    case 42:
-        text=tipArea->getBoxCurrentText();
-        if(text[0].digitValue()==1){
-            respond = new network::Respond();
-            respond->set_src_id(myID);
-            respond->set_respond_id(404);
-            respond->add_args(1);
-
-            emit sendCommand(network::MSG_RESPOND, respond);
-            attackAction();
-        }
-        break;
 //封印法术
-    case 401:
-        action = new network::Action();
-        action->set_src_id(myID);
-        action->set_action_id(401);
-        action->add_args(selectedCards[0]->getID());
+    case FENG_ZHI_FENG_YIN:
+        action = newAction(ACTION_MAGIC_SKILL, getMapping(selectedCards[0]->getElement()));
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-
-        dataInterface->removeHandCard(selectedCards[0]);
-        usedMagic=true;
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //五系束缚
-    case 402:
-        action = new network::Action();
-        action->set_src_id(myID);
-        action->set_action_id(402);
+    case WU_XI_SHU_FU:
+        action = newAction(ACTION_MAGIC_SKILL, WU_XI_SHU_FU);
         action->add_dst_ids(selectedPlayers[0]->getID());
-
-        text=tipArea->getBoxCurrentText();
-        if(text[0]=='1')
-            action->add_args(0);
-        else
-            action->add_args(1);
-
-        usedMagic=true;
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //封印破碎
-    case 403:
-        action = new network::Action();
-        action->set_src_id(myID);
-        action->set_action_id(403);
+    case FENG_YIN_PO_SUI:
+        action = newAction(ACTION_MAGIC_SKILL, FENG_YIN_PO_SUI);
         action->add_dst_ids(selectedPlayers[0]->getID());
-        action->add_args(tipArea->getSelectedCardID());
-
-        if(usedGem)
-            action->add_args(1);
-        else
-            action->add_args(0);
-
-        usedMagic=true;
+        action->add_card_ids(tipArea->getSelectedCardID());
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }
 }
-
 
 void FengYin::onCancelClicked()
 {
@@ -259,12 +199,28 @@ void FengYin::onCancelClicked()
     switch(state)
     {
 //封印法术
-    case 401:
+    case FENG_ZHI_FENG_YIN:
 //五系束缚
-    case 402:
+    case WU_XI_SHU_FU:
 //封印破碎
-    case 403:
+    case FENG_YIN_PO_SUI:
         normal();
         break;
     }
+}
+
+int FengYin::getMapping(QString element)
+{
+    if (element=="earth")
+        return DI_ZHI_FENG_YIN;
+    else if (element=="fire")
+        return HUO_ZHI_FENG_YIN;
+    else if (element=="water")
+        return SHUI_ZHI_FENG_YIN;
+    else if (element=="thunder")
+        return LEI_ZHI_FENG_YIN;
+    else if (element=="wind")
+        return FENG_ZHI_FENG_YIN;
+    else
+        return 0;
 }

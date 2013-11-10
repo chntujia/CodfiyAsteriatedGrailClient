@@ -231,7 +231,9 @@ void Player::setSpecial(int type,bool flag)
 
 void Player::cleanSpecial()
 {
-    // TODO：清理专属牌
+    for(int i = 0; i < EXCLUSIVE_NUM; i++){
+        setSpecial(i, false);
+    }
 }
 
 int Player::getID()
