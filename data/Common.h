@@ -45,6 +45,9 @@ enum CAUSE{
     JIAN_YING = 105,
     XUE_YING_KUANG_DAO = 201,
     XUE_XING_PAO_XIAO = 202,
+    KUANG_HUA = 203,
+    XUE_YING_KUANG_DAO_USED = 204,
+    SI_LIE = 205,
     JING_ZHUN_SHE_JI = 301,
     SHAN_GUANG_XIAN_JIN = 302,
     FENG_ZHI_FENG_YIN = 401,
@@ -140,6 +143,16 @@ QString getCauseString(int cause)
         return QStringLiteral("圣剑");
     case JIAN_YING:
         return QStringLiteral("剑影");
+    case XUE_YING_KUANG_DAO:
+        return QStringLiteral("血影狂刀");
+    case XUE_XING_PAO_XIAO:
+        return QStringLiteral("血腥咆哮");
+    case KUANG_HUA:
+        return QStringLiteral("狂化");
+    case SI_LIE:
+        return QStringLiteral("撕裂");
+    case XUE_YING_KUANG_DAO_USED:
+        return QStringLiteral("血影狂刀");
     case FENG_ZHI_FENG_YIN:
         return QStringLiteral("风之封印");
     case SHUI_ZHI_FENG_YIN:
