@@ -62,6 +62,11 @@ void MoDao::MoDanRongHe()
     handArea->enableElement("fire");
 }
 
+void MoDao::additionalAction()
+{
+    //Role::additionalAction();
+}
+
 void MoDao::MoBaoChongJi()
 {
     state=803;

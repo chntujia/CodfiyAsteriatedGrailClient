@@ -58,6 +58,9 @@ enum CAUSE{
     FA_SHU_JI_DONG = 406,
     WU_XI_SHU_FU = 407,
     FENG_YIN_PO_SUI = 408,
+    FAN_SHI = 501,
+    SHUI_YING = 502,
+    QIAN_XING = 503,
     ZHI_LIAO_SHU = 601,
     ZHI_YU_ZHI_GUANG = 602,
     TIAN_SHI_ZHI_QIANG = 701,
@@ -169,6 +172,12 @@ QString getCauseString(int cause)
         return QStringLiteral("五系束缚");
     case FENG_YIN_PO_SUI:
         return QStringLiteral("封印破碎");
+    case FAN_SHI:
+        return QStringLiteral("反噬");
+    case SHUI_YING:
+        return QStringLiteral("水影");
+    case QIAN_XING:
+        return QStringLiteral("潜行");
     default:
         return "CauseString undefined";
     }

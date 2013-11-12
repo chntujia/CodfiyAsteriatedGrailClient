@@ -8,7 +8,7 @@ public:
     AnSha();
     void ShuiYing();
     void QianXing();
-    void askForSkill(QString skill);
+    void askForSkill(network::Command* cmd);
 public slots:
     void onOkClicked();
     void onCancelClicked();

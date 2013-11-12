@@ -9,6 +9,7 @@ public:
     void normal();
     void turnBegin();
     void moDaned(int nextID, int sourceID, int howMany);
+    void additionalAction();
 public slots:
     void onOkClicked();
     void onCancelClicked();

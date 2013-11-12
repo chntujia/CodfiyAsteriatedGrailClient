@@ -1,5 +1,11 @@
 ﻿#include "AnSha.h"
 
+enum CAUSE{
+    FAN_SHI = 501,
+    SHUI_YING = 502,
+    QIAN_XING = 503,
+};
+
 AnSha::AnSha()
 {
     makeConnection();
@@ -8,7 +14,7 @@ setMyRole(this);
 
 void AnSha::ShuiYing()
 {
-    state=502;
+    state=SHUI_YING;
     tipArea->setMsg(QStringLiteral("是否发动水影？"));
     handArea->setQuota(1,7);
 
@@ -20,7 +26,7 @@ void AnSha::ShuiYing()
 
 void AnSha::QianXing()
 {
-    state=503;
+    state=QIAN_XING;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动潜行？"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -42,12 +48,11 @@ void AnSha::QianXing()
         decisionArea->enable(0);
 }
 
-void AnSha::askForSkill(QString skill)
+void AnSha::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("水影"))
+    if(cmd->respond_id() == SHUI_YING)
         ShuiYing();
-    else if(skill==QStringLiteral("潜行"))
+    else if(cmd->respond_id() == QIAN_XING)
         QianXing();
 }
 
@@ -58,7 +63,7 @@ void AnSha::cardAnalyse()
     switch (state)
     {
     //水影询问
-    case 502:
+    case SHUI_YING:
         decisionArea->enable(0);
         break;
     }
@@ -76,23 +81,22 @@ void AnSha::onOkClicked()
     switch(state)
     {
     //水影询问
-    case 502:
+    case SHUI_YING:
         respond = new Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(502);
-        for(i=0;i<howMany;i++)
+        respond->set_respond_id(SHUI_YING);
+        for(i=0;i<selectedCards.length();i++)
         {
-            respond->add_args(selectedCards[i]->getID());
-            dataInterface->removeHandCard(selectedCards[i]);
+            respond->add_card_ids(selectedCards[i]->getID());
         }
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //潜行询问
-    case 503:
+    case QIAN_XING:
         respond = new Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(503);
+        respond->set_respond_id(QIAN_XING);
         respond->add_args(1);
         start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
@@ -112,18 +116,18 @@ void AnSha::onCancelClicked()
     switch(state)
     {
     //水影询问
-    case 502:
+    case SHUI_YING:
         respond = new Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(502);
+        respond->set_respond_id(SHUI_YING);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //潜行询问
-    case 503:
+    case QIAN_XING:
         respond = new Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(503);
+        respond->set_respond_id(QIAN_XING);
         respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
