@@ -23,7 +23,7 @@ public:
     virtual void cure(int cross,int harmPoint,int type, int crossAvailable);
     virtual void askForSkill(network::Command* cmd);
     void setAttackTarget();
-    void drop(int howMany);
+    void drop(int howMany, int cause);
     void dropCover(int howMany);
     void unactionalCheck();
     void TianShiZhuFu(int n);

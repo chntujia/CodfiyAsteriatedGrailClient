@@ -312,11 +312,17 @@ void Role::attacked(QString element,int hitRate)
     QSound::play("sound/Warning.wav");
 }
 
-void Role::drop(int howMany)
+void Role::drop(int howMany, int cause)
 {
     state=3;
     handArea->setQuota(howMany);
-    handArea->enableAll();
+
+    switch(cause)
+    {
+    default:
+        handArea->enableAll();
+        tipArea->setMsg(QStringLiteral("你需要弃")+QString::number(howMany)+QStringLiteral("张牌"));
+    }
     gui->alert();
 
 }
@@ -572,6 +578,13 @@ void Role::onCancelClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+//DROPREPLY
+    case 3:
+        respond = newRespond(network::RESPOND_DISCARD);
+        respond->add_args(0);
+        gui->reset();
+        emit sendCommand(network::MSG_RESPOND, respond);
+        break;
 //虚弱
     case 7:
         respond = newRespond(network::RESPOND_WEAKEN);
@@ -684,10 +697,11 @@ void Role::onOkClicked()
 //DROPREPLY
     case 3:
         respond = newRespond(network::RESPOND_DISCARD);
+        respond->add_args(1);
 
         for(i=0;i<selectedCards.count();i++)
         {
-            respond->add_args(selectedCards[i]->getID());
+            respond->add_card_ids(selectedCards[i]->getID());
         }
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
@@ -905,6 +919,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     int cardID;
     int hitRate;
     int i,howMany;
+    int cause;
 
     Card*card;
     Player*player;    
@@ -976,12 +991,11 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 break;
             case network::RESPOND_DISCARD:
                 //弃牌询问
-                targetID=cmd->args(0);
-                howMany=cmd->args(1);
-                char str[10];
-                sprintf(str, "%d", howMany);
+                targetID = cmd->dst_ids(0);
+                cause = cmd->args(0);
+                howMany = cmd->args(1);
 
-                msg=playerList[targetID]->getRoleName()+QStringLiteral("需要弃")+QString(str)+QStringLiteral("张牌");
+                msg = playerList[targetID]->getRoleName()+QStringLiteral("需要弃")+QString::number(howMany)+QStringLiteral("张牌");
                 if(cmd->args(2) == 1)
                     gui->logAppend(msg+QStringLiteral("明弃"));
                 else
@@ -994,8 +1008,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 {
                     gui->setEnable(1);
                     gui->reset();
-                    drop(howMany);
-                    tipArea->setMsg(QStringLiteral("你需要弃")+QString(str)+QStringLiteral("张牌"));
+                    drop(howMany, cause);
                 }
                 break;
             case network::RESPOND_WEAKEN:
