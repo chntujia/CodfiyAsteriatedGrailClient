@@ -1527,7 +1527,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     player->cleanBasicStatus();
                     for (int j = 0; j < player_info->basic_cards_size(); ++j)
                     {
-                        cardID=player_info->basic_cards(i);
+                        cardID=player_info->basic_cards(j);
                         card=dataInterface->getCard(cardID);
                         cardName=card->getName();
                         if(cardName==QStringLiteral("中毒"))
@@ -1579,7 +1579,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     }
                     playerArea->update();
                     gui->logAppend(msg);
-                    break;
                 }
                 // 最大手牌改变
                 if (player_info->has_max_hand())
@@ -1592,11 +1591,11 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 {
                     for (int j = 0; j < player_info->delete_field_size(); ++j)
                     {
-                        if (strcmp(player_info->delete_field(i).c_str(), "ex_cards") == 0)
+                        if (strcmp(player_info->delete_field(j).c_str(), "ex_cards") == 0)
                         {
                             player->cleanSpecial();
                         }
-                        else if (strcmp(player_info->delete_field(i).c_str(), "basic_cards") == 0)
+                        else if (strcmp(player_info->delete_field(j).c_str(), "basic_cards") == 0)
                         {
                             player->cleanBasicStatus();
                         }
