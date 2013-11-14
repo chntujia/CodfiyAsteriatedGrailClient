@@ -183,7 +183,7 @@ void ClientUI::displayError(QAbstractSocket::SocketError)
     network::Gossip* error_msg = new network::Gossip();
     error_msg->set_type(network::GOSSIP_NOTICE);
     QString txt = tcpSocket->errorString();
-    error_msg->set_txt(txt.toLatin1().data(), txt.length());
+    error_msg->set_txt(txt.toStdString());
     showMessage(0, error_msg); //输出错误信息
 }
 
@@ -223,8 +223,8 @@ void ClientUI::UserLogin()
     ui->LabError->setText("正在验证，请稍后......");
 
     network::LoginRequest* login_req = new network::LoginRequest();
-    login_req->set_user_id(username.toLatin1().data(), username.length());
-    login_req->set_user_password(password.toLatin1().data(), password.length());
+    login_req->set_user_id(username.toStdString());
+    login_req->set_user_password(password.toStdString());
     tcpSocket->sendMessage(network::MSG_LOGIN_REQ, login_req);
 }
 

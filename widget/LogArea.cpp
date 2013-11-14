@@ -44,11 +44,9 @@ void ChatLine::onReturnPressed()
 {    
     if(!text().isEmpty())
     {
-        network::Gossip* gossip = new network::Gossip();
-        gossip->set_type(network::GOSSIP_TALK);
-        QByteArray arr = text().toLatin1();
-        gossip->set_txt(arr.data(), arr.length());
-        emit toChat(network::MSG_GOSSIP, gossip);
+        network::Talk* talk = new network::Talk();
+        talk->set_txt(text().toStdString());
+        emit toChat(network::MSG_TALK, talk);
     }
     clear();
 }

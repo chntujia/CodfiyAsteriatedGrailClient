@@ -1444,6 +1444,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             msg+="</font>";
             showArea->showCards(cards);
 
+            player = playerList[game_info->show_from()];
+            gui->logAppend(player->getRoleName()+QStringLiteral("展示了")+msg);
         }
 //        // 清空数组
 //        if (game_info->delete_field_size() > 0)
