@@ -1570,13 +1570,13 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     player->setCrystal(player_info->crystal());
                 }
                 // 更新标记物
-                if (player_info->has_yellow_energy())
+                if (player_info->has_yellow_token())
                 {
-                    player->setToken(0, player_info->yellow_energy());
+                    player->setToken(0, player_info->yellow_token());
                 }
-                if (player_info->has_blue_energy())
+                if (player_info->has_blue_token())
                 {
-                    player->setToken(0, player_info->blue_energy());
+                    player->setToken(0, player_info->blue_token());
                 }
                 // 更新玩家横置状态
                 if (player_info->has_is_knelt())
