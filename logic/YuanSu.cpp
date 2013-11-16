@@ -1,5 +1,18 @@
 ﻿#include "YuanSu.h"
 
+enum CAUSE {
+    FENG_REN = 1101,
+    BING_DONG = 1102,
+    HUO_QIU = 1103,
+    YUN_SHI = 1104,
+    LEI_JI = 1105,
+    YUAN_SU_DIAN_RAN = 1106,
+    YUE_GUANG = 1107,
+    YUAN_SU_XI_SHOU = 1108,
+    STATE_YUAN_MO_FA = 1151,
+    STATE_YUAN_MO_FA_2 = 1152,
+};
+
 YuanSu::YuanSu()
 {
     makeConnection();
@@ -21,7 +34,7 @@ setMyRole(this);
 
 void YuanSu::YuanSuFaShu1()
 {
-    state=1100;
+    state=STATE_YUAN_MO_FA;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -40,7 +53,7 @@ void YuanSu::YuanSuFaShu1()
 
 void YuanSu::YuanSuFaShu2()
 {
-    state=1101;
+    state=STATE_YUAN_MO_FA_2;
     magicCard=handArea->getSelectedCards().takeFirst();
     magicTargetID=playerArea->getSelectedPlayers().takeFirst()->getID();
 
@@ -67,7 +80,7 @@ void YuanSu::YuanSuFaShu2()
 
 void YuanSu::YuanSuDianRan()
 {
-    state=1102;
+    state=YUAN_SU_DIAN_RAN;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -80,7 +93,7 @@ void YuanSu::YuanSuDianRan()
 
 void YuanSu::YueGuang()
 {
-    state=1103;
+    state=YUE_GUANG;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -131,7 +144,7 @@ void YuanSu::cardAnalyse()
     switch (state)
     {
 //元素法术1
-    case 1100:
+    case STATE_YUAN_MO_FA:
         playerArea->enableAll();
         break;
     }
@@ -154,6 +167,7 @@ void YuanSu::onOkClicked()
 
     network::Action* action;
     network::Respond* respond;
+    int magic;
 
     switch(state)
     {
@@ -164,21 +178,21 @@ void YuanSu::onOkClicked()
         {
         case 1:
             earth=false;
-            respond = newRespond(1105);
+            respond = newRespond(YUN_SHI);
             respond->add_args(1);
             emit sendCommand(network::MSG_RESPOND, respond);
             magicAction();
             break;
         case 2:
             ignite=false;
-            respond = newRespond(1106);
+            respond = newRespond(YUAN_SU_DIAN_RAN);
             respond->add_args(1);
             emit sendCommand(network::MSG_RESPOND, respond);
             magicAction();
             break;
         case 3:
             wind=false;
-            respond = newRespond(1104);
+            respond = newRespond(FENG_REN);
             respond->add_args(1);
             emit sendCommand(network::MSG_RESPOND, respond);
             attackAction();
@@ -186,53 +200,50 @@ void YuanSu::onOkClicked()
         }
         break;
 //元素法术1
-    case 1100:
+    case STATE_YUAN_MO_FA:
         YuanSuFaShu2();
         break;
 //元素法术2
-    case 1101:
-        action = newAction(1101);
+    case STATE_YUAN_MO_FA_2:
         if(magicCard->getElement()=="wind"){
-            action->add_args(1);
+            magic =FENG_REN;
             wind=true;
         }
         else if(magicCard->getElement()=="water"){
-            action->add_args(2);
+            magic = BING_DONG;
             water=true;
         }
-        else if(magicCard->getElement()=="fire")
-            action->add_args(3);
+        else if(magicCard->getElement()=="fire") {
+            magic = HUO_QIU;
+        }
         else if(magicCard->getElement()=="earth"){
-            action->add_args(4);
+            magic = YUN_SHI;
             earth=true;
         }
         else
-            action->add_args(5);
-        action->add_args(magicCard->getID());
+            magic = LEI_JI;
+        action = newAction(ACTION_MAGIC_SKILL, magic);
+        action->add_card_ids(magicCard->getID());
         action->add_dst_ids(magicTargetID);
         if(handArea->getSelectedCards().size()>0){
-            action->add_args(selectedCards[0]->getID());
-            dataInterface->removeHandCard(selectedCards[0]);
+            action->add_card_ids(selectedCards[0]->getID());
         }
         if(water)
             action->add_dst_ids(selectedPlayers[0]->getID());
-        dataInterface->removeHandCard(magicCard);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //元素点燃
-    case 1102:
-        action = newAction(1102);
-        action->add_args(1);
+    case YUAN_SU_DIAN_RAN:
+        action = newAction(ACTION_MAGIC_SKILL, YUAN_SU_DIAN_RAN);
         action->add_dst_ids(selectedPlayers[0]->getID());
         ignite=true;
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //月光
-    case 1103:
-        action = newAction(1103);
-        action->add_args(1);
+    case YUE_GUANG:
+        action = newAction(ACTION_MAGIC_SKILL, YUE_GUANG);
         action->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
@@ -245,15 +256,15 @@ void YuanSu::onCancelClicked()
     Role::onCancelClicked();
     switch(state)
     {
-    case 1100:
-    case 1102:
-    case 1103:
+    case STATE_YUAN_MO_FA:
+    case YUAN_SU_DIAN_RAN:
+    case YUE_GUANG:
         if(actionFlag==0)
             normal();
         else if(actionFlag==2)
             magicAction();
         break;
-    case 1101:
+    case STATE_YUAN_MO_FA_2:
         YuanSuFaShu1();
         break;
     }

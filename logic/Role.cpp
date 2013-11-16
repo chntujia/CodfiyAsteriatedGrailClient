@@ -667,7 +667,7 @@ void Role::onOkClicked()
             if(cardName==QStringLiteral("中毒")||cardName==QStringLiteral("虚弱")||cardName==QStringLiteral("圣盾")||cardName==QStringLiteral("魔弹"))
             {
                 action = newAction(network::ACTION_MAGIC);
-                action->add_args(selectedCards[0]->getID());
+                action->add_card_ids(selectedCards[0]->getID());
                 action->add_dst_ids(selectedPlayers[0]->getID());
             }
             usedMagic=true;
@@ -953,7 +953,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         break;
 
     case network::MSG_CMD_REQ:
-
     {
         network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
         for (int i = 0; i < cmd_req->commands_size(); ++i)
@@ -1034,7 +1033,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 // 治疗询问
                 targetID=cmd->args(0);
                 howMany=cmd->args(1);
-                int max_avail = cmd->args(3);
+                int max_avail = cmd->args(2);
                 gui->reset();
                 if(targetID==myID)
                     myRole->cure(playerList[myID]->getCrossNum(),howMany,cmd->args(2),max_avail);
