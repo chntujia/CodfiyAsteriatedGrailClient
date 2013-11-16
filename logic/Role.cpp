@@ -316,15 +316,19 @@ void Role::drop(int howMany, int cause)
 {
     state=3;
     handArea->setQuota(howMany);
-
     switch(cause)
     {
+    case MO_BAO_CHONG_JI:
+        handArea->enableMagic();
+        tipArea->setMsg(QStringLiteral("弃一张法牌，否则受两点法术伤害"));
+        decisionArea->enable(1);
+        break;
     default:
         handArea->enableAll();
         tipArea->setMsg(QStringLiteral("你需要弃")+QString::number(howMany)+QStringLiteral("张牌"));
     }
     gui->alert();
-
+    QSound::play("sound/Warning.wav");
 }
 
 void Role::dropCover(int howMany)
@@ -634,9 +638,6 @@ void Role::onOkClicked()
     QList<Player*>selectedPlayers;
 
     QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
     QString text;
     int i,boxCurrentIndex;
 
@@ -996,9 +997,9 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 
                 msg = playerList[targetID]->getRoleName()+QStringLiteral("需要弃")+QString::number(howMany)+QStringLiteral("张牌");
                 if(cmd->args(2) == 1)
-                    gui->logAppend(msg+QStringLiteral("明弃"));
+                    gui->logAppend(msg+QStringLiteral("(明弃)"));
                 else
-                    gui->logAppend(msg+QStringLiteral("暗弃"));
+                    gui->logAppend(msg+QStringLiteral("(暗弃)"));
                 if(targetID!=myID)
                 {
                     gui->setEnable(0);
@@ -1324,7 +1325,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         msg = playerList[sourceID]->getRoleName()+QStringLiteral("对");
         for(i = 0; i < skill->dst_ids_size()-1; i++){
             targetID = skill->dst_ids(i);
-            msg += playerList[targetID]->getRoleName()+"、";
+            msg += playerList[targetID]->getRoleName()+QStringLiteral("、");
         }
         msg += playerList[skill->dst_ids(i)]->getRoleName() + QStringLiteral("发动") + getCauseString(skill->skill_id());
         gui->logAppend(msg);

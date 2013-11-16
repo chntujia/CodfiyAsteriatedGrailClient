@@ -30,7 +30,7 @@ enum GrailError{
 
 enum CAUSE{
     CAUSE_DEFAULT,
-    CAUSE_OVERFLOW,
+    CAUSE_OVERLOAD,
     CAUSE_USE,
     CAUSE_ATTACK,
     CAUSE_POISON,
@@ -64,6 +64,10 @@ enum CAUSE{
     ZHI_LIAO_SHU = 601,
     ZHI_YU_ZHI_GUANG = 602,
     TIAN_SHI_ZHI_QIANG = 701,
+    MO_BAO_CHONG_JI = 801,
+    MO_DAN_ZHANG_WO = 802,
+    MO_DAN_RONG_HE = 803,
+    HUI_MIE_FENG_BAO = 804,
     FENG_REN = 1101,
     BING_DONG = 1102,
     HUO_QIU = 1103,
@@ -127,8 +131,8 @@ QString getCauseString(int cause)
     {
     case CAUSE_DEFAULT:
         return "default";
-    case CAUSE_OVERFLOW:
-        return "overflow";
+    case CAUSE_OVERLOAD:
+        return "overload";
     case CAUSE_USE:
         return "use";
     case CAUSE_ATTACK:
@@ -181,6 +185,14 @@ QString getCauseString(int cause)
         return QStringLiteral("水影");
     case QIAN_XING:
         return QStringLiteral("潜行");
+    case MO_BAO_CHONG_JI:
+        return QStringLiteral("魔爆冲击");
+    case MO_DAN_ZHANG_WO:
+        return QStringLiteral("魔弹掌握");
+    case MO_DAN_RONG_HE:
+        return QStringLiteral("魔弹融合");
+    case HUI_MIE_FENG_BAO:
+        return QStringLiteral("毁灭风暴");
     case FENG_REN:
         return QStringLiteral("风刃");
     case BING_DONG:

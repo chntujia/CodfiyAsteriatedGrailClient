@@ -1,5 +1,17 @@
 ﻿#include "MoDao.h"
 
+enum CAUSE{
+    MO_BAO_CHONG_JI = 801,
+    MO_DAN_ZHANG_WO = 802,
+    MO_DAN_RONG_HE = 803,
+    HUI_MIE_FENG_BAO = 804
+};
+
+enum REATTACK{
+    RA_ATTACK,
+    RA_BLOCK,
+    RA_GIVEUP
+};
 MoDao::MoDao()
 {
     makeConnection();
@@ -44,10 +56,7 @@ MoDao::MoDao()
 
 void MoDao::MoDanRongHe()
 {
-    if(firstMoDan&&isMyTurn)
-        state=801;
-    else
-        state=802;
+    state=MO_DAN_RONG_HE;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -62,14 +71,9 @@ void MoDao::MoDanRongHe()
     handArea->enableElement("fire");
 }
 
-void MoDao::additionalAction()
-{
-    //Role::additionalAction();
-}
-
 void MoDao::MoBaoChongJi()
 {
-    state=803;
+    state=MO_BAO_CHONG_JI;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -85,7 +89,7 @@ void MoDao::MoBaoChongJi()
 
 void MoDao::HuiMeiFengBao()
 {
-    state=804;
+    state=HUI_MIE_FENG_BAO;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -144,17 +148,20 @@ void MoDao::cardAnalyse()
         if(cardName==QStringLiteral("魔弹"))
             playerArea->enablePlayerItem(nextClockwise);//额外再激活一个上家敌人
         break;
-//魔弹融合(首次魔弹）
-    case 801:
-        playerArea->enablePlayerItem(nextClockwise);
-        playerArea->enablePlayerItem(nextCounterClockwise);
-        break;
-//魔弹融合(非首次）
-    case 802:
-        playerArea->enablePlayerItem(moDanNextID);
+//魔弹融合
+    case MO_DAN_RONG_HE:
+        //发起魔弹
+        if(isMyTurn && firstMoDan){
+            playerArea->enablePlayerItem(nextClockwise);
+            playerArea->enablePlayerItem(nextCounterClockwise);
+        }
+        //响应魔弹
+        else{
+            playerArea->enablePlayerItem(moDanNextID);
+        }
         break;
 //魔爆冲击
-    case 803:
+    case MO_BAO_CHONG_JI:
         playerArea->enableEnemy();
         break;
     }
@@ -164,12 +171,6 @@ void MoDao::onOkClicked()
 {    
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
-
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
-    QString targetID2;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
@@ -188,46 +189,43 @@ void MoDao::onOkClicked()
         if(!selectedCards.empty() && selectedCards[0]->getName()==QStringLiteral("魔弹"))
             firstMoDan=false;
         break;
-//魔弹融合(回合内）
-    case 801:
-        action = newAction(801);
-        action->add_args(selectedCards[0]->getID());
-        action->add_dst_ids(selectedPlayers[0]->getID());
-
-        dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(network::MSG_ACTION, action);
+//魔弹融合
+    case MO_DAN_RONG_HE:
+        // 发起魔弹
+        if(isMyTurn && firstMoDan){
+            firstMoDan=false;
+            action = newAction(ACTION_MAGIC_SKILL, MO_DAN_RONG_HE);
+            action->add_card_ids(selectedCards[0]->getID());
+            action->add_dst_ids(selectedPlayers[0]->getID());
+            emit sendCommand(network::MSG_ACTION, action);
+        }
+        // 响应魔弹
+        else{
+            respond = newRespond(RESPOND_BULLET);
+            respond->add_args(RA_ATTACK);
+            respond->add_args(selectedCards[0]->getID());
+            respond->add_dst_ids(selectedPlayers[0]->getID());
+            emit sendCommand(network::MSG_RESPOND, respond);
+        }
         gui->reset();
-        firstMoDan=false;
-        break;
-//魔弹融合(回合外）
-    case 802:
-        respond = newRespond(802);
-        respond->add_args(selectedCards[0]->getID());
-        respond->add_dst_ids(selectedPlayers[0]->getID());
 
-        dataInterface->removeHandCard(selectedCards[0]);
-        emit sendCommand(network::MSG_ACTION, action);
-        gui->reset();
         break;
 //魔爆冲击
-    case 803:
-        action = newAction(803);
-        action->add_args(selectedCards[0]->getID());
+    case MO_BAO_CHONG_JI:
+        action = newAction(ACTION_MAGIC_SKILL, MO_BAO_CHONG_JI);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
         action->add_dst_ids(selectedPlayers[1]->getID());
 
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //毁灭风暴
-    case 804:
-        action = newAction(803);
-        action->add_args(1);
+    case HUI_MIE_FENG_BAO:
+        action = newAction(ACTION_MAGIC_SKILL, HUI_MIE_FENG_BAO);
         action->add_dst_ids(selectedPlayers[0]->getID());
         action->add_dst_ids(selectedPlayers[1]->getID());
 
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
@@ -240,17 +238,21 @@ void MoDao::onCancelClicked()
     Role::onCancelClicked();
     switch(state)
     {
-//魔弹融合(回合内）
-    case 801:
-//魔爆冲击
-    case 803:
-//毁灭风暴
-    case 804:
-        normal();
+//魔弹融合
+    case MO_DAN_RONG_HE:
+        // 发起魔弹
+        if(isMyTurn && firstMoDan){
+            normal();
+        }
+        else{
+            moDaned(moDanNextID,sourceID,moDanHarm);
+        }
         break;
-//魔弹融合(回合外）
-    case 802:
-        moDaned(moDanNextID,sourceID,moDanHarm);
+//魔爆冲击
+    case MO_BAO_CHONG_JI:
+//毁灭风暴
+    case HUI_MIE_FENG_BAO:
+        normal();
         break;
     }
 }
