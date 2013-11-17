@@ -11,7 +11,7 @@ public:
     void normal();
     void attackOrMagic();
     void turnBegin();
-    void askForSkill(QString skill);
+    void askForSkill(Command *cmd);
     void additionalAction();
 public slots:
     void onOkClicked();

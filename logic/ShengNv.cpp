@@ -1,9 +1,20 @@
 ﻿#include "ShengNv.h"
 
+enum CAUSE{
+    ZHI_LIAO_SHU = 601,
+    ZHI_YU_ZHI_GUANG = 602,
+    BING_SHUANG_DAO_YAN = 603,
+    LIAN_MIN = 604,
+    SHENG_LIAO = 605,
+    SHENG_LIAO_1 = 651,
+    SHENG_LIAO_2 = 652,
+    SHENG_LIAO_3 = 653
+};
+
 ShengNv::ShengNv()
 {
     makeConnection();
-setMyRole(this);
+    setMyRole(this);
     Button *zhiLiaoShu, *zhiYuZhiGuang, *shengLiao;
     zhiLiaoShu = new Button(3,QStringLiteral("治疗术"));
     buttonArea->addButton(zhiLiaoShu);
@@ -49,7 +60,7 @@ void ShengNv::attackOrMagic()
 
 void ShengNv::ZhiLiaoShu()
 {
-    state=602;
+    state=ZHI_LIAO_SHU;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -65,7 +76,7 @@ void ShengNv::ZhiLiaoShu()
 
 void ShengNv::ZhiYuZhiGuang()
 {
-    state=603;
+    state=ZHI_YU_ZHI_GUANG;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -81,7 +92,7 @@ void ShengNv::ZhiYuZhiGuang()
 
 void ShengNv::LianMin()
 {
-    state=604;
+    state=LIAN_MIN;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动怜悯？"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -114,7 +125,7 @@ void ShengNv::ShengLiao()
     gem=myself->getGem();
     crystal=myself->getCrystal();
 
-    state=651;
+    state=SHENG_LIAO_1;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -134,7 +145,7 @@ void ShengNv::ShengLiao()
 }
 void ShengNv::ShengLiao2()
 {
-    state=652;
+    state=SHENG_LIAO_2;
     onceUsed=true;
     handArea->reset();
     playerArea->reset();
@@ -152,7 +163,7 @@ void ShengNv::ShengLiao2()
 }
 void ShengNv::ShengLiao3()
 {
-    state=653;
+    state=SHENG_LIAO_3;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -169,7 +180,7 @@ void ShengNv::ShengLiao3()
 }
 void ShengNv::BingShuangDaoYan()
 {
-    state=601;
+    state=BING_SHUANG_DAO_YAN;
 
     tipArea->setMsg(QStringLiteral("请选择冰霜祷言的目标"));
     playerArea->enableAll();
@@ -184,10 +195,8 @@ void ShengNv::cardAnalyse()
     Role::cardAnalyse();
     switch (state)
     {
-    case 602:
-        playerArea->enableAll();
-        break;
-    case 603:
+    case ZHI_LIAO_SHU:
+    case ZHI_YU_ZHI_GUANG:
         playerArea->enableAll();
         break;
     }
@@ -213,6 +222,7 @@ void ShengNv::onOkClicked()
 
     static int ShengLiao_count;
     static int ShengLiao_dst[3];
+    static int ShengLiao_cross[3];
 
     switch(state)
     {
@@ -229,66 +239,94 @@ void ShengNv::onOkClicked()
         }
         break;
 //冰霜祷言
-    case 601:
-        respond = newRespond(601);
+    case BING_SHUANG_DAO_YAN:
+        respond = new Respond();
         respond->add_args(1);
         respond->add_dst_ids(selectedPlayers[0]->getID());
-
+        respond->set_respond_id(BING_SHUANG_DAO_YAN);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //治疗术
-    case 602:
-        action = newAction(602);
-        action->add_args(selectedCards[0]->getID());
+    case ZHI_LIAO_SHU:
+        action = newAction(ACTION_MAGIC_SKILL, ZHI_LIAO_SHU);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //治愈之光
-    case 603:
-        action = newAction(603);
-        action->add_args(selectedCards[0]->getID());
-        for(int i=0; i<selectedCards.length(); i++)
+    case ZHI_YU_ZHI_GUANG:
+        action = newAction(ACTION_MAGIC_SKILL, ZHI_YU_ZHI_GUANG);
+        action->add_card_ids(selectedCards[0]->getID());
+        for(int i=0; i<selectedPlayers.length(); i++)
             action->add_dst_ids(selectedPlayers[i]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //怜悯
-    case 604:
-        respond = newRespond(604);
+    case LIAN_MIN:
+        respond = new Respond();
         respond->add_args(1);
+        respond->set_respond_id(LIAN_MIN);
         start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //圣疗
-    case 651:
+    case SHENG_LIAO_1:
         ShengLiao_dst[0] = selectedPlayers[0]->getID();
         ShengLiao_count = 1;
+        ShengLiao_cross[0] = 1;
         ShengLiao2();
         break;
-    case 652:
-        ShengLiao_dst[1] = selectedPlayers[0]->getID();
-        ShengLiao_count = 2;
+    case SHENG_LIAO_2:
+        if(ShengLiao_dst[0] == selectedPlayers[0]->getID())
+        {
+            ShengLiao_cross[0]++;
+        }
+        else
+        {
+            ShengLiao_dst[1] = selectedPlayers[0]->getID();
+            ShengLiao_cross[1] = 1;
+            ShengLiao_count++;
+        }
         ShengLiao3();
         break;
-    case 653:
-        ShengLiao_dst[2] = selectedPlayers[0]->getID();
-        ShengLiao_count = 3;
+    case SHENG_LIAO_3:
+        int i;
+        bool chosenPlayer = false;
+        for(i=0;i<ShengLiao_count;i++)
+        {
+            if(ShengLiao_dst[i] == selectedPlayers[0]->getID())
+            {
+                ShengLiao_cross[i]++;
+                chosenPlayer = true;
+                break;
+            }
+        }
+        if(!chosenPlayer)
+        {
+            ShengLiao_dst[i] = selectedPlayers[0]->getID();
+            ShengLiao_cross[i] = 1;
+            ShengLiao_count++;
+        }
 
-        action = newAction(605);
-        action->add_args(1);
+        action = newAction(ACTION_MAGIC_SKILL, SHENG_LIAO);
         for (int i = 0; i < ShengLiao_count; ++i)
         {
             action->add_dst_ids(ShengLiao_dst[i]);
+            action->add_args(ShengLiao_cross[i]);
         }
 
         emit sendCommand(network::MSG_ACTION, action);
         ShengLiaoAddition=true;
+        for(int i=0;i<3;i++)
+        {
+            ShengLiao_dst[i]=0;
+            ShengLiao_cross[i]=0;
+        }
+        ShengLiao_count = 0;
         gui->reset();
         break;
     }
@@ -305,18 +343,20 @@ void ShengNv::onCancelClicked()
     switch(state)
     {
 //怜悯
-    case 604:
-        respond = newRespond(604);
+    case LIAN_MIN:
+        respond = new Respond();
+        respond->add_args(0);
+        respond->set_respond_id(LIAN_MIN);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //冰霜祷言
 //治疗术
-    case 602:
+    case ZHI_LIAO_SHU:
 //治愈之光
-    case 603:
+    case ZHI_YU_ZHI_GUANG:
 //圣疗
-    case 651:
+    case SHENG_LIAO_1:
         if(actionFlag==0)
             normal();
         else if(actionFlag==4)
@@ -325,21 +365,21 @@ void ShengNv::onCancelClicked()
     }
 }
 
-void ShengNv::askForSkill(QString skill)
+void ShengNv::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("冰霜祷言"))
+    if(cmd->respond_id() == BING_SHUANG_DAO_YAN)
         BingShuangDaoYan();
-    else if(skill==QStringLiteral("怜悯"))
+    else if(cmd->respond_id() == LIAN_MIN)
         LianMin();
 }
-
+/*
 void ShengNv::additionalAction()
 {
     //Role::additionalAction();
     if(ShengLiaoAddition)
         tipArea->addBoxItem(QStringLiteral("1.攻击或法术行动（圣疗）"));
 }
+*/
 
 void ShengNv::turnBegin()
 {

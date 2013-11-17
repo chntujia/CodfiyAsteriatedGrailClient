@@ -1,43 +1,14 @@
 ﻿#include "KuangZhan.h"
+enum CAUSE{
+    XUE_YING_KUANG_DAO = 201,
+    XUE_XING_PAO_XIAO = 202,
+    KUANG_HUA = 203,
+    XUE_YING_KUANG_DAO_USED = 204,
+    SI_LIE = 205
+};
 
 KuangZhan::KuangZhan()
 {
     makeConnection();
-setMyRole(this);
-}
-
-void KuangZhan::SiLie()
-{
-    state=36;
-    tipArea->setMsg(QStringLiteral("是否发动撕裂？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
-}
-
-void KuangZhan::XueXingPaoXiao()
-{
-    state=36;
-    tipArea->setMsg(QStringLiteral("是否发动血腥咆哮？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
-
-}
-
-void KuangZhan::XueYingKuangDao()
-{
-    state=36;
-    tipArea->setMsg(QStringLiteral("是否发动血影狂刀？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
-}
-
-void KuangZhan::askForSkill(QString skill)
-{
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("撕裂"))
-        SiLie();
-    else if(skill==QStringLiteral("血腥咆哮"))
-        XueXingPaoXiao();
-    else if(skill==QStringLiteral("血影狂刀"))
-        XueYingKuangDao();
+    setMyRole(this);
 }

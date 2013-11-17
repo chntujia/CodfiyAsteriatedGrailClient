@@ -1034,7 +1034,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 // 治疗询问
                 targetID=cmd->args(0);
                 howMany=cmd->args(1);
-                int max_avail = cmd->args(2);
+                int max_avail = cmd->args(3);
                 gui->reset();
                 if(targetID==myID)
                     myRole->cure(playerList[myID]->getCrossNum(),howMany,cmd->args(2),max_avail);
@@ -1516,7 +1516,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 {
                     if (player->getCrossNum() > player_info->heal_count())
                     {
-                       msg=playerList[targetID]->getRoleName()+QStringLiteral("æ²»ç–—å‡å°‘")+QString::number(howMany);
+                       howMany = player->getCrossNum() - player_info->heal_count();
+                       msg=playerList[targetID]->getRoleName()+QStringLiteral("使用了")+QString::number(howMany)+QStringLiteral("点治疗");
                        gui->logAppend(msg);
                     }
                     player->setCrossNum(player_info->heal_count());
