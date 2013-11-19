@@ -656,7 +656,7 @@ void Role::onOkClicked()
     case 12:
         if(selectedCards[0]->getType()=="attack"){
             action = newAction(network::ACTION_ATTACK);
-            action->add_args(selectedCards[0]->getID());
+            action->add_card_ids(selectedCards[0]->getID());
             action->add_dst_ids(selectedPlayers[0]->getID());
             usedAttack=true;
             usedMagic=usedSpecial=false;
@@ -684,13 +684,13 @@ void Role::onOkClicked()
         if(selectedCards[0]->getType()=="attack")
         {
             respond->add_args(RA_ATTACK);
-            respond->add_args(selectedCards[0]->getID());
+            respond->add_card_ids(selectedCards[0]->getID());
             respond->add_dst_ids(selectedPlayers[0]->getID());
         }
         else if(selectedCards[0]->getElement()=="light")
         {
             respond->add_args(RA_BLOCK);
-            respond->add_args(selectedCards[0]->getID());
+            respond->add_card_ids(selectedCards[0]->getID());
         }
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
@@ -816,12 +816,12 @@ void Role::onOkClicked()
         if(selectedCards[0]->getName()==QStringLiteral("圣光"))
         {
             respond->add_args(RA_BLOCK);
-            respond->add_args(selectedCards[0]->getID());
+            respond->add_card_ids(selectedCards[0]->getID());
         }
         else if(selectedCards[0]->getName()==QStringLiteral("魔弹"))
         {
             respond->add_args(RA_ATTACK);
-            respond->add_args(selectedCards[0]->getID());
+            respond->add_card_ids(selectedCards[0]->getID());
             respond->add_dst_ids(selectedPlayers[0]->getID());
         }
         gui->reset();
