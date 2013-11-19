@@ -7,8 +7,6 @@ class SiLing : public Role{
 public:
     SiLing();
     void normal();
-    void askForSkill(QString skill);
-    void BuXiu();
 public slots:
     void onOkClicked();
     void onCancelClicked();

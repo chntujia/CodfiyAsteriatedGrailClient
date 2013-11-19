@@ -1520,6 +1520,12 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                        msg=playerList[targetID]->getRoleName()+QStringLiteral("使用了")+QString::number(howMany)+QStringLiteral("点治疗");
                        gui->logAppend(msg);
                     }
+                    else
+                    {
+                        howMany = player_info->heal_count() - player->getCrossNum();
+                        msg=playerList[targetID]->getRoleName()+QStringLiteral("增加了")+QString::number(howMany)+QStringLiteral("点治疗");
+                        gui->logAppend(msg);
+                    }
                     player->setCrossNum(player_info->heal_count());
 
                     playerArea->update();

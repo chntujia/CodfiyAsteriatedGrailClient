@@ -1,4 +1,12 @@
 ﻿#include "SiLing.h"
+enum CAUSE{
+    BU_XIU = 1301,
+    SHENG_DU = 1302,
+    WEN_YI = 1303,
+    SI_WANG_ZHI_CHU = 1304,
+    MU_BEI_YUN_LUO = 1305
+};
+
 SiLing::SiLing()
 {
     makeConnection();
@@ -38,17 +46,10 @@ void SiLing::normal()
     unactionalCheck();
 }
 
-void SiLing::BuXiu()
-{
-    state = 36;
-    tipArea->setMsg(QStringLiteral("是否发动不朽？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
-}
 
 void SiLing::WenYi()
 {
-    state = 1302;
+    state = WEN_YI;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -63,7 +64,7 @@ void SiLing::WenYi()
 
 void SiLing::SiWangZhiChu()
 {
-    state = 1303;
+    state = SI_WANG_ZHI_CHU;
     Player* myself=dataInterface->getMyself();
     handArea->reset();
     playerArea->reset();
@@ -77,7 +78,7 @@ void SiLing::SiWangZhiChu()
 
     handArea->enableAll();
 
-    tipArea->setMsg("请选择移除的治疗，最少为2");
+    tipArea->setMsg(QStringLiteral("请选择移除的治疗，最少为2"));
     int cross = myself->getCrossNum();
     for(;cross>1;cross--)
         tipArea->addBoxItem(QString::number(cross));
@@ -86,7 +87,7 @@ void SiLing::SiWangZhiChu()
 
 void SiLing::MuBeiYunLuo()
 {
-    state = 1304;
+    state = MU_BEI_YUN_LUO;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -102,10 +103,10 @@ void SiLing::cardAnalyse()
     QList<Card*> selectedCards=handArea->getSelectedCards();
     switch (state)
     {
-    case 1302:
+    case WEN_YI:
         decisionArea->enable(0);
         break;
-    case 1303:
+    case SI_WANG_ZHI_CHU:
         foreach(Card*ptr,selectedCards)
             if(ptr->getElement()!=selectedCards[0]->getElement()){
                 playerArea->disableAll();
@@ -139,27 +140,24 @@ void SiLing::onOkClicked()
 
     switch(state)
     {
-    case 1302:
-        action = newAction(1302);
-        action->add_args(selectedCards[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
+    case WEN_YI:
+        action = newAction(ACTION_MAGIC_SKILL, WEN_YI);
+        action->add_card_ids(selectedCards[0]->getID());
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 1303:
-        action = newAction(1303);
+    case SI_WANG_ZHI_CHU:
+        action = newAction(ACTION_MAGIC_SKILL, SI_WANG_ZHI_CHU);
         action->add_dst_ids(selectedPlayers[0]->getID());
         action->add_args(tipArea->getBoxCurrentText().toInt());
         foreach(Card*ptr,selectedCards){
-            action->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
         }
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 1304:
-        action = newAction(1304);
-        action->add_args(1);
+    case MU_BEI_YUN_LUO:
+        action = newAction(ACTION_MAGIC_SKILL, MU_BEI_YUN_LUO);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
@@ -177,11 +175,4 @@ void SiLing::onCancelClicked()
         normal();
         break;
     }
-}
-
-void SiLing::askForSkill(QString skill)
-{
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("不朽"))
-        BuXiu();
 }
