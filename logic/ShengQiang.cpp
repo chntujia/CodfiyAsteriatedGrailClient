@@ -1,9 +1,19 @@
 ﻿#include "shengqiang.h"
 
+enum CAUSE{
+    HUI_YAO = 1001,
+    CHENG_JIE = 1002,
+    SHENG_GUANG_QI_YU = 1003,
+	TIAN_QIANG = 1004,
+	DI_QIANG = 1005,
+	SHEN_SHENG_XIN_YANG = 1006,
+	SHENG_JI = 1007
+};
+
 ShengQiang::ShengQiang()
 {
     makeConnection();
-setMyRole(this);
+	setMyRole(this);
     Button *huiYao, *chengJie, *shengGuangQiYu;
     huiYao = new Button(3,QStringLiteral("辉耀"));
     buttonArea->addButton(huiYao);
@@ -45,7 +55,7 @@ void ShengQiang::normal()
 
 void ShengQiang::HuiYao()
 {
-    state=1001;
+    state=HUI_YAO;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -60,7 +70,7 @@ void ShengQiang::HuiYao()
 
 void ShengQiang::ChengJie()
 {
-    state=1002;
+    state=CHENG_JIE;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -81,15 +91,18 @@ void ShengQiang::TianQiang()
     tipArea->setMsg(QStringLiteral("是否发动天枪？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
+	handArea->disableAll();
 }
 
 void ShengQiang::DiQiang()
 {
-    state=1005;
+    state=DI_QIANG;
     tipArea->setMsg(QStringLiteral("请选择发动地枪使用的治疗点数，取消将发动圣击"));
     decisionArea->enable(0);
     decisionArea->enable(1);
+	handArea->disableAll();
     Player* myself=dataInterface->getMyself();
+	tipArea->reset();
     int cross = myself->getCrossNum();
     if (cross>4)
         cross = 4;
@@ -100,7 +113,7 @@ void ShengQiang::DiQiang()
 
 void ShengQiang::ShengGuangQiYu()
 {
-    state=1006;
+    state=SHENG_GUANG_QI_YU;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -115,10 +128,10 @@ void ShengQiang::cardAnalyse()
 
     switch (state)
     {
-    case 1001:
+    case HUI_YAO:
         decisionArea->enable(0);
         break;
-    case 1002:
+    case CHENG_JIE:
         Player* myself=dataInterface->getMyself();
         QList<Player*>players=dataInterface->getPlayerList();
         for(int i=0;i<players.size();i++)
@@ -177,35 +190,36 @@ void ShengQiang::onOkClicked()
             attackAction();
         }
         break;
-    case 1001:
-        action = newAction(1001);
-        action->add_args(selectedCards[0]->getID());
+    case HUI_YAO:
+		action = newAction(ACTION_MAGIC_SKILL, HUI_YAO);
+        action->add_card_ids(selectedCards[0]->getID());
 
         HuiYaoAddition=true;
-        dataInterface->removeHandCard(selectedCards[0]);
+        //dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 1002:
-        action = newAction(1002);
-        action->add_args(selectedCards[0]->getID());
+    case CHENG_JIE:
+        action = newAction(ACTION_MAGIC_SKILL, CHENG_JIE);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
+        //dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 1005:
-        respond = newRespond(1005);
+    case DI_QIANG:
+		respond = new Respond();
         respond->add_args(tipArea->getBoxCurrentText().toInt());
+		respond->set_respond_id(DI_QIANG);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 1006:
-        action = newAction(1006);
-        action->add_args(1);
+    case SHENG_GUANG_QI_YU:
+        action = newAction(ACTION_MAGIC_SKILL, SHENG_GUANG_QI_YU);
+        //action->add_args(1);
         ShengGuangQiYuAddition=true;
         emit sendCommand(network::MSG_ACTION, action);
-        gui->reset();;
+        gui->reset();
         break;
     }
 }
@@ -219,14 +233,16 @@ void ShengQiang::onCancelClicked()
 
     switch(state)
     {
-    case 1005:
-        respond = newRespond(1005);
+    case DI_QIANG:
+        respond = new Respond();
+		respond->add_args(0);
+		respond->set_respond_id(DI_QIANG);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 1001:
-    case 1002:
-    case 1006:
+    case HUI_YAO:
+    case CHENG_JIE:
+    case SHENG_GUANG_QI_YU:
         if(actionFlag==0)
             normal();
         else if(actionFlag==1)
@@ -234,13 +250,19 @@ void ShengQiang::onCancelClicked()
         break;
     }
 }
-void ShengQiang::askForSkill(QString skill)
+void ShengQiang::askForSkill(network::Command* cmd)
 {
     //Role::askForSkill(skill);
-    if(skill==QStringLiteral("天枪"))
+    if(cmd->respond_id() == TIAN_QIANG)
+	{
         TianQiang();
-    else if(skill==QStringLiteral("地枪"))
+		
+	}
+    else if(cmd->respond_id()== DI_QIANG)
+	{
         DiQiang();
+		
+	}
 }
 void ShengQiang::additionalAction()
 {

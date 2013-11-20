@@ -8,7 +8,7 @@ class ShengQiang : public Role
 public:
     ShengQiang();
     void normal();
-    void askForSkill(QString skill);
+    void askForSkill(Command *cmd);
     void additionalAction();
     void turnBegin();
 public slots:
