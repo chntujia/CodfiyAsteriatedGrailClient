@@ -1214,22 +1214,37 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         break;
     }
 
-    case network::MSG_USE_CARD:
+    case network::MSG_CARD:
     {
-        network::UseCard* use_card = (network::UseCard*)proto;
-        cardID=use_card->card_id();
-        targetID=use_card->dst_id();
-        sourceID=use_card->src_id();
-        card=dataInterface->getCard(cardID);
-
-        if(targetID!=network::PLAYER_NONE_ID && targetID!=sourceID)
-            playerArea->drawLineBetween(sourceID,targetID);
-
-        cards.clear();
-        cards<<card;
-        showArea->showCards(cards);
-
-        gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了<font color=\'orange\'>")+card->getInfo()+"</font>");
+        network::CardMsg* cardMsg = (network::CardMsg*)proto;
+        if(cardMsg->type() == CM_USE){
+            cardID = cardMsg->card_ids(0);
+            targetID = cardMsg->dst_id();
+            sourceID = cardMsg->src_id();
+            card = dataInterface->getCard(cardID);
+            if(targetID!=network::PLAYER_NONE_ID && targetID!=sourceID){
+                playerArea->drawLineBetween(sourceID,targetID);
+            }
+            if(cardMsg->is_real()){
+                cards.clear();
+                cards<<card;
+                showArea->showCards(cards);
+            }
+            gui->logAppend(playerList[sourceID]->getRoleName()+QStringLiteral("对")+playerList[targetID]->getRoleName()+QStringLiteral("使用了<font color=\'orange\'>")+card->getInfo()+"</font>");
+        }
+        else if(cardMsg->type() == CM_SHOW){
+            sourceID = cardMsg->src_id();
+            cards.clear();
+            msg = playerList[sourceID]->getRoleName()+QStringLiteral("展示了：<font color=\'orange\'>");
+            for(int i = 0; i < cardMsg->card_ids_size(); i++){
+                cardID = cardMsg->card_ids(i);
+                card = dataInterface->getCard(cardID);
+                msg += card->getInfo() + " ";
+                cards<<card;
+            }
+            showArea->showCards(cards);
+            gui->logAppend(msg+"</font>");
+        }
         break;
     }
     case network::MSG_ACTION:
@@ -1434,24 +1449,24 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             }
             teamArea->setDroppedCardNum(game_info->discard());
         }
-        // 更新展示区
-        if (game_info->show_cards_size() > 0)
-        {
-            msg+=":<font color=\'orange\'>";
-            cards.clear();
-            for(i=0;i<game_info->show_cards_size();i++)
-            {
-                cardID=game_info->show_cards(i);
-                card=dataInterface->getCard(cardID);
-                msg+=card->getInfo()+" ";
-                cards<<card;
-            }
-            msg+="</font>";
-            showArea->showCards(cards);
+//        // 更新展示区
+//        if (game_info->show_cards_size() > 0)
+//        {
+//            msg+=":<font color=\'orange\'>";
+//            cards.clear();
+//            for(i=0;i<game_info->show_cards_size();i++)
+//            {
+//                cardID=game_info->show_cards(i);
+//                card=dataInterface->getCard(cardID);
+//                msg+=card->getInfo()+" ";
+//                cards<<card;
+//            }
+//            msg+="</font>";
+//            showArea->showCards(cards);
 
-            player = playerList[game_info->show_from()];
-            gui->logAppend(player->getRoleName()+QStringLiteral("展示了")+msg);
-        }
+//            player = playerList[game_info->show_from()];
+//            gui->logAppend(player->getRoleName()+QStringLiteral("展示了")+msg);
+//        }
 //        // 清空数组
 //        if (game_info->delete_field_size() > 0)
 //        {

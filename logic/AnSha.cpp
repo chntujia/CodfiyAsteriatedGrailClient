@@ -73,8 +73,7 @@ void AnSha::onOkClicked()
 {
     Role::onOkClicked();
     QList<Card*>selectedCards;
-    int howMany,i;
-    QString command;
+    int i;
     network::Respond* respond;
 
     selectedCards=handArea->getSelectedCards();
