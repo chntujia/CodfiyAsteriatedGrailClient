@@ -1322,12 +1322,17 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     {
         network::SkillMsg* skill = (network::SkillMsg*)proto;
         sourceID = skill->src_id();
-        msg = playerList[sourceID]->getRoleName()+QStringLiteral("对");
-        for(i = 0; i < skill->dst_ids_size()-1; i++){
-            targetID = skill->dst_ids(i);
-            msg += playerList[targetID]->getRoleName()+QStringLiteral("、");
+        if(skill->dst_ids(0)!=-1){
+            msg = playerList[sourceID]->getRoleName()+QStringLiteral("对");
+            for(i = 0; i < skill->dst_ids_size()-1; i++){
+                targetID = skill->dst_ids(i);
+                msg += playerList[targetID]->getRoleName()+QStringLiteral("、");
+            }
+            msg += playerList[skill->dst_ids(i)]->getRoleName() + QStringLiteral("发动") + getCauseString(skill->skill_id());
         }
-        msg += playerList[skill->dst_ids(i)]->getRoleName() + QStringLiteral("发动") + getCauseString(skill->skill_id());
+        else{
+            msg = playerList[sourceID]->getRoleName() + QStringLiteral("发动") + getCauseString(skill->skill_id());
+        }
         gui->logAppend(msg);
         break;
     }

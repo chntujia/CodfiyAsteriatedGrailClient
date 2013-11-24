@@ -9,9 +9,8 @@ public:
     void normal();
     void attackOrMagic();
     void attackAction();
-    void additionalAction();
-    void turnBegin();
     void MaoXianZheTianTang();
+    void turnBegin();
 public slots:
     void onOkClicked();
     void onCancelClicked();
@@ -24,9 +23,7 @@ public slots:
     void TeShuJiaGong();
     void TouTianHuanRi();
 private:
-    bool onceUsed2;
     bool qizha;
-    bool TouTianHuanRiAddition,TeShuJiaGongAddition;
 };
 
 #endif // MAOXIAN_H

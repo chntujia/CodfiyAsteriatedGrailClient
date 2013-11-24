@@ -1,4 +1,16 @@
 ﻿#include "MaoXian.h"
+enum CAUSE{
+    QI_ZHA = 1201,
+    MAO_XIAN_ZHE_TIAN_TANG = 1202,
+    TOU_TIAN_HUAN_RI = 1203,
+    TE_SHU_JIA_GONG = 1204,
+    DI_XIA_FA_ZHE = 1205
+};
+enum SpecialActionId{
+    SPECIAL_BUY,
+    SPECIAL_SYNTHESIZE,
+    SPECIAL_EXTRACT
+};
 MaoXian::MaoXian()
 {
     makeConnection();
@@ -25,7 +37,7 @@ void MaoXian::buy()
 
     int energy=team->getEnergy();
 
-    state=4;
+    state = DI_XIA_FA_ZHE;
     decisionArea->enable(0);
     decisionArea->enable(1);
     handArea->reset();
@@ -42,7 +54,7 @@ void MaoXian::buy()
 
 void MaoXian::extract()
 {
-    state=1204;
+    state = MAO_XIAN_ZHE_TIAN_TANG;
     tipArea->reset();
     handArea->reset();
     playerArea->reset();
@@ -71,7 +83,7 @@ void MaoXian::normal()
 
 //偷天换日 特殊加工
     if(myself->getEnergy()>0){
-        if(dataInterface->getOtherTeam()->getGem()>0 && !onceUsed2)
+        if(dataInterface->getOtherTeam()->getGem()>0 && !onceUsed)
             buttonArea->enable(4);
         if(!onceUsed)
             buttonArea->enable(5);
@@ -91,7 +103,7 @@ void MaoXian::attackOrMagic()
                 break;
             }
     if(myself->getEnergy()>0){
-        if(dataInterface->getOtherTeam()->getGem()>0 && !onceUsed2)
+        if(dataInterface->getOtherTeam()->getGem()>0 && !onceUsed)
             buttonArea->enable(4);
         if(!onceUsed)
             buttonArea->enable(5);
@@ -112,6 +124,7 @@ void MaoXian::attackAction()
 
 void MaoXian::QiZha()
 {
+    //借用底层的攻击目标判定，直到onOkClicked
     state=10;
     qizha=true;
     handArea->reset();
@@ -136,7 +149,7 @@ void MaoXian::QiZha()
 
 void MaoXian::TeShuJiaGong()
 {
-    state=1202;
+    state = TE_SHU_JIA_GONG;
     Player*myself=dataInterface->getMyself();
 
     handArea->reset();
@@ -157,7 +170,7 @@ void MaoXian::TeShuJiaGong()
 
 void MaoXian::TouTianHuanRi()
 {
-    state=1203;
+    state = TOU_TIAN_HUAN_RI;
     Player*myself=dataInterface->getMyself();
 
     handArea->reset();
@@ -200,7 +213,7 @@ void MaoXian::playerAnalyse()
     int crystal;
     switch (state)
     {
-    case 1204:
+    case MAO_XIAN_ZHE_TIAN_TANG:
         dst=playerArea->getSelectedPlayers().at(0);
         gem=dataInterface->getMyTeam()->getGem();
         crystal=dataInterface->getMyTeam()->getCrystal();        
@@ -238,18 +251,13 @@ void MaoXian::playerAnalyse()
 
 void MaoXian::onOkClicked()
 {
-    if(qizha && state==10)
-        state=1201;
-    if(state==4)
-        state=1205;
+    if(qizha && state==10){
+        state = QI_ZHA;
+    }
     Role::onOkClicked();
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
 
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
     QString text;
     int flag;
 
@@ -257,102 +265,66 @@ void MaoXian::onOkClicked()
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
-    network::Respond* respond;
 
     switch(state)
     {
-//额外行动询问
-    case 42:
-        text=tipArea->getBoxCurrentText();
-        if(text[0]=='1'){
-            TeShuJiaGongAddition=false;
-            respond = newRespond(1205);
-            respond->add_args(1);
-            emit sendCommand(network::MSG_RESPOND, respond);
-            attackOrMagic();
-        }
-        else if(text[0]=='2'){
-            TouTianHuanRiAddition=false;
-            respond = newRespond(1206);
-            respond->add_args(1);
-            emit sendCommand(network::MSG_RESPOND, respond);
-            attackOrMagic();
-        }
-        break;
 //欺诈
-    case 1201:
-        action = newAction(1201);
-
-        tipArea->addBoxItem(QStringLiteral("1.风"));
-        tipArea->addBoxItem(QStringLiteral("2.水"));
-        tipArea->addBoxItem(QStringLiteral("3.火"));
-        tipArea->addBoxItem(QStringLiteral("4.地"));
-        tipArea->addBoxItem(QStringLiteral("5.雷"));
-        if(selectedCards.size()==3)
+    case QI_ZHA:
+        action = newAction(ACTION_ATTACK_SKILL, QI_ZHA);
+        if(selectedCards.size()==3){
             flag=6;
-        else
+        }
+        else{
             flag=tipArea->getBoxCurrentIndex()+1;
+        }
         switch(flag)
         {
         case 1:
-            respond->add_args(66);
+            action->add_args(66);
             break;
         case 2:
-            respond->add_args(133);
+            action->add_args(133);
             break;
         case 3:
-            respond->add_args(87);
+            action->add_args(87);
             break;
         case 4:
-            respond->add_args(45);
+            action->add_args(45);
             break;
         case 5:
-            respond->add_args(110);
+            action->add_args(110);
             break;
         case 6:
-            respond->add_args(39);
+            action->add_args(39);
             break;
         }
-        respond->add_dst_ids(selectedPlayers[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
         foreach(Card*ptr,selectedCards){
-            respond->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
         }
         emit sendCommand(network::MSG_ACTION, action);
         qizha=false;
         gui->reset();
         break;
 //特殊加工
-    case 1202:
-        action = newAction(1202);
-        text=tipArea->getBoxCurrentText();
-        if(text[0]=='1')
-            action->add_args(0);
-        else
-            action->add_args(1);
-        onceUsed=true;
-        TeShuJiaGongAddition=true;
+    case TE_SHU_JIA_GONG:
+        action = newAction(ACTION_MAGIC_SKILL, TE_SHU_JIA_GONG);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
+        onceUsed = true;
         break;
 //偷天换日
-    case 1203:
-        action = newAction(1203);
-        text=tipArea->getBoxCurrentText();
-        if(text[0]=='1')
-            action->add_args(0);
-        else
-            action->add_args(1);
-        TouTianHuanRiAddition=true;
-        onceUsed2=true;
+    case TOU_TIAN_HUAN_RI:
+        action = newAction(ACTION_MAGIC_SKILL, TOU_TIAN_HUAN_RI);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
+        onceUsed = true;
         break;
 //冒险家天堂
-    case 1204:
-        action = newAction(1204);
+    case MAO_XIAN_ZHE_TIAN_TANG:
+        action = newAction(ACTION_SPECIAL_SKILL, MAO_XIAN_ZHE_TIAN_TANG);
         action->add_dst_ids(selectedPlayers[0]->getID());
-        text=tipArea->getBoxCurrentText();
+        text = tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
         {
         case 1:
@@ -380,8 +352,8 @@ void MaoXian::onOkClicked()
         gui->reset();
         break;
 //购买
-    case 1205:
-//        action = newAction(network::ACTION_BUY);
+    case DI_XIA_FA_ZHE:
+        action = newAction(ACTION_SPECIAL, SPECIAL_BUY);
         int stone=dataInterface->getMyTeam()->getEnergy();
         if(stone<4)
         {
@@ -399,8 +371,6 @@ void MaoXian::onOkClicked()
             action->add_args(0);
         }
         gui->reset();
-        usedSpecial=true;
-        usedAttack=usedMagic=false;
         emit sendCommand(network::MSG_ACTION, action);
         break;
     }
@@ -410,7 +380,7 @@ void MaoXian::onUnready()
 {
     switch(state)
     {
-    case 1204:
+    case MAO_XIAN_ZHE_TIAN_TANG:
         tipArea->reset();
         normal();
         break;
@@ -424,13 +394,14 @@ void MaoXian::onCancelClicked()
     {
 //欺诈
     case 10:
-    case 1201:
+    case QI_ZHA:
 //特殊加工
-    case 1202:
+    case TE_SHU_JIA_GONG:
 //偷天换日
-    case 1203:
+    case TOU_TIAN_HUAN_RI:
 //冒险者天堂
-    case 1204:
+    case MAO_XIAN_ZHE_TIAN_TANG:
+    case DI_XIA_FA_ZHE:
         if(actionFlag==4)
             attackOrMagic();
         if(actionFlag==0)
@@ -440,20 +411,9 @@ void MaoXian::onCancelClicked()
     }
 }
 
-void MaoXian::additionalAction()
-{
-    //Role::additionalAction();
-    if(TeShuJiaGongAddition)
-        tipArea->addBoxItem(QStringLiteral("1.攻击或法术行动（特殊加工）"));
-    if(TouTianHuanRiAddition)
-        tipArea->addBoxItem(QStringLiteral("2.攻击或法术行动（偷天换日）"));
-}
-
 void MaoXian::turnBegin()
 {
     Role::turnBegin();
-    TeShuJiaGongAddition=TouTianHuanRiAddition=false;
-    onceUsed2=false;
     qizha=false;
 }
 

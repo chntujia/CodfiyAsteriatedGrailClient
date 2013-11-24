@@ -86,6 +86,10 @@ enum CAUSE{
     YUAN_SU_DIAN_RAN = 1106,
     YUE_GUANG = 1107,
     YUAN_SU_XI_SHOU = 1108,
+    QI_ZHA = 1201,
+    MAO_XIAN_ZHE_TIAN_TANG = 1202,
+    TOU_TIAN_HUAN_RI = 1203,
+    TE_SHU_JIA_GONG = 1204,
     BU_XIU = 1301,
     SHENG_DU = 1302,
     WEN_YI = 1303,
@@ -258,6 +262,14 @@ QString getCauseString(int cause)
         return QStringLiteral("死亡之触");
     case MU_BEI_YUN_LUO:
         return QStringLiteral("墓碑陨落");
+    case QI_ZHA:
+        return QStringLiteral("欺诈");
+    case MAO_XIAN_ZHE_TIAN_TANG:
+        return QStringLiteral("冒险家天堂");
+    case TOU_TIAN_HUAN_RI:
+        return QStringLiteral("偷天换日");
+    case TE_SHU_JIA_GONG:
+        return QStringLiteral("特殊加工");
     default:
         return "CauseString undefined";
     }

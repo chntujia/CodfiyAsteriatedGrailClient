@@ -3,7 +3,7 @@
 enum CAUSE{
     FAN_SHI = 501,
     SHUI_YING = 502,
-    QIAN_XING = 503,
+    QIAN_XING = 503
 };
 
 AnSha::AnSha()
