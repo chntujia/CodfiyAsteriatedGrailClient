@@ -150,7 +150,6 @@ void MaoXian::QiZha()
 void MaoXian::TeShuJiaGong()
 {
     state = TE_SHU_JIA_GONG;
-    Player*myself=dataInterface->getMyself();
 
     handArea->reset();
     playerArea->reset();
@@ -158,20 +157,11 @@ void MaoXian::TeShuJiaGong()
 
     decisionArea->enable(1);
     decisionArea->enable(0);
-
-    tipArea->setMsg(QStringLiteral("请选择使用的能量："));
-    if(myself->getCrystal()>=1)
-        tipArea->addBoxItem(QStringLiteral("1.水晶"));
-    if(myself->getGem()>=1)
-        tipArea->addBoxItem(QStringLiteral("2.宝石"));
-
-    tipArea->showBox();
 }
 
 void MaoXian::TouTianHuanRi()
 {
     state = TOU_TIAN_HUAN_RI;
-    Player*myself=dataInterface->getMyself();
 
     handArea->reset();
     playerArea->reset();
@@ -179,14 +169,6 @@ void MaoXian::TouTianHuanRi()
 
     decisionArea->enable(1);
     decisionArea->enable(0);
-
-    tipArea->setMsg(QStringLiteral("请选择使用的能量："));
-    if(myself->getCrystal()>=1)
-        tipArea->addBoxItem(QStringLiteral("1.水晶"));
-    if(myself->getGem()>=1)
-        tipArea->addBoxItem(QStringLiteral("2.宝石"));
-
-    tipArea->showBox();
 }
 
 void MaoXian::cardAnalyse()
@@ -354,7 +336,7 @@ void MaoXian::onOkClicked()
 //购买
     case DI_XIA_FA_ZHE:
         action = newAction(ACTION_SPECIAL, SPECIAL_BUY);
-        int stone=dataInterface->getMyTeam()->getEnergy();
+        int stone = dataInterface->getMyTeam()->getEnergy();
         if(stone<4)
         {
             action->add_args(2);
@@ -402,10 +384,12 @@ void MaoXian::onCancelClicked()
 //冒险者天堂
     case MAO_XIAN_ZHE_TIAN_TANG:
     case DI_XIA_FA_ZHE:
-        if(actionFlag==4)
+        if(actionFlag == 4){
             attackOrMagic();
-        if(actionFlag==0)
+        }
+        else if(actionFlag == 0){
             normal();
+        }
         qizha=false;
         break;
     }
