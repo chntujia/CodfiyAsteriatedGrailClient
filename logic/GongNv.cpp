@@ -2,7 +2,7 @@
 
 enum CAUSE{
 	JING_ZHUN_SHE_JI = 301,
-	SHAN_GUANG_XIAN_JIN = 302,
+	SHAN_GUANG_XIAN_JING = 302,
 	JU_JI = 303,
 	SHAN_DIAN_JIAN = 304,
 	GUAN_CHUAN_SHE_JI = 305
@@ -45,8 +45,8 @@ void GongNv::askForSkill(network::Command* cmd)
     else if(cmd->respond_id() == JING_ZHUN_SHE_JI){
         JingZhunSheJi();
 	}
-	else{//for dibug{
-		  
+	else{//for other skill{
+		Role::askForSkill(cmd);
 	}
 }
 
@@ -54,7 +54,7 @@ void GongNv::askForSkill(network::Command* cmd)
 
 void GongNv::GuanChuanSheJi()
 {
-    state=305;
+    state=GUAN_CHUAN_SHE_JI;
     tipArea->setMsg(QStringLiteral("是否发动贯穿射击？"));
 	handArea->reset();
     handArea->setQuota(1);
@@ -65,7 +65,7 @@ void GongNv::GuanChuanSheJi()
 
 void GongNv::JingZhunSheJi()
 {
-    state=301;
+    state=JING_ZHUN_SHE_JI;
     tipArea->setMsg(QStringLiteral("是否发动精准射击？"));
 	handArea->disableAll();
     decisionArea->enable(0);
@@ -74,7 +74,7 @@ void GongNv::JingZhunSheJi()
 
 void GongNv::ShanGuangXianJing()
 {
-    state=302;
+    state=SHAN_GUANG_XIAN_JING;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -96,7 +96,7 @@ void GongNv::JuJi()
     gem=myself->getGem();
     crystal=myself->getCrystal();
 
-    state=303;
+    state=JU_JI;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -115,10 +115,10 @@ void GongNv::cardAnalyse()
 
     switch (state)
     {
-	case 305:
+	case GUAN_CHUAN_SHE_JI:
         decisionArea->enable(0);
         break;
-    case 302:
+    case SHAN_GUANG_XIAN_JING:
         playerArea->enableAll();
         break;
     }
@@ -160,7 +160,7 @@ void GongNv::onOkClicked()
         }
         break;
 //贯穿询问
-    case 305:
+    case GUAN_CHUAN_SHE_JI:
         respond = new network::Respond();
         respond->set_src_id(myID);
         respond->set_respond_id(305);
@@ -171,7 +171,7 @@ void GongNv::onOkClicked()
         gui->reset();
         break;   
 //闪光陷阱
-    case 302:
+    case SHAN_GUANG_XIAN_JING:
         action = newAction(ACTION_MAGIC_SKILL, 302);
         action->set_src_id(myID);
         action->set_action_id(302);
@@ -184,7 +184,7 @@ void GongNv::onOkClicked()
         gui->reset();
         break;
 //狙击
-    case 303:
+    case JU_JI:
         action = newAction(ACTION_MAGIC_SKILL, 303);
         action->set_src_id(myID);
         action->set_action_id(303);
@@ -198,7 +198,7 @@ void GongNv::onOkClicked()
         gui->reset();
         break;
 //精准射击	
-	case 301:
+	case JING_ZHUN_SHE_JI:
         respond = new network::Respond();
         respond->set_src_id(myID);
         respond->set_respond_id(301);
@@ -220,7 +220,7 @@ void GongNv::onCancelClicked()
     switch(state)
     {
 	//精准射击
-	case 301:
+	case JING_ZHUN_SHE_JI:
         respond = new network::Respond();
 		respond->set_src_id(myID);
 		respond->set_respond_id(301);
@@ -230,7 +230,7 @@ void GongNv::onCancelClicked()
         break;
 
 //贯穿询问
-    case 305:
+    case GUAN_CHUAN_SHE_JI:
 		respond = new network::Respond();
         respond->set_src_id(myID);
         respond->set_respond_id(305);
@@ -239,9 +239,9 @@ void GongNv::onCancelClicked()
         gui->reset();
         break;
 //闪光陷阱
-    case 302:
+    case SHAN_GUANG_XIAN_JING:
 //狙击
-    case 303:
+    case JU_JI:
         normal();
         break;
     }
