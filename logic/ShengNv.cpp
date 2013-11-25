@@ -367,19 +367,18 @@ void ShengNv::onCancelClicked()
 
 void ShengNv::askForSkill(network::Command* cmd)
 {
-    if(cmd->respond_id() == BING_SHUANG_DAO_YAN)
+    switch (cmd->respond_id())
+    {
+    case BING_SHUANG_DAO_YAN:
         BingShuangDaoYan();
-    else if(cmd->respond_id() == LIAN_MIN)
+        break;
+    case LIAN_MIN:
         LianMin();
+        break;
+    default:
+        Role::askForSkill(cmd);
+    }
 }
-/*
-void ShengNv::additionalAction()
-{
-    //Role::additionalAction();
-    if(ShengLiaoAddition)
-        tipArea->addBoxItem(QStringLiteral("1.攻击或法术行动（圣疗）"));
-}
-*/
 
 void ShengNv::turnBegin()
 {

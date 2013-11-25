@@ -7,8 +7,7 @@ class ShenGuan: public Role{
 public:
     ShenGuan();
     void normal();
-    void askForSkill(QString skill);
-    void ShenShengQiShi();
+    void askForSkill(network::Command* cmd);
     void ShuiZhiShenLi2();
     void ShenShengQiYue1();
     void ShenShengQiYue2();

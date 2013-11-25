@@ -100,6 +100,14 @@ enum CAUSE{
     MU_BEI_YUN_LUO = 1305,
     XUN_JIE_CI_FU = 1601,
     WEI_LI_CI_FU = 1602,
+    SHEN_SHENG_QI_SHI = 1501,
+    SHEN_SHENG_QI_FU = 1502,
+    SHUI_ZHI_SHEN_LI = 1503,
+    SHENG_SHI_SHOU_HU = 1504,
+    SHEN_SHENG_QI_YUE = 1505,
+    SHEN_SHENG_LING_YU = 1506,
+    SHUI_ZHI_SHEN_LI_GIVE = 1531,
+    SHUI_ZHI_SHEN_LI_CROSS = 1532,
     LING_HUN_ZHEN_BAO = 2201,
     LING_HUN_CI_YU = 2202,
     XUE_ZHI_BEI_MING = 2301
@@ -283,7 +291,22 @@ QString getCauseString(int cause)
 		return QStringLiteral("贯穿射击");
 	case SHAN_DIAN_JIAN:
 		return QStringLiteral("闪电箭");	
-	default:
+    case SHEN_SHENG_QI_SHI:
+        return QStringLiteral("神圣启示");
+    case SHEN_SHENG_QI_FU:
+        return QStringLiteral("神圣祈福");
+    case SHUI_ZHI_SHEN_LI:
+        return QStringLiteral("水之神力");
+    case SHUI_ZHI_SHEN_LI_GIVE:
+        return QStringLiteral("水之神力给牌");
+    case SHENG_SHI_SHOU_HU:
+        return QStringLiteral("圣使守护");
+    case SHEN_SHENG_QI_YUE:
+        return qstring_literal("神圣契约");
+    case SHEN_SHENG_LING_YU:
+        return QStringLiteral("神圣领域");
+    default:
+
         return "CauseString undefined";
     }
 }

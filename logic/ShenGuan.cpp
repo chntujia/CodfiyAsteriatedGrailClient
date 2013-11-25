@@ -1,5 +1,18 @@
 ﻿#include "ShenGuan.h"
-
+enum CAUSE{
+    SHEN_SHENG_QI_SHI = 1501,
+    SHEN_SHENG_QI_FU = 1502,
+    SHUI_ZHI_SHEN_LI = 1503,
+    SHENG_SHI_SHOU_HU = 1504,
+    SHEN_SHENG_QI_YUE = 1505,
+    SHEN_SHENG_LING_YU = 1506,
+    SHUI_ZHI_SHEN_LI_GIVE = 1531,
+    SHUI_ZHI_SHEN_LI_CROSS = 1532,
+    SHEN_SHENG_QI_YUE_1 = 1551,
+    SHEN_SHENG_QI_YUE_2 = 1552,
+    SHEN_SHENG_LING_YU_1 = 1561,
+    SHEN_SHENG_LING_YU_2 = 1562
+};
 ShenGuan::ShenGuan()
 {
     makeConnection();
@@ -38,17 +51,10 @@ void ShenGuan::normal()
     unactionalCheck();
 }
 
-void ShenGuan::ShenShengQiShi()
-{
-    state = 36;
-    tipArea->setMsg(QStringLiteral("是否发动神圣启示？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
-}
 
 void ShenGuan::ShenShengQiFu()
 {
-    state = 1502;
+    state = SHEN_SHENG_QI_FU;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -63,7 +69,7 @@ void ShenGuan::ShenShengQiFu()
 
 void ShenGuan::ShuiZhiShenLi1()
 {
-    state = 1531;
+    state = SHUI_ZHI_SHEN_LI;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -79,12 +85,12 @@ void ShenGuan::ShuiZhiShenLi1()
 
 void ShenGuan::ShuiZhiShenLi2()
 {
-    state = 1532;
+    state = SHUI_ZHI_SHEN_LI_GIVE;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
 
-    tipArea->setMsg("请给目标角色一张牌");
+    tipArea->setMsg(QStringLiteral("请给目标角色一张牌"));
 
     handArea->setQuota(1);
     decisionArea->enable(1);
@@ -95,7 +101,7 @@ void ShenGuan::ShuiZhiShenLi2()
 
 void ShenGuan::ShenShengQiYue1()
 {
-    state = 1541;
+    state = SHEN_SHENG_QI_YUE_1;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动神圣契约"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -109,7 +115,7 @@ void ShenGuan::ShenShengQiYue1()
 
 void ShenGuan::ShenShengQiYue2()
 {
-    state = 1542;
+    state = SHEN_SHENG_QI_YUE_2;
     Player* myself=dataInterface->getMyself();
     handArea->reset();
     playerArea->reset();
@@ -120,7 +126,7 @@ void ShenGuan::ShenShengQiYue2()
         cross = 4;
     for(;cross>0;cross--)
         tipArea->addBoxItem(QString::number(cross));
-    tipArea->setMsg("请选择要转移的治疗数目");
+    tipArea->setMsg(QStringLiteral("请选择要转移的治疗数目"));
     tipArea->showBox();
 
     playerArea->setQuota(1);
@@ -132,7 +138,7 @@ void ShenGuan::ShenShengQiYue2()
 
 void ShenGuan::ShenShengLingYu1()
 {
-    state = 1551;
+    state = SHEN_SHENG_LING_YU_1;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -149,7 +155,7 @@ void ShenGuan::ShenShengLingYu1()
 
 void ShenGuan::ShenShengLingYu2()
 {
-    state = 1552;
+    state = SHEN_SHENG_LING_YU_2;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -179,16 +185,16 @@ void ShenGuan::cardAnalyse()
     Role::cardAnalyse();
     switch (state)
     {
-    case 1502:
+    case SHEN_SHENG_QI_FU:
         decisionArea->enable(0);
         break;
-    case 1531:
+    case SHUI_ZHI_SHEN_LI:
         playerArea->enableMate();
         break;
-    case 1532:
+    case SHUI_ZHI_SHEN_LI_GIVE:
         decisionArea->enable(0);
         break;
-    case 1552:
+    case SHEN_SHENG_LING_YU_2:
         if(lingYu==1)
             playerArea->enableAll();
         else
@@ -203,12 +209,6 @@ void ShenGuan::onOkClicked()
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
 
-    static QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
-    QString text;
-
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
@@ -217,59 +217,53 @@ void ShenGuan::onOkClicked()
 
     switch(state)
     {
-    case 1502:
-        action = newAction(1502);
+    case SHEN_SHENG_QI_FU:
+        action = newAction(ACTION_MAGIC_SKILL, SHEN_SHENG_QI_FU);
         foreach(Card*ptr,selectedCards){
-            action->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
         }
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 1531:
-        action = newAction(1531);
-        action->add_args(selectedCards[0]->getID());
+    case SHUI_ZHI_SHEN_LI:
+        action = newAction(ACTION_MAGIC_SKILL, SHUI_ZHI_SHEN_LI);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 1532:
-        respond = newRespond(1532);
-        respond->add_args(selectedCards[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
+    case SHUI_ZHI_SHEN_LI_GIVE:
+        respond = newRespond(SHUI_ZHI_SHEN_LI_GIVE);
+        respond->add_card_ids(selectedCards[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 1541:
+    case SHEN_SHENG_QI_YUE_1:
         ShenShengQiYue2();
         break;
-    case 1542:
-        respond = newRespond(1504);
+    case SHEN_SHENG_QI_YUE_2:
+        respond = newRespond(SHEN_SHENG_QI_YUE);
         respond->add_dst_ids(selectedPlayers[0]->getID());
         respond->add_args(tipArea->getBoxCurrentText().toInt());
         start = true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 1551:
+    case SHEN_SHENG_LING_YU_1:
         if(tipArea->getBoxCurrentText()[0]=='1')
             lingYu = 1;
         else
             lingYu = 2;
         ShenShengLingYu2();
         break;
-    case 1552:
-        respond = newRespond(1505);
-        respond->add_args(lingYu);
-        respond->add_dst_ids(selectedPlayers[0]->getID());
+    case SHEN_SHENG_LING_YU_2:
+        action = newAction(ACTION_MAGIC_SKILL, SHEN_SHENG_LING_YU);
+        action->add_args(lingYu);
+        action->add_dst_ids(selectedPlayers[0]->getID());
         foreach(Card*ptr,selectedCards){
-            respond->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
         }
-        for(int i=0;i<(2-selectedCards.size());i++)
-            respond->add_args(100000);
-        emit sendCommand(network::MSG_RESPOND, respond);
+        emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     }
@@ -284,31 +278,38 @@ void ShenGuan::onCancelClicked()
 
     switch(state)
     {
-    case 1502:
-    case 1531:
-    case 1551:
-    case 1552:
+    case SHEN_SHENG_QI_FU:
+    case SHUI_ZHI_SHEN_LI:
+    case SHEN_SHENG_LING_YU_1:
+    case SHEN_SHENG_LING_YU_2:
         normal();
         break;
-    case 1541:
-        respond = newRespond(1504);
+    case SHEN_SHENG_QI_YUE_1:
+        respond = newRespond(SHEN_SHENG_QI_YUE);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 1542:
+    case SHEN_SHENG_QI_YUE_2:
+        respond = newRespond(SHEN_SHENG_QI_YUE);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
-        ShenShengQiYue1();
         break;
     }
 }
 
-void ShenGuan::askForSkill(QString skill)
+void ShenGuan::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("神圣启示"))
-        ShenShengQiShi();
-    else if(skill==QStringLiteral("神圣契约"))
-        ShenShengQiYue1();
-    else if(skill==QStringLiteral("水之神力给牌"))
+    switch (cmd->respond_id())
+    {
+    case SHUI_ZHI_SHEN_LI_GIVE:
         ShuiZhiShenLi2();
+        break;
+    case SHEN_SHENG_QI_YUE:
+        ShenShengQiYue1();
+        break;
+    default:
+        Role::askForSkill(cmd);
+    }
 }
