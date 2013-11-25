@@ -9,8 +9,7 @@ public:
     void GuanChuanSheJi();
     void JingZhunSheJi();
     void normal();
-    void askForSkill(QString skill);
-    void additionalAction();
+    void askForSkill(network::Command* cmd);
 public slots:
     void onOkClicked();
     void onCancelClicked();

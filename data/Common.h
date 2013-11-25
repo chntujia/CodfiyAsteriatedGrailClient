@@ -48,8 +48,11 @@ enum CAUSE{
     KUANG_HUA = 203,
     XUE_YING_KUANG_DAO_USED = 204,
     SI_LIE = 205,
-    JING_ZHUN_SHE_JI = 301,
-    SHAN_GUANG_XIAN_JIN = 302,
+	JING_ZHUN_SHE_JI = 301,
+	SHAN_GUANG_XIAN_JIN = 302,
+	JU_JI = 303,
+	SHAN_DIAN_JIAN = 304,
+	GUAN_CHUAN_SHE_JI = 305,
     FENG_ZHI_FENG_YIN = 401,
     SHUI_ZHI_FENG_YIN = 402,
     HUO_ZHI_FENG_YIN = 403,
@@ -270,7 +273,16 @@ QString getCauseString(int cause)
         return QStringLiteral("偷天换日");
     case TE_SHU_JIA_GONG:
         return QStringLiteral("特殊加工");
-    default:
+	case JING_ZHUN_SHE_JI:
+		return QStringLiteral("精准射击");
+	case SHAN_GUANG_XIAN_JIN:
+		return QStringLiteral("闪光陷阱");
+	case JU_JI:
+		return QStringLiteral("狙击");
+	case GUAN_CHUAN_SHE_JI:
+		return QStringLiteral("贯穿射击");
+	
+	default:
         return "CauseString undefined";
     }
 }
