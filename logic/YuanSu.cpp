@@ -269,16 +269,6 @@ void YuanSu::onCancelClicked()
         break;
     }
 }
-void YuanSu::additionalAction()
-{
-    //Role::additionalAction();
-    if(earth)
-        tipArea->addBoxItem(QStringLiteral("1.法术行动（陨石）"));
-    if(ignite)
-        tipArea->addBoxItem(QStringLiteral("2.法术行动（元素点燃）"));
-    if(wind)
-        tipArea->addBoxItem(QStringLiteral("3.攻击行动（风刃）"));
-}
 
 void YuanSu::turnBegin()
 {

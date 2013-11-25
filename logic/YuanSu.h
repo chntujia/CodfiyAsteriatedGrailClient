@@ -8,7 +8,6 @@ public:
     YuanSu();
     void normal();
     void magicAction();
-    void additionalAction();
     void turnBegin();
 public slots:
     void onOkClicked();

@@ -3,7 +3,7 @@
 enum CAUSE{
     FAN_SHI = 501,
     SHUI_YING = 502,
-    QIAN_XING = 503
+    QIAN_XING = 503,
 };
 
 AnSha::AnSha()
@@ -54,6 +54,8 @@ void AnSha::askForSkill(network::Command* cmd)
         ShuiYing();
     else if(cmd->respond_id() == QIAN_XING)
         QianXing();
+    else
+        Role::askForSkill(cmd);
 }
 
 void AnSha::cardAnalyse()
@@ -73,7 +75,8 @@ void AnSha::onOkClicked()
 {
     Role::onOkClicked();
     QList<Card*>selectedCards;
-    int i;
+    int howMany,i;
+    QString command;
     network::Respond* respond;
 
     selectedCards=handArea->getSelectedCards();
