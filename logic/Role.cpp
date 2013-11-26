@@ -865,27 +865,6 @@ void Role::onOkClicked()
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
-//天使祝福
-    case 751:
-        respond = newRespond(751);
-        respond->add_args(selectedCards[0]->getID());
-        gui->reset();
-        emit sendCommand(network::MSG_RESPOND, respond);
-        break;
-//魔爆冲击
-    case 851:
-        respond = newRespond(851);
-        respond->add_args(selectedCards[0]->getID());
-        gui->reset();
-        emit sendCommand(network::MSG_RESPOND, respond);
-        break;
-//充盈
-    case 2951:
-        respond = newRespond(2951);
-        respond->add_args(selectedCards[0]->getID());
-        gui->reset();
-        emit sendCommand(network::MSG_RESPOND, respond);
-        break;
     }
 }
 

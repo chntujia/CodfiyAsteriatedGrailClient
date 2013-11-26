@@ -1,9 +1,19 @@
 ﻿#include "TianShi.h"
 
+enum {
+    TIAN_SHI_ZHI_QIANG = 701,
+    TIAN_SHI_ZHU_FU = 702,
+    FENG_ZHI_JIE_JING = 703,
+    TIAN_SHI_JI_BAN = 704,
+    TIAN_SHI_ZHI_GE = 705,
+    SHEN_ZHI_BI_HU = 706,
+    TIAN_SHI_ZHI_GE_2 = 707,
+};
+
 TianShi::TianShi()
 {
     makeConnection();
-setMyRole(this);
+    setMyRole(this);
 
     connect(playerArea,SIGNAL(playerUnready()),this,SLOT(onUnready()));
     connect(handArea,SIGNAL(cardUnready()),this,SLOT(onUnready()));
@@ -26,7 +36,7 @@ void TianShi::TianShiJiBan()
     playerArea->reset();
     tipArea->reset();
 
-    state=707;
+    state=TIAN_SHI_JI_BAN;
     tipArea->setMsg(QStringLiteral("发动天使羁绊"));
     playerArea->setQuota(1);
     playerArea->enableAll();
@@ -41,7 +51,7 @@ void TianShi::FengZhiJieJin()
     playerArea->reset();
     tipArea->reset();
 
-    state=701;
+    state=FENG_ZHI_JIE_JING;
     playerArea->setQuota(1);
     handArea->setQuota(1);
 
@@ -57,7 +67,7 @@ void TianShi::TianShiZhuFu()
     playerArea->reset();
     tipArea->reset();
 
-    state=702;
+    state=TIAN_SHI_ZHU_FU;
     playerArea->setQuota(1,2);
     handArea->setQuota(1);
 
@@ -68,7 +78,7 @@ void TianShi::TianShiZhuFu()
 }
 void TianShi::TianShiZhiQiang()
 {
-    state=703;
+    state=TIAN_SHI_ZHI_QIANG;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -90,7 +100,7 @@ void TianShi::TianShiZhiGe1()
 
     gem=myself->getGem();
     crystal=myself->getCrystal();
-    state=704;
+    state=TIAN_SHI_ZHI_GE;
     tipArea->setMsg(QStringLiteral("是否发动天使之歌？"));
     if(crystal>=1)
         tipArea->addBoxItem(QStringLiteral("1.水晶"));
@@ -105,7 +115,7 @@ void TianShi::TianShiZhiGe2()
 {
     QList<Player*> players=dataInterface->getPlayerList();
     int i;
-    state=706;
+    state=TIAN_SHI_ZHI_GE_2;
 
     for(i=0;i<players.size();i++)
     {
@@ -124,7 +134,7 @@ void TianShi::ShenZhiBiHu(int reduce)
     gem=myself->getGem();
     crystal=myself->getCrystal();
 
-    state=705;
+    state=SHEN_ZHI_BI_HU;
 
     tipArea->reset();
     handArea->reset();
@@ -181,8 +191,8 @@ void TianShi::playerAnalyse()
 {
     switch (state)
     {
-    case 701:
-    case 706:
+    case FENG_ZHI_JIE_JING:
+    case TIAN_SHI_ZHI_GE_2:
         tipArea->showStatus(playerArea->getSelectedPlayers().at(0)->getID());
         break;
     default:
@@ -201,15 +211,15 @@ void TianShi::cardAnalyse()
 
     switch (state)
     {
-    case 701:
+    case FENG_ZHI_JIE_JING:
         for(i=0;i<players.size();i++)
             if(players[i]->hasStatus())
                 playerArea->enablePlayerItem(i);
         break;
-    case 702:
+    case TIAN_SHI_ZHU_FU:
         playerArea->enableAll();
         break;
-    case 703:
+    case TIAN_SHI_ZHI_QIANG:
         for(i=0;i<dataInterface->getPlayerMax();i++)
             if(!dataInterface->getPlayerList().at(i)->checkBasicStatus(2))
                 playerArea->enablePlayerItem(i);
@@ -239,37 +249,34 @@ void TianShi::onOkClicked()
     switch(state)
     {
 //风之洁净
-    case 701:
-        action = newAction(701);
-        action->add_args(selectedCards[0]->getID());
+    case FENG_ZHI_JIE_JING:
+        action = newAction(ACTION_MAGIC_SKILL, FENG_ZHI_JIE_JING);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_args(tipArea->getSelectedCardID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //天使祝福
-    case 702:
-        action = newAction(702);
-        action->add_args(selectedCards[0]->getID());
+    case TIAN_SHI_ZHU_FU:
+        action = newAction(ACTION_MAGIC_SKILL, TIAN_SHI_ZHU_FU);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
         if(selectedPlayers.size()>1)
             action->add_dst_ids(selectedPlayers[1]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //天使之墙
-    case 703:
-        action = newAction(703);
-        action->add_args(selectedCards[0]->getID());
+    case TIAN_SHI_ZHI_QIANG:
+        action = newAction(ACTION_MAGIC_SKILL, TIAN_SHI_ZHI_QIANG);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //天使之歌1
-    case 704:
+    case TIAN_SHI_ZHI_GE:
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
         {
@@ -292,10 +299,10 @@ void TianShi::onOkClicked()
             tipArea->addBoxItem(QStringLiteral("5.两个宝石"));
             tipArea->addBoxItem(QStringLiteral("6.两个水晶"));
             tipArea->addBoxItem(QStringLiteral("7.一个宝石和一个水晶"));
-    tipArea->addBoxItem(QStringLiteral("8.一个宝石"));
-    tipArea->addBoxItem(QStringLiteral("9.一个水晶"));*/
-    case 705:
-        respond = newRespond(705);
+            tipArea->addBoxItem(QStringLiteral("8.一个宝石"));
+            tipArea->addBoxItem(QStringLiteral("9.一个水晶"));*/
+    case SHEN_ZHI_BI_HU:
+        respond = newRespond(SHEN_ZHI_BI_HU);
         text=tipArea->getBoxCurrentText();
         switch(text[0].digitValue())
         {
@@ -340,8 +347,8 @@ void TianShi::onOkClicked()
         gui->reset();
         break;
 //天使之歌2
-    case 706:
-        respond = newRespond(704);
+    case TIAN_SHI_ZHI_GE_2:
+        respond = newRespond(TIAN_SHI_ZHI_GE);
         if(usedGem)
             respond->add_args(1);
         else
@@ -352,9 +359,8 @@ void TianShi::onOkClicked()
         gui->reset();
         break;
 //天使羁绊
-    case 707:
-        respond = newRespond(707);
-        respond->add_args(1);
+    case TIAN_SHI_JI_BAN:
+        respond = newRespond(TIAN_SHI_JI_BAN);
         respond->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
@@ -371,28 +377,28 @@ void TianShi::onCancelClicked()
     switch(state)
     {
 //风之洁净
-    case 701:
+    case FENG_ZHI_JIE_JING:
 //天使祝福
-    case 702:
+    case TIAN_SHI_ZHU_FU:
 //天使之墙
-    case 703:
+    case TIAN_SHI_ZHI_QIANG:
         gui->reset();
         normal();
         break;
 //天使之歌1
-    case 704:
-        respond = newRespond(704);
+    case TIAN_SHI_ZHI_GE:
+        respond = newRespond(TIAN_SHI_ZHI_GE);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //神之庇护
-    case 705:
-        respond = newRespond(7-5);
+    case SHEN_ZHI_BI_HU:
+        respond = newRespond(SHEN_ZHI_BI_HU);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //天使之歌2
-    case 706:
+    case TIAN_SHI_ZHI_GE_2:
         gui->reset();
         TianShiZhiGe1();
         break;
@@ -402,23 +408,24 @@ void TianShi::onUnready()
 {
     switch(state)
     {
-    case 701:
+    case FENG_ZHI_JIE_JING:
         tipArea->reset();
         FengZhiJieJin();
         break;
-    case 706:
+    case TIAN_SHI_ZHI_GE_2:
         tipArea->reset();
         TianShiZhiGe2();
         break;
     }
 }
-void TianShi::askForSkill(QString skill)
+void TianShi::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("天使之歌"))
+    if(cmd->respond_id() == TIAN_SHI_ZHI_GE)
         TianShiZhiGe1();
-//    else if(skill==QStringLiteral("神之庇护"))
-//        ShenZhiBiHu(command.split(';').at(3).toInt());
-    else if(skill==QStringLiteral("天使羁绊"))
+    else if(cmd->respond_id() == TIAN_SHI_JI_BAN)
         TianShiJiBan();
+    else if(cmd->respond_id() == SHEN_ZHI_BI_HU)
+        ShenZhiBiHu(cmd->args(0));
+    else
+        Role::askForSkill(cmd);
 }

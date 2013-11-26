@@ -11,7 +11,7 @@ public:
     void ShenZhiBiHu(int reduce);
     void TianShiJiBan();
     void normal();
-    void askForSkill(QString skill);
+    void askForSkill(network::Command* cmd);
 public slots:
     void onOkClicked();
     void onCancelClicked();

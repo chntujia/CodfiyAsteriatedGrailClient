@@ -70,6 +70,11 @@ enum CAUSE{
     LIAN_MIN = 604,
     SHENG_LIAO = 605,
     TIAN_SHI_ZHI_QIANG = 701,
+    TIAN_SHI_ZHU_FU = 702,
+    FENG_ZHI_JIE_JING = 703,
+    TIAN_SHI_JI_BAN = 704,
+    TIAN_SHI_ZHI_GE = 705,
+    SHEN_ZHI_BI_HU = 706,
     MO_BAO_CHONG_JI = 801,
     MO_DAN_ZHANG_WO = 802,
     MO_DAN_RONG_HE = 803,
@@ -225,6 +230,18 @@ QString getCauseString(int cause)
         return QStringLiteral("怜悯");
     case SHENG_LIAO:
         return QStringLiteral("圣疗");
+    case TIAN_SHI_ZHI_QIANG:
+        return QStringLiteral("天使之墙");
+    case TIAN_SHI_ZHU_FU:
+        return QStringLiteral("天使祝福");
+    case FENG_ZHI_JIE_JING:
+        return QStringLiteral("风之洁净");
+    case TIAN_SHI_JI_BAN:
+        return QStringLiteral("天使羁绊");
+    case TIAN_SHI_ZHI_GE:
+        return QStringLiteral("天使之歌");
+    case SHEN_ZHI_BI_HU:
+        return QStringLiteral("神之庇护");
     case MO_BAO_CHONG_JI:
         return QStringLiteral("魔爆冲击");
     case MO_DAN_ZHANG_WO:
@@ -302,7 +319,7 @@ QString getCauseString(int cause)
     case SHENG_SHI_SHOU_HU:
         return QStringLiteral("圣使守护");
     case SHEN_SHENG_QI_YUE:
-        return qstring_literal("神圣契约");
+        return QStringLiteral("神圣契约");
     case SHEN_SHENG_LING_YU:
         return QStringLiteral("神圣领域");
     default:
