@@ -1,5 +1,15 @@
 ﻿#include "MoJian.h"
 
+enum CAUSE{
+    XIU_LUO_LIAN_ZHAN=901,
+    AN_YING_NING_JU=902,
+    AN_YING_ZHI_LI=903,
+    AN_YING_KANG_JU=904,
+    AN_YING_LIU_XING=905,
+    HEI_AN_ZHEN_CHAN=906,
+};
+
+
 MoJian::MoJian()
 {
     makeConnection();
@@ -32,7 +42,8 @@ void MoJian::normal()
 
 void MoJian::AnYingNingJu()
 {
-    state=903;
+   // state=903;
+    state=AN_YING_NING_JU;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动暗影凝聚？"));
     decisionArea->enable(0);
@@ -42,7 +53,8 @@ void MoJian::AnYingNingJu()
 void MoJian::XiuLuoLianZhan()
 {
     //先借用基类的额外攻击行动状态
-    state=10;
+     state=10;
+ //   state=XIU_LUO_LIAN_ZHAN;
     onceUsed=true;
     gui->reset();
     handArea->setQuota(1);
@@ -54,7 +66,8 @@ void MoJian::XiuLuoLianZhan()
 
 void MoJian::AnYingLiuXing()
 {
-    state=902;
+   // state=902;
+    state=AN_YING_LIU_XING;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -68,6 +81,7 @@ void MoJian::AnYingLiuXing()
 void MoJian::HeiAnZhenChan()
 {
     state=36;
+ //   state=HEI_AN_ZHEN_CHAN;
     tipArea->setMsg(QStringLiteral("是否发动黑暗震颤？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
@@ -79,7 +93,8 @@ void MoJian::cardAnalyse()
 
     switch (state)
     {
-    case 902:
+   // case 902:
+      case AN_YING_LIU_XING:
         playerArea->enableAll();
         break;
     }
@@ -105,19 +120,22 @@ void MoJian::onOkClicked()
 
     switch(state)
     {
-//额外行动询问
+//额外行动询问  ??
     case 42:
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1'){
-            respond = newRespond(901);
+          //  respond = newRespond(901);
+            respond = newRespond(XIU_LUO_LIAN_ZHAN);
             respond->add_args(1);
             emit sendCommand(network::MSG_RESPOND, respond);
             XiuLuoLianZhan();
         }
         break;
 //暗影流星
-    case 902:
-        action = newAction(902);
+   // case 902:
+    case AN_YING_LIU_XING:
+      //action = newAction(902);
+        action = newAction(AN_YING_LIU_XING);
         action->add_args(selectedCards[0]->getID());
         action->add_args(selectedCards[1]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
@@ -128,8 +146,10 @@ void MoJian::onOkClicked()
         gui->reset();
         break;
 //暗影凝聚
-    case 903:
-        respond = newRespond(903);
+ //   case 903:
+      case AN_YING_NING_JU:
+     // respond = newRespond(903);
+        respond = newRespond(AN_YING_NING_JU);
         respond->add_args(1);
 
         start=true;
@@ -142,18 +162,21 @@ void MoJian::onOkClicked()
 void MoJian::onCancelClicked()
 {
     Role::onCancelClicked();
-    QString command;
+  //  QString command;
 
     network::Respond* respond;
     switch(state)
     {
 //暗影流星
-    case 902:
+   // case 902:
+    case AN_YING_LIU_XING:
         normal();
         break;
 //暗影凝聚
-    case 903:
-        respond = newRespond(903);
+  //  case 903:
+      case AN_YING_NING_JU:
+    //  respond = newRespond(903);
+        respond = newRespond(AN_YING_NING_JU);
 
         start=false;
         emit sendCommand(network::MSG_RESPOND, respond);
