@@ -9,7 +9,7 @@ public:
     void normal();
     void FaShuFanTan1();
     void FaShuFanTan2();
-    void askForSkill(QString skill);
+    void askForSkill(network::Command* cmd);
 public slots:
     void onOkClicked();
     void onCancelClicked();

@@ -1473,11 +1473,15 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 // 更新手牌
                 if (player_info->has_hand_count())
                 {
-                    if(player_info->hand_count()!=player->getHandCardNum())
-                    {
-                        gui->logAppend(player->getRoleName()+QStringLiteral("的手牌变为")+QString::number(player_info->hand_count())+QStringLiteral("张"));
+                    int offset = player_info->hand_count() - player->getHandCardNum();
+                    if (offset > 0)
+                        gui->logAppend(player->getRoleName()+QStringLiteral("的手牌增加了")+QString::number(offset)+QStringLiteral("张"));
+                    else if (offset < 0)
+                        gui->logAppend(player->getRoleName()+QStringLiteral("的手牌减少了")+QString::number(-offset)+QStringLiteral("张"));
+
+                    if(player_info->hand_count() != player->getHandCardNum())
                         player->changeHandCardNumTo(player_info->hand_count());
-                    }
+
                     if (targetID == myID)
                     {
                         dataInterface->cleanHandCard();

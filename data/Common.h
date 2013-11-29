@@ -103,8 +103,6 @@ enum CAUSE{
     WEN_YI = 1303,
     SI_WANG_ZHI_CHU = 1304,
     MU_BEI_YUN_LUO = 1305,
-    XUN_JIE_CI_FU = 1601,
-    WEI_LI_CI_FU = 1602,
     SHEN_SHENG_QI_SHI = 1501,
     SHEN_SHENG_QI_FU = 1502,
     SHUI_ZHI_SHEN_LI = 1503,
@@ -113,6 +111,12 @@ enum CAUSE{
     SHEN_SHENG_LING_YU = 1506,
     SHUI_ZHI_SHEN_LI_GIVE = 1531,
     SHUI_ZHI_SHEN_LI_CROSS = 1532,
+    XUN_JIE_CI_FU = 1601,
+    WEI_LI_CI_FU = 1602,
+    ZHI_HUI_FA_DIAN = 1701,
+    MO_DAO_FA_DIAN = 1702,
+    SHENG_JIE_FA_DIAN = 1703,
+    FA_SHU_FAN_TAN = 1704,
     LING_HUN_ZHEN_BAO = 2201,
     LING_HUN_CI_YU = 2202,
     XUE_ZHI_BEI_MING = 2301
@@ -322,8 +326,15 @@ QString getCauseString(int cause)
         return QStringLiteral("神圣契约");
     case SHEN_SHENG_LING_YU:
         return QStringLiteral("神圣领域");
+    case ZHI_HUI_FA_DIAN:
+        return QStringLiteral("智慧法典");
+    case MO_DAO_FA_DIAN:
+        return QStringLiteral("魔道法典");
+    case SHENG_JIE_FA_DIAN:
+        return QStringLiteral("圣洁法典");
+    case FA_SHU_FAN_TAN:
+        return QStringLiteral("法术反弹");
     default:
-
         return "CauseString undefined";
     }
 }
