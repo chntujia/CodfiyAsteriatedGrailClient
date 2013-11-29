@@ -5,7 +5,6 @@ enum {
     MO_DAO_FA_DIAN = 1702,
     SHENG_JIE_FA_DIAN = 1703,
     FA_SHU_FAN_TAN = 1704,
-    FA_SHU_FAN_TAN_2 = 1751,
 };
 
 XianZhe::XianZhe()
@@ -41,26 +40,15 @@ void XianZhe::normal()
     unactionalCheck();
 }
 
-void XianZhe::FaShuFanTan1()
+void XianZhe::FaShuFanTan()
 {
     state=FA_SHU_FAN_TAN;
     tipArea->setMsg(QStringLiteral("是否发动法术反弹？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
-    handArea->disableAll();
-}
-
-void XianZhe::FaShuFanTan2()
-{
-    state=FA_SHU_FAN_TAN_2;
-
-    playerArea->reset();
-    handArea->reset();
-    tipArea->reset();
 
     handArea->enableAll();
     handArea->setQuota(2,7);
-
     decisionArea->enable(1);
     decisionArea->disable(0);
 }
@@ -103,7 +91,7 @@ void XianZhe::cardAnalyse()
 
     switch(state)
     {
-    case FA_SHU_FAN_TAN_2:
+    case FA_SHU_FAN_TAN:
         cardReady=false;
         if(selectedCards.size()<2)
             decisionArea->disable(0);
@@ -171,7 +159,7 @@ void XianZhe::playerAnalyse()
     QList<Card*> selectedCards=handArea->getSelectedCards();
     switch(state)
     {
-    case FA_SHU_FAN_TAN_2:
+    case FA_SHU_FAN_TAN:
     case MO_DAO_FA_DIAN:
         playerArea->setQuota(1);
         cardReady=false;
@@ -201,9 +189,6 @@ void XianZhe::onOkClicked()
     switch(state)
     {
     case FA_SHU_FAN_TAN:
-        FaShuFanTan2();
-        break;
-    case FA_SHU_FAN_TAN_2:
         respond = newRespond(FA_SHU_FAN_TAN);
         respond->add_dst_ids(selectedPlayers[0]->getID());
         foreach(Card*ptr,selectedCards){
@@ -248,9 +233,6 @@ void XianZhe::onCancelClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case FA_SHU_FAN_TAN_2:
-        FaShuFanTan1();
-        break;
     case MO_DAO_FA_DIAN:
     case SHENG_JIE_FA_DIAN:
         normal();
@@ -261,7 +243,7 @@ void XianZhe::onCancelClicked()
 void XianZhe::askForSkill(network::Command* cmd)
 {
     if(cmd->respond_id() == FA_SHU_FAN_TAN)
-        FaShuFanTan1();
+        FaShuFanTan();
     else
         Role::askForSkill(cmd);
 }

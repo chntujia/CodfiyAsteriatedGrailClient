@@ -7,8 +7,7 @@ class XianZhe : public Role
 public:
     XianZhe();
     void normal();
-    void FaShuFanTan1();
-    void FaShuFanTan2();
+    void FaShuFanTan();
     void askForSkill(network::Command* cmd);
 public slots:
     void onOkClicked();
