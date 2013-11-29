@@ -6,7 +6,7 @@ enum CAUSE{
     AN_YING_ZHI_LI=903,
     AN_YING_KANG_JU=904,
     AN_YING_LIU_XING=905,
-    HEI_AN_ZHEN_CHAN=906,
+    HEI_AN_ZHEN_CHAN=906
 };
 
 
@@ -14,7 +14,6 @@ MoJian::MoJian()
 {
     makeConnection();
     setMyRole(this);
-
     Button *anYingLiuXing;
     anYingLiuXing=new Button(3,QStringLiteral("暗影流星"));
     buttonArea->addButton(anYingLiuXing);
@@ -46,17 +45,15 @@ void MoJian::AnYingNingJu()
     state=AN_YING_NING_JU;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动暗影凝聚？"));
+
     decisionArea->enable(0);
     decisionArea->enable(1);
 }
 
 void MoJian::XiuLuoLianZhan()
 {
-    //先借用基类的额外攻击行动状态
-     state=10;
- //   state=XIU_LUO_LIAN_ZHAN;
-    onceUsed=true;
-    gui->reset();
+    setAttackTarget();  //设置攻击目标
+    state=XIU_LUO_LIAN_ZHAN;
     handArea->setQuota(1);
     handArea->enableElement("fire");
     handArea->disableMagic();
@@ -76,12 +73,14 @@ void MoJian::AnYingLiuXing()
     handArea->enableMagic();
     playerArea->setQuota(1);
     decisionArea->enable(1);
+    decisionArea->disable(0);
+
 }
 
 void MoJian::HeiAnZhenChan()
 {
-    state=36;
- //   state=HEI_AN_ZHEN_CHAN;
+  //  state=36;
+    state=HEI_AN_ZHEN_CHAN;
     tipArea->setMsg(QStringLiteral("是否发动黑暗震颤？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
@@ -96,7 +95,12 @@ void MoJian::cardAnalyse()
    // case 902:
       case AN_YING_LIU_XING:
         playerArea->enableAll();
+        decisionArea->enable(0);
         break;
+      case XIU_LUO_LIAN_ZHAN:
+         playerArea->enableEnemy();
+         decisionArea->enable(0);
+         break;
     }
 }
 
@@ -120,39 +124,45 @@ void MoJian::onOkClicked()
 
     switch(state)
     {
-//额外行动询问  ??
-    case 42:
-        text=tipArea->getBoxCurrentText();
-        if(text[0]=='1'){
-          //  respond = newRespond(901);
-            respond = newRespond(XIU_LUO_LIAN_ZHAN);
-            respond->add_args(1);
-            emit sendCommand(network::MSG_RESPOND, respond);
-            XiuLuoLianZhan();
-        }
+  case  XIU_LUO_LIAN_ZHAN:
+         //   XiuLuoLianZhan();
+        action = newAction(network::ACTION_ATTACK);
+        action->add_card_ids(selectedCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
+        usedAttack=true;
+        usedMagic=usedSpecial=false;
+        gui->reset();
+        emit sendCommand(network::MSG_ACTION, action);
         break;
+
 //暗影流星
    // case 902:
     case AN_YING_LIU_XING:
       //action = newAction(902);
-        action = newAction(AN_YING_LIU_XING);
-        action->add_args(selectedCards[0]->getID());
-        action->add_args(selectedCards[1]->getID());
+        action = newAction(ACTION_MAGIC_SKILL,AN_YING_LIU_XING);
+        action->add_card_ids(selectedCards[0]->getID());
+        action->add_card_ids(selectedCards[1]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-
-        dataInterface->removeHandCard(selectedCards[0]);
-        dataInterface->removeHandCard(selectedCards[1]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //暗影凝聚
  //   case 903:
       case AN_YING_NING_JU:
-     // respond = newRespond(903);
-        respond = newRespond(AN_YING_NING_JU);
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(AN_YING_NING_JU);
         respond->add_args(1);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
 
-        start=true;
+    case HEI_AN_ZHEN_CHAN:
+
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(HEI_AN_ZHEN_CHAN);
+        respond->add_args(1);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -163,10 +173,15 @@ void MoJian::onCancelClicked()
 {
     Role::onCancelClicked();
   //  QString command;
+    QList<Player*>selectedPlayers;
+    selectedPlayers=playerArea->getSelectedPlayers();  //added
 
     network::Respond* respond;
     switch(state)
     {
+ //【修罗连斩】
+   case XIU_LUO_LIAN_ZHAN:
+
 //暗影流星
    // case 902:
     case AN_YING_LIU_XING:
@@ -174,35 +189,54 @@ void MoJian::onCancelClicked()
         break;
 //暗影凝聚
   //  case 903:
-      case AN_YING_NING_JU:
-    //  respond = newRespond(903);
-        respond = newRespond(AN_YING_NING_JU);
-
-        start=false;
+      case AN_YING_NING_JU:                   //代码有问题需要改写
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond ->set_respond_id(AN_YING_NING_JU);
+        respond->add_args(0);
+  //      start=false;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+     case HEI_AN_ZHEN_CHAN:
+        respond = new Respond();
+        respond->set_src_id(myID);
+ //       respond->set_dst_ids(0,selectedPlayers[0]->getID());      //添加目标攻击对象---如何获取？？？
+        respond->set_respond_id(HEI_AN_ZHEN_CHAN);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
     }
 }
-void MoJian::askForSkill(QString skill)
+void MoJian::askForSkill(network::Command* cmd)
 {
     //Role::askForSkill(skill);
-    if(skill==QStringLiteral("暗影凝聚"))
+    if(cmd->respond_id()==AN_YING_NING_JU)
         AnYingNingJu();
-    else if(skill==QStringLiteral("黑暗震颤"))
+    else if(cmd->respond_id()==HEI_AN_ZHEN_CHAN)
         HeiAnZhenChan();
+    else
+     Role::askForSkill(cmd);
 }
 
-void MoJian::additionalAction()
+void MoJian::attackAction()
 {
-    //Role::additionalAction();
-    if(usedAttack&&!onceUsed)
-        tipArea->addBoxItem(QStringLiteral("1.修罗连斩"));
+    //若是连续技的额外行动，则只能用火系
+    if(XIU_LUO_LIAN_ZHAN == chosenAction){
+       XiuLuoLianZhan();
+    }
+    else{
+        Role::attackAction();
+    }
 }
 
-void MoJian::attacked(QString element, int hitRate)
+
+void MoJian::turnBegin()
 {
-    Role::attacked(element,hitRate);
-    if(isMyTurn)
-        handArea->disableMagic();
+    Role::turnBegin();
+    usedAttack=false;
+    onceUsed=false;
 }
+
+
+

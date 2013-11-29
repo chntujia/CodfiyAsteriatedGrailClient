@@ -7,17 +7,17 @@ class MoJian : public Role
 public:
     MoJian();
     void normal();
-    void XiuLuoLianZhan();
-    void AnYingNingJu();
-    void HeiAnZhenChan();
-    void askForSkill(QString skill);
-    void additionalAction();
-    void attacked(QString element, int hitRate);
+    void askForSkill(network::Command* cmd);
+    void attackAction();
+    void turnBegin();
 public slots:
     void onOkClicked();
     void onCancelClicked();
     void cardAnalyse();
     void AnYingLiuXing();
+    void XiuLuoLianZhan();
+    void AnYingNingJu();
+    void HeiAnZhenChan();
 };
 
 #endif // MOJIAN_H
