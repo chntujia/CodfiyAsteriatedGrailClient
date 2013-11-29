@@ -79,6 +79,13 @@ enum CAUSE{
     MO_DAN_ZHANG_WO = 802,
     MO_DAN_RONG_HE = 803,
     HUI_MIE_FENG_BAO = 804,
+    XIU_LUO_LIAN_ZHAN=901,
+    AN_YING_NING_JU=902,
+    AN_YING_ZHI_LI=903,
+    AN_YING_KANG_JU=904,
+    AN_YING_LIU_XING=905,
+    HEI_AN_ZHEN_CHAN=906,
+    HEI_AN_ZHEN_CHAN_BU_PAI=9061,
 	HUI_YAO = 1001,
     CHENG_JIE = 1002,
     SHENG_GUANG_QI_YU = 1003,
@@ -325,7 +332,19 @@ QString getCauseString(int cause)
     case SHEN_SHENG_QI_YUE:
         return QStringLiteral("神圣契约");
     case SHEN_SHENG_LING_YU:
-        return QStringLiteral("神圣领域");
+        return QStringLiteral("神圣领域");  
+    case  XIU_LUO_LIAN_ZHAN:
+        return QStringLiteral("修罗连斩");
+    case  AN_YING_NING_JU:
+        return QStringLiteral("暗影凝聚");
+    case    AN_YING_ZHI_LI:
+        return QStringLiteral("暗影之力");
+    case     AN_YING_KANG_JU:
+        return QStringLiteral("暗影抗拒");
+    case     AN_YING_LIU_XING:
+        return QStringLiteral("暗影流星");
+    case     HEI_AN_ZHEN_CHAN:
+        return QStringLiteral("黑暗震颤");
     case ZHI_HUI_FA_DIAN:
         return QStringLiteral("智慧法典");
     case MO_DAO_FA_DIAN:
