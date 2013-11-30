@@ -1,4 +1,13 @@
 ﻿#include "WuNv.h"
+enum CAUSE{
+    XUE_ZHI_BEI_MING = 2301,
+    TONG_SHENG_GONG_SI = 2302,
+    XUE_ZHI_AI_SHANG = 2303,
+    XUE_ZHI_AI_SHANG_ZHUAN_YI = 2331,
+    NI_LIU = 2304,
+    XUE_ZHI_ZU_ZHOU = 2351,
+    XUE_ZHI_ZU_ZHOU_QI_PAI = 2352
+};
 
 WuNv::WuNv()
 {
@@ -40,7 +49,7 @@ void WuNv::normal()
 
 void WuNv::TongShengGongSi()
 {
-    state = 2301;
+    state = TONG_SHENG_GONG_SI;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -54,21 +63,33 @@ void WuNv::TongShengGongSi()
 
 void WuNv::XueZhiAiShang()
 {
-    state = 2302;
+    state = XUE_ZHI_AI_SHANG;
     gui->reset();
-    tipArea->setMsg(QStringLiteral("点选目标转移同生共死或直接确定移除"));
-    playerArea->setQuota(0,1);
+    tipArea->addBoxItem(QStringLiteral("1.转移同生共死"));
+    tipArea->addBoxItem(QStringLiteral("2.移除同生共死"));
+    tipArea->showBox();
+    tipArea->setMsg(QStringLiteral("请选择一项"));
+    decisionArea->enable(0);
+    decisionArea->enable(1);
+}
+
+void WuNv::XueZhiAiShangZhuanYi()
+{
+    state = XUE_ZHI_AI_SHANG_ZHUAN_YI;
+    gui->reset();
+
+    playerArea->setQuota(1);
     playerArea->enableAll();
     if(tongShengID!=-1)
         playerArea->disablePlayerItem(tongShengID);
 
-    decisionArea->enable(0);
+    decisionArea->disable(0);
     decisionArea->enable(1);
 }
 
 void WuNv::NiLiu()
 {
-    state = 2303;
+    state = NI_LIU;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -82,12 +103,12 @@ void WuNv::NiLiu()
 
 void WuNv::XueZhiBeiMing()
 {
-    state = 2304;
+    state = XUE_ZHI_BEI_MING;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
 
-    tipArea->setMsg("请选择【血之悲鸣】伤害");
+    tipArea->setMsg(QStringLiteral("请选择【血之悲鸣】伤害"));
     for(int i =3;i>0;i--)
         tipArea->addBoxItem(QString::number(i));
     tipArea->showBox();
@@ -102,7 +123,7 @@ void WuNv::XueZhiBeiMing()
 
 void WuNv::XueZhiZuZhou()
 {
-    state = 2305;
+    state = XUE_ZHI_ZU_ZHOU;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -117,7 +138,7 @@ void WuNv::XueZhiZuZhou()
 
 void WuNv::XueZhiZuZhouQiPai()
 {
-    state = 2306;
+    state = XUE_ZHI_ZU_ZHOU_QI_PAI;
     gui->reset();
     tipArea->setMsg(QStringLiteral("请弃3张手牌（不足则全弃）"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -133,16 +154,16 @@ void WuNv::cardAnalyse()
     Role::cardAnalyse();
     switch(state)
     {
-    case 2301:
+    case TONG_SHENG_GONG_SI:
         playerArea->enableAll();
         break;
-    case 2303:
+    case NI_LIU:
         decisionArea->enable(0);
         break;
-    case 2304:
+    case XUE_ZHI_BEI_MING:
         playerArea->enableAll();
         break;
-    case 2306:
+    case XUE_ZHI_ZU_ZHOU_QI_PAI:
         decisionArea->enable(0);
         break;
     }
@@ -154,12 +175,6 @@ void WuNv::onOkClicked()
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
 
-    static QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
-    QString text;
-
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
@@ -167,62 +182,63 @@ void WuNv::onOkClicked()
     network::Respond* respond;
     switch(state)
     {
-    case 2301:
-        action = newAction(2301);
-        action->add_args(1);
+    case TONG_SHENG_GONG_SI:
+        action = newAction(ACTION_MAGIC_SKILL, TONG_SHENG_GONG_SI);
         action->add_dst_ids(selectedPlayers[0]->getID());
         tongShengID = selectedPlayers[0]->getID();
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2302:
-        respond = newRespond(2302);
-        respond->add_args(1);
+    case XUE_ZHI_AI_SHANG:
         start = true;
-        if(selectedPlayers.size()!=0)
+        if(tipArea->getBoxCurrentText()[0]=='2')
         {
-            respond->add_dst_ids(selectedPlayers[0]->getID());
-            tongShengID = selectedPlayers[0]->getID();
+            respond = newRespond(XUE_ZHI_AI_SHANG);
+            respond->add_args(2);
+            tongShengID = -1;
+            emit sendCommand(network::MSG_RESPOND, respond);
+            gui->reset();
         }
         else
         {
-            tongShengID = -1;
+            gui->reset();
+            XueZhiAiShangZhuanYi();
         }
+        break;
+    case XUE_ZHI_AI_SHANG_ZHUAN_YI:
+        respond = newRespond(XUE_ZHI_AI_SHANG);
+        respond->add_args(1);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+        tongShengID = selectedPlayers[0]->getID();
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
-        break;
-    case 2303:
-        action = newAction(2303);
+    case NI_LIU:
+        action = newAction(ACTION_MAGIC_SKILL, NI_LIU);
         foreach(Card*ptr,selectedCards){
-            action->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
         }
-        action->add_args(100000);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2304:
-        action = newAction(2304);
+    case XUE_ZHI_BEI_MING:
+        action = newAction(ACTION_MAGIC_SKILL, XUE_ZHI_BEI_MING);
         action->add_dst_ids(selectedPlayers[0]->getID());
-        action->add_args(selectedCards[0]->getID());
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_args(tipArea->getBoxCurrentText().toInt());
-        dataInterface->removeHandCard(selectedCards[0]);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2305:
-        action = newAction(2305);
+    case XUE_ZHI_ZU_ZHOU:
+        action = newAction(ACTION_MAGIC_SKILL, XUE_ZHI_ZU_ZHOU);
         action->add_dst_ids(selectedPlayers[0]->getID());
-        action->add_args(1);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2306:
-        respond = newRespond(2306);
+    case XUE_ZHI_ZU_ZHOU_QI_PAI:
+        respond = newRespond(XUE_ZHI_ZU_ZHOU_QI_PAI);
         foreach(Card*ptr,selectedCards)
         {
-            respond->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            respond->add_card_ids(ptr->getID());
         }
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
@@ -233,30 +249,42 @@ void WuNv::onOkClicked()
 void WuNv::onCancelClicked()
 {
     Role::onCancelClicked();
-    QString command;
 
     network::Respond* respond;
     switch(state)
     {
-    case 2301:
-    case 2303:
-    case 2304:
-    case 2305:
+    case TONG_SHENG_GONG_SI:
+    case NI_LIU:
+    case XUE_ZHI_BEI_MING:
+    case XUE_ZHI_ZU_ZHOU:
         normal();
         break;
-    case 2302:
-        respond = newRespond(2302);
+    case XUE_ZHI_AI_SHANG:
+        respond = newRespond(XUE_ZHI_AI_SHANG);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case XUE_ZHI_AI_SHANG_ZHUAN_YI:
+        respond = newRespond(XUE_ZHI_AI_SHANG);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
 }
 
-void WuNv::askForSkill(QString skill)
+void WuNv::askForSkill(Command *cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("血之哀伤"))
+    switch(cmd->respond_id())
+    {
+    case XUE_ZHI_AI_SHANG:
         XueZhiAiShang();
-    else if(skill==QStringLiteral("血之诅咒弃牌"))
+        break;
+    case XUE_ZHI_ZU_ZHOU_QI_PAI:
         XueZhiZuZhouQiPai();
+        break;
+    default:
+        Role::askForSkill(cmd);
+    }
 }

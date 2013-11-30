@@ -8,8 +8,9 @@ class WuNv : public Role
 public:
     WuNv();
     void normal();
-    void askForSkill(QString skill);
+    void askForSkill(Command *cmd);
     void XueZhiAiShang();
+    void XueZhiAiShangZhuanYi();
 public slots:
     void onOkClicked();
     void onCancelClicked();

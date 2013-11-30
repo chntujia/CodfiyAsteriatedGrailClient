@@ -126,7 +126,13 @@ enum CAUSE{
     FA_SHU_FAN_TAN = 1704,
     LING_HUN_ZHEN_BAO = 2201,
     LING_HUN_CI_YU = 2202,
-    XUE_ZHI_BEI_MING = 2301
+    XUE_ZHI_BEI_MING = 2301,
+    TONG_SHENG_GONG_SI = 2302,
+    XUE_ZHI_AI_SHANG = 2303,
+    NI_LIU = 2304,
+    XUE_ZHI_ZU_ZHOU = 2351,
+    XUE_ZHI_ZU_ZHOU_QI_PAI = 2352,
+    LIU_XUE = 2306
 };
 
 enum CHANGE{
@@ -353,6 +359,20 @@ QString getCauseString(int cause)
         return QStringLiteral("圣洁法典");
     case FA_SHU_FAN_TAN:
         return QStringLiteral("法术反弹");
+    case XUE_ZHI_BEI_MING:
+        return QStringLiteral("血之悲鸣");
+    case TONG_SHENG_GONG_SI:
+        return QStringLiteral("同生共死");
+    case XUE_ZHI_AI_SHANG:
+        return QStringLiteral("血之哀伤");
+    case NI_LIU:
+        return QStringLiteral("逆流");
+    case XUE_ZHI_ZU_ZHOU:
+        return QStringLiteral("血之诅咒");
+    case XUE_ZHI_ZU_ZHOU_QI_PAI:
+        return QStringLiteral("血之诅咒弃牌");
+    case LIU_XUE:
+        return QStringLiteral("流血");
     default:
         return "CauseString undefined";
     }
