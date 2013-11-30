@@ -3,6 +3,7 @@
 
 #include <QGraphicsObject>
 #include "CardItem.h"
+
 class HandArea : public QGraphicsObject
 {
     Q_OBJECT
@@ -16,6 +17,7 @@ public:
     void enableAttack();
     void enableMagic();
     void disableMagic();
+    int getElementCount();
     void disableElement(QString element);
     void enableElement(QString element);
     void enableMoDan();

@@ -104,6 +104,14 @@ void HandArea::disableMagic()
         }
 }
 
+int HandArea::getElementCount()
+{
+    QSet<QString> elements;
+    foreach(CardItem *ptr,cardItems)
+        elements.insert(ptr->getCard()->getElement());
+    return elements.size();
+}
+
 void HandArea::disableElement(QString element)
 {
     foreach(CardItem *ptr,cardItems)
