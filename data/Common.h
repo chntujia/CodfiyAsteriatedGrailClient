@@ -1,7 +1,7 @@
 ﻿#ifndef COMMON_H
 #define COMMON_H
 #include <QString>
-
+#include "data/DataInterface.h"
 enum GrailError{
     GE_SUCCESS,
     GE_TIMEOUT,
@@ -129,6 +129,11 @@ enum CAUSE{
     MO_DAO_FA_DIAN = 1702,
     SHENG_JIE_FA_DIAN = 1703,
     FA_SHU_FAN_TAN = 1704,
+    FENG_XING = 1801,
+    LEI_MING = 1802,
+    NIAN_ZHOU = 1803,
+    BAI_GUI_YE_XING = 1804,
+    LING_LI_BENG_JIE = 1805,
     LING_HUN_ZHEN_BAO = 2201,
     LING_HUN_CI_YU = 2202,
     XUE_ZHI_BEI_MING = 2301,
@@ -374,6 +379,16 @@ QString getCauseString(int cause)
         return QStringLiteral("圣洁法典");
     case FA_SHU_FAN_TAN:
         return QStringLiteral("法术反弹");
+    case FENG_XING:
+        return QStringLiteral("风行");
+    case LEI_MING:
+        return QStringLiteral("雷鸣");
+    case NIAN_ZHOU:
+        return QStringLiteral("念咒");
+    case BAI_GUI_YE_XING:
+        return QStringLiteral("百鬼夜行");
+    case LING_LI_BENG_JIE:
+        return QStringLiteral("灵力崩解");
     case XUE_ZHI_BEI_MING:
         return QStringLiteral("血之悲鸣");
     case TONG_SHENG_GONG_SI:
@@ -391,6 +406,40 @@ QString getCauseString(int cause)
     default:
         return "CauseString undefined";
     }
+}
+
+QString getCommandString(network::Command *cmd){
+    QString msg;
+    int targetID = cmd->dst_ids(0);
+    switch (cmd->respond_id())
+    {
+    case network::RESPOND_DISCARD:
+    {
+        int cause = cmd->args(0);
+        int howMany = cmd->args(1);
+        if(cause != CAUSE_OVERLOAD){
+            msg = QStringLiteral("等待") + dataInterface->getPlayerById(targetID)->getRoleName() + getCauseString(cause) + QStringLiteral("(手牌）响应");
+        }
+        else{
+            msg = dataInterface->getPlayerById(targetID)->getRoleName()+QStringLiteral("需要弃")+QString::number(howMany)+QStringLiteral("张牌");
+            msg += cmd->args(2) == 1 ? msg+QStringLiteral("(明弃)") : msg+QStringLiteral("(暗弃)");
+        }
+        return msg;
+    }
+    case network::RESPOND_DISCARD_COVER:
+    {
+        int cause = cmd->args(0);
+        int howMany = cmd->args(1);
+        if(cause != CAUSE_OVERLOAD){
+            msg = QStringLiteral("等待") + dataInterface->getPlayerById(targetID)->getRoleName() + getCauseString(cause) + QStringLiteral("（盖牌）响应");
+        }
+        else{
+            msg = dataInterface->getPlayerById(targetID)->getRoleName()+QStringLiteral("需要弃")+QString::number(howMany)+QStringLiteral("张盖牌");
+        }
+        return msg;
+    }
+    }
+    return "CommandString undefined";
 }
 
 #endif // COMMON_H

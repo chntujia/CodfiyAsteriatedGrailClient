@@ -88,7 +88,6 @@ SOURCES += main.cpp \
            logic/JianDi.cpp \
            logic/JianSheng.cpp \
            logic/KuangZhan.cpp \
-           logic/Lingfu.cpp \
            logic/LingHun.cpp \
            logic/Logic.cpp \
            logic/MaoXian.cpp \
@@ -126,4 +125,5 @@ SOURCES += main.cpp \
            widget/RoomView.cpp \
            widget/ShowArea.cpp \
            widget/TeamArea.cpp \
-           widget/TipArea.cpp
+           widget/TipArea.cpp \
+    logic/LingFu.cpp

@@ -7,8 +7,6 @@ Player::Player(int ID, int isRed, QString nickname):id(ID),handCardsMax(6),cross
     gem=0;
     crystal=0;
     handCardsNum=0;
-    coverCardsMax = 0;
-    coverCardsNum = 0;
     this->nickname=nickname;
     for(int i=0;i<5;i++ )
         specials[i]=false;
@@ -136,6 +134,11 @@ void Player::setRole(int roleID)
         tapSource="resource/tap/HuanYing.png";
         break;
     }
+}
+
+void Player::addToken(int id,Token *token){
+    this->token[id]=token;
+    emit addTokenSIG(token);
 }
 
 void Player::addBasicStatus(int type,Card* card)

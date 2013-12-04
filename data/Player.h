@@ -34,7 +34,6 @@ class Player:public QObject
 public:
     Player(int id,int color,QString nickname);
     void setHandCardsMax(int howMany);
-    void setCoverCardsMax(int howMany){this->coverCardsMax = howMany;}
     void setCrossNum(int howMany);
     void setGem(int howMany);
     void setCrystal(int howMany);
@@ -44,11 +43,9 @@ public:
     void setSpecial(int type,bool flag);
     void cleanSpecial();
     void setToken(int id,int howMany){token[id]->num=howMany;}
-    void addToken(int id,Token *token){this->token[id]=token;emit addTokenSIG(token);}
-    void changeHandCardNum(int increase){handCardsNum+=increase;}
-    void changeCoverCardNum(int increase){coverCardsNum += increase;}
+    void addToken(int id,Token *token);
     void changeHandCardNumTo(int num){handCardsNum = num;}
-    void changeCoverCardNumTo(int num){coverCardsNum = num;}
+    void changeCoverCardNumTo(int num){token[2]->num = num;}
     void addBasicStatus(int type,Card* card);
     void removeBasicStatus(Card* card);
     void cleanBasicStatus();
@@ -61,8 +58,6 @@ public:
     QString getRoleName(){return roleName;}
     int getHandCardMax();
     int getHandCardNum();
-    int getCoverCardMax(){return this->coverCardsMax;}
-    int getCoverCardNum(){return this->coverCardsNum;}
     int getCrossNum();
     int getCrossMax();
     int getGem();
@@ -92,8 +87,6 @@ protected:
     QString roleName;
     int handCardsMax;
     int handCardsNum;
-    int coverCardsMax;
-    int coverCardsNum;
     int crossNum;
     int crossMax;
     int gem;

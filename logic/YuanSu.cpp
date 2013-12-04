@@ -10,7 +10,7 @@ enum CAUSE {
     YUE_GUANG = 1107,
     YUAN_SU_XI_SHOU = 1108,
     STATE_YUAN_MO_FA = 1151,
-    STATE_YUAN_MO_FA_2 = 1152,
+    STATE_YUAN_MO_FA_2 = 1152
 };
 
 YuanSu::YuanSu()

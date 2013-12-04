@@ -6,23 +6,21 @@ class LingFu : public Role
     Q_OBJECT
 public:
     LingFu();
-    void normal();
-    void baiGuiYeXing();
-    void baiGuiYeXing2();
-    void baiGuiYeXing3(bool show);
-    void baiGuiYeXing4();
-    void nianZhou();
-    void lingLiBengJie();
-    void askForSkill(QString skill);
+    void normal();    
+    void BaiGuiYeXing_Expose();
+    void BaiGuiYeXing_Fire();
+    void BaiGuiYeXing(bool canRevert);
+
+    void askForSkill(network::Command* cmd);
+    void drop(int howMany, int cause);
+    void dropCover(int howMany, int cause);
     void cardAnalyse();
-    void coverCardAnalyse();
-    //void playerAnalyse();
+
 public slots:
     void onOkClicked();
     void onCancelClicked();
-    void leiMing();
-    void fengXing();
-    void decipher(uint16_t, google::protobuf::Message*);
+    void LeiMing();
+    void FengXing();
 private:
 
 };

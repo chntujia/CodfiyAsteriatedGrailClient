@@ -331,7 +331,7 @@ void Role::drop(int howMany, int cause)
     QSound::play("sound/Warning.wav");
 }
 
-void Role::dropCover(int howMany)
+void Role::dropCover(int howMany, int cause)
 {
     state = 50;
     gui->showCoverArea(true);
@@ -339,8 +339,11 @@ void Role::dropCover(int howMany)
     coverArea->reset();
     coverArea->setQuota(howMany);
     coverArea->enableAll();
+    if(cause == CAUSE_OVERLOAD){
+        tipArea->setMsg(QStringLiteral("你需要弃")+QString::number(howMany)+QStringLiteral("张盖牌"));
+    }
     gui->alert();
-
+    QSound::play("sound/Warning.wav");
 }
 
 void Role::buy()
@@ -511,59 +514,8 @@ void Role::askForSkill(Command *cmd)
     QSound::play("sound/Warning.wav");
 }
 
-void Role::TianShiZhuFu(int n)
-{
-    gui->reset();
-    state=751;
-    tipArea->setMsg(QStringLiteral("给予天使")+QString::number(n)+QStringLiteral("张牌"));
-    handArea->setQuota(n);
-    handArea->enableAll();
-    gui->alert();
-    QSound::play("sound/Warning.wav");
-}
-
-void Role::MoBaoChongJi()
-{
-    gui->reset();
-    state=851;
-    tipArea->setMsg(QStringLiteral("弃一张法术牌或受到两点法术伤害"));
-    handArea->setQuota(1);
-    handArea->enableMagic();
-    decisionArea->enable(1);
-    gui->alert();
-    QSound::play("sound/Warning.wav");
-}
-
-void Role::ChongYing(int color)
-{
-    gui->reset();
-    state=2951;
-    Player* myself=dataInterface->getMyself();
-    if(myself->getRoleName()!=QStringLiteral("[魔枪]"))
-        tipArea->setMsg(QStringLiteral("弃一张牌，法术或雷将会为魔枪加1伤害"));
-    else
-        tipArea->setMsg(QStringLiteral("可弃一张牌"));
-    if(handArea->getHandCardItems().size()==0)
-        decisionArea->enable(3);
-    else if(color==myself->getColor())
-    {
-        decisionArea->enable(1);
-        handArea->enableAll();
-        handArea->setQuota(1);
-    }
-    else
-    {
-        handArea->enableAll();
-        handArea->setQuota(1);
-    }
-    decisionArea->disable(0);
-    gui->alert();
-}
-
 void Role::onCancelClicked()
 {
-    QString command;
-
     network::Respond* respond;
     switch(state)
     {
@@ -617,17 +569,12 @@ void Role::onCancelClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-//魔爆冲击弃牌
-    case 851:
-        respond = newRespond(851);
-        emit sendCommand(network::MSG_RESPOND, respond);
+//弃盖牌
+    case 50:
+        respond = newRespond(RESPOND_DISCARD_COVER);
+        respond->add_args(0);
         gui->reset();
-        break;
-//充盈弃牌
-    case 2951:
-        respond = newRespond(2951);
         emit sendCommand(network::MSG_RESPOND, respond);
-        gui->reset();
         break;
     }
 }
@@ -852,16 +799,13 @@ void Role::onOkClicked()
         break;
 //弃盖牌
     case 50:
-        respond = newRespond(50);
-
+        respond = newRespond(RESPOND_DISCARD_COVER);
+        respond->add_args(1);
         selectedCards = coverArea->getSelectedCards();
         for(i=0;i<selectedCards.count();i++)
         {
-            respond->add_args(selectedCards[i]->getID());
+            respond->add_card_ids(selectedCards[i]->getID());
         }
-        command+=";";
-        coverArea->reset();
-        gui->showCoverArea(false);
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
@@ -974,11 +918,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 cause = cmd->args(0);
                 howMany = cmd->args(1);
 
-                msg = playerList[targetID]->getRoleName()+QStringLiteral("需要弃")+QString::number(howMany)+QStringLiteral("张牌");
-                if(cmd->args(2) == 1)
-                    gui->logAppend(msg+QStringLiteral("(明弃)"));
-                else
-                    gui->logAppend(msg+QStringLiteral("(暗弃)"));
+                gui->logAppend(getCommandString(cmd));
                 if(targetID!=myID)
                 {
                     gui->setEnable(0);
@@ -987,7 +927,25 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 {
                     gui->setEnable(1);
                     gui->reset();
-                    drop(howMany, cause);
+                    myRole->drop(howMany, cause);
+                }
+                break;
+            case network::RESPOND_DISCARD_COVER:
+                //弃盖牌询问
+                targetID = cmd->dst_ids(0);
+                cause = cmd->args(0);
+                howMany = cmd->args(1);
+                gui->logAppend(getCommandString(cmd));
+
+                if(targetID!=myID)
+                {
+                    gui->setEnable(0);
+                }
+                else
+                {
+                    gui->setEnable(1);
+                    gui->reset();
+                    dropCover(howMany, cause);
                 }
                 break;
             case network::RESPOND_WEAKEN:
@@ -1120,58 +1078,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     additionalAction(cmd);
                 }
                 break;
-            case 750:
-                // 天使祝福
-                targetID=cmd->args(0);
-                howMany=cmd->args(1);
-                msg=QStringLiteral("等待")+playerList[targetID]->getRoleName()+QStringLiteral("天使祝福（给牌）响应");
-                gui->logAppend(msg);
-                if(targetID!=myID)
-                {
-                    isMyTurn=0;
-                    gui->setEnable(0);
-                }
-                else
-                {
-                    gui->setEnable(1);
-                    TianShiZhuFu(howMany);
-                }
-                break;
-            case 850:
-                // 魔爆冲击（弃牌）
-                targetID=cmd->args(0);
-                msg=QStringLiteral("等待")+playerList[targetID]->getRoleName()+QStringLiteral("魔爆冲击（弃牌）响应");
-                gui->logAppend(msg);
-                if(targetID!=myID)
-                {
-                    isMyTurn=0;
-                    gui->setEnable(0);
-                }
-                else
-                {
-                    gui->setEnable(1);
-                    MoBaoChongJi();
-                }
-                break;
-            case 2950:
-            {
-                // 充盈（弃牌）
-                targetID=cmd->args(0);
-                int color=cmd->args(1);
-                msg=QStringLiteral("等待")+playerList[targetID]->getRoleName()+QStringLiteral("充盈（弃牌）响应");
-                gui->logAppend(msg);
-                if(targetID!=myID)
-                {
-                    isMyTurn=0;
-                    gui->setEnable(0);
-                }
-                else
-                {
-                    gui->setEnable(1);
-                    ChongYing(color);
-                }
-                break;
-            }
+
             default:
                 // 其他技能
                 targetID = cmd->src_id();
@@ -1500,18 +1407,16 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     sprintf(str, "%d", player_info->covered_count());
                     QString q_str(str);
                     gui->logAppend(player->getRoleName()+QStringLiteral("的盖牌变为")+q_str+QStringLiteral("张"));
+                    player->setToken(2, player_info->covered_count());
 
                     if (targetID == myID)
                     {
                         dataInterface->cleanCoverCard();
-                        for (int k = 0; k < player_info->covered_count(); ++k)
+                        for (int k = 0; k < player_info->covered_count(); ++k){
                             cardID=player_info->covereds(k);
                             card=dataInterface->getCard(cardID);
                             dataInterface->addCoverCard(card);
-                    }
-                    else
-                    {
-                        player->changeCoverCardNumTo(player_info->hand_count());
+                        }
                     }
                 }
                 // 更新治疗
@@ -1586,7 +1491,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 }
                 if (player_info->has_blue_token())
                 {
-                    player->setToken(0, player_info->blue_token());
+                    player->setToken(1, player_info->blue_token());
                 }
                 // 更新玩家横置状态
                 if (player_info->has_is_knelt())

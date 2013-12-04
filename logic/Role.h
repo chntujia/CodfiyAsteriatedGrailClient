@@ -23,12 +23,9 @@ public:
     virtual void cure(int cross,int harmPoint,int type, int crossAvailable);
     virtual void askForSkill(network::Command* cmd);
     void setAttackTarget();
-    void drop(int howMany, int cause);
-    void dropCover(int howMany);
+    virtual void drop(int howMany, int cause);
+    virtual void dropCover(int howMany, int cause);
     void unactionalCheck();
-    void TianShiZhuFu(int n);
-    void MoBaoChongJi();
-    void ChongYing(int color);
     network::Action* newAction(uint32_t action_type);
     network::Action* newAction(uint32_t action_type, uint32_t action_id);
     network::Respond* newRespond(uint32_t respond_id);
