@@ -1,5 +1,13 @@
 ﻿#include "ZhongCai.h"
 
+enum {
+    YI_SHI_ZHONG_DUAN = 1401,
+    ZHONG_CAI_YI_SHI = 1402,
+    MO_RI_SHEN_PAN = 1403,
+    SHEN_PAN_LANG_CHAO = 1404,
+    PAN_JUE_TIAN_PING = 1405,
+};
+
 ZhongCai::ZhongCai()
 {
     makeConnection();
@@ -23,7 +31,7 @@ void ZhongCai::normal()
     //末日审判
     if(myself->getToken(0)>0)
         buttonArea->enable(3);
-    //判决天平
+    //判决天平getElementCount
     if(myself->getEnergy()>0)
         buttonArea->enable(4);
     //强制末日
@@ -40,7 +48,7 @@ void ZhongCai::normal()
 
 void ZhongCai::YiShiZhongDuan()
 {
-    state=1401;
+    state=YI_SHI_ZHONG_DUAN;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动仪式中断？"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -67,7 +75,7 @@ void ZhongCai::YiShiZhongDuan()
 
 void ZhongCai::ZhongCaiYiShi()
 {
-    state=1402;
+    state=ZHONG_CAI_YI_SHI;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动仲裁仪式？"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -108,7 +116,7 @@ void ZhongCai::MoRiShenPan()
 
 void ZhongCai::PanJueTianPing()
 {
-    state=1404;
+    state=PAN_JUE_TIAN_PING;
     playerArea->reset();
     handArea->reset();
     tipArea->reset();
@@ -139,35 +147,31 @@ void ZhongCai::onOkClicked()
 
     switch(state)
     {
-    case 1401:
-        respond = newRespond(1401);
+    case YI_SHI_ZHONG_DUAN:
+        respond = newRespond(YI_SHI_ZHONG_DUAN);
         respond->add_args(1);
         start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 1402:
-        respond = newRespond(1402);
+    case ZHONG_CAI_YI_SHI:
+        respond = newRespond(ZHONG_CAI_YI_SHI);
         respond->add_args(1);
         start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 1403:
-        action = newAction(1403);
-        action->add_args(1);
+    case MO_RI_SHEN_PAN:
+        action = newAction(ACTION_MAGIC_SKILL, MO_RI_SHEN_PAN);
         action->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 1404:
-        action = newAction(1404);
+    case PAN_JUE_TIAN_PING:
+        action = newAction(ACTION_MAGIC_SKILL, PAN_JUE_TIAN_PING);
         text=tipArea->getBoxCurrentText();
-        if(text[0]=='1'){
+        if(text[0]=='1')
             action->add_args(0);
-            foreach(Card*ptr,dataInterface->getHandCards())
-                dataInterface->removeHandCard(ptr);
-        }
         else
             action->add_args(1);
         emit sendCommand(network::MSG_ACTION, action);
@@ -185,30 +189,31 @@ void ZhongCai::onCancelClicked()
     switch(state)
     {
     //末日审判
-    case 1403:
+    case MO_RI_SHEN_PAN:
     //判决天平
-    case 1404:
+    case PAN_JUE_TIAN_PING:
         normal();
         break;
     //仪式中断
-    case 1401:
-        respond = newRespond(1401);
+    case YI_SHI_ZHONG_DUAN:
+        respond = newRespond(YI_SHI_ZHONG_DUAN);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     //仲裁仪式
-    case 1402:
-        respond = newRespond(1402);
+    case ZHONG_CAI_YI_SHI:
+        respond = newRespond(ZHONG_CAI_YI_SHI);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
 }
-void ZhongCai::askForSkill(QString skill)
+void ZhongCai::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("仪式中断"))
+    if(cmd->respond_id() == YI_SHI_ZHONG_DUAN)
         YiShiZhongDuan();
-    else if(skill==QStringLiteral("仲裁仪式"))
+    else if(cmd->respond_id() == ZHONG_CAI_YI_SHI)
         ZhongCaiYiShi();
+    else
+        Role::askForSkill(cmd);
 }

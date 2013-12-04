@@ -110,6 +110,11 @@ enum CAUSE{
     WEN_YI = 1303,
     SI_WANG_ZHI_CHU = 1304,
     MU_BEI_YUN_LUO = 1305,
+    YI_SHI_ZHONG_DUAN = 1401,
+    ZHONG_CAI_YI_SHI = 1402,
+    MO_RI_SHEN_PAN = 1403,
+    SHEN_PAN_LANG_CHAO = 1404,
+    PAN_JUE_TIAN_PING = 1405,
     SHEN_SHENG_QI_SHI = 1501,
     SHEN_SHENG_QI_FU = 1502,
     SHUI_ZHI_SHEN_LI = 1503,
@@ -307,6 +312,16 @@ QString getCauseString(int cause)
         return QStringLiteral("死亡之触");
     case MU_BEI_YUN_LUO:
         return QStringLiteral("墓碑陨落");
+    case YI_SHI_ZHONG_DUAN:
+        return QStringLiteral("仪式中断");
+    case ZHONG_CAI_YI_SHI:
+        return QStringLiteral("仲裁仪式");
+    case MO_RI_SHEN_PAN:
+        return QStringLiteral("末日审判");
+    case SHEN_PAN_LANG_CHAO:
+        return QStringLiteral("审判浪潮");
+    case PAN_JUE_TIAN_PING:
+        return QStringLiteral("判决天平");
     case QI_ZHA:
         return QStringLiteral("欺诈");
     case MAO_XIAN_ZHE_TIAN_TANG:
@@ -338,7 +353,7 @@ QString getCauseString(int cause)
     case SHEN_SHENG_QI_YUE:
         return QStringLiteral("神圣契约");
     case SHEN_SHENG_LING_YU:
-        return QStringLiteral("神圣领域");  
+        return QStringLiteral("神圣领域");
     case  XIU_LUO_LIAN_ZHAN:
         return QStringLiteral("修罗连斩");
     case  AN_YING_NING_JU:

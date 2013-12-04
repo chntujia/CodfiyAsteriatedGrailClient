@@ -9,7 +9,7 @@ public:
     void normal();
     void YiShiZhongDuan();
     void ZhongCaiYiShi();
-    void askForSkill(QString skill);
+    void askForSkill(network::Command* cmd);
 public slots:
     void MoRiShenPan();
     void PanJueTianPing();
