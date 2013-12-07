@@ -1,4 +1,15 @@
 ﻿#include "GeDouJia.h"
+enum CAUSE{
+    NIAN_QI_LI_CHANG = 2001,
+    XU_LI_YI_JI = 2002,
+    NIAN_DAN = 2003,
+    NIAN_DAN_SELF = 2031,
+    BAI_SHI_HUAN_LONG_QUAN = 2004,
+    CANG_YAN_ZHI_HUN = 2005,
+    DOU_SHEN_TIAN_QU = 2006,
+    XU_LI_CANG_YAN = 2025,
+    BAI_SHI_DOU_SHEN = 2046
+};
 
 GeDouJia::GeDouJia()
 {
@@ -6,40 +17,37 @@ GeDouJia::GeDouJia()
     setMyRole(this);
 }
 
-void GeDouJia::CangYanXuLi()
+void GeDouJia::XuLiCangYan(int skillID)
 {
+    gui->reset();
     Player* myself=dataInterface->getMyself();
-    state=2001;
+    state=XU_LI_CANG_YAN;
     decisionArea->enable(0);
     decisionArea->enable(1);
     if(myself->getTap()==0)
         baiShiUsed=false;
     tipArea->setMsg(QStringLiteral("请选择要发动的技能："));
-    if(myself->getToken(0)<6 && !baiShiUsed)
+    bool xuli = false, cangyan = false;
+    if(skillID == XU_LI_YI_JI)
+        xuli = true;
+    if(skillID == CANG_YAN_ZHI_HUN)
+        cangyan = true;
+    if(skillID == XU_LI_CANG_YAN)
+        xuli = cangyan = true;
+    if(xuli && !baiShiUsed)
         tipArea->addBoxItem(QStringLiteral("1.蓄力一击"));
-    if(myself->getToken(0)<6 && baiShiUsed)
+    if(xuli && baiShiUsed)
         tipArea->addBoxItem(QStringLiteral("1.蓄力一击，且退出【百式幻龙拳】"));
-    if(myself->getToken(0)>0)
+    if(cangyan)
         tipArea->addBoxItem(QStringLiteral("2.苍炎之魂"));
     tipArea->showBox();
 }
 
-void GeDouJia::NianDan1()
+void GeDouJia::NianDan()
 {
-    state=2002;
-    tipArea->setMsg(QStringLiteral("是否发动念弹？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
-}
-
-void GeDouJia::NianDan2()
-{
-    state=2052;
-
-    playerArea->reset();
-    handArea->reset();
-    tipArea->reset();
-
+    state=NIAN_DAN;
+    gui->reset();
+    tipArea->setMsg(QStringLiteral("选择念弹目标或取消"));
     playerArea->enableEnemy();
     playerArea->setQuota(1);
 
@@ -47,9 +55,21 @@ void GeDouJia::NianDan2()
     decisionArea->disable(0);
 }
 
+void GeDouJia::BaiShiDouShen()
+{
+    state = BAI_SHI_DOU_SHEN;
+    gui->reset();
+    tipArea->setMsg(QStringLiteral("请选择要发动的技能"));
+    tipArea->addBoxItem(QStringLiteral("1.百式幻龙拳"));
+    tipArea->addBoxItem(QStringLiteral("2.斗神天驱"));
+    tipArea->showBox();
+    decisionArea->enable(0);
+    decisionArea->enable(1);
+}
+
 void GeDouJia::BaiShiHuanLongQuan()
 {
-    state=2003;
+    state=BAI_SHI_HUAN_LONG_QUAN;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动百式幻龙拳？"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -73,7 +93,7 @@ void GeDouJia::BaiShiHuanLongQuan()
 
 void GeDouJia::DouShenTianQu()
 {
-    state=2004;
+    state=DOU_SHEN_TIAN_QU;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动斗神天驱？如是，请选择要弃的牌"));
     QList<Card*> handcards=dataInterface->getHandCards();
@@ -112,7 +132,7 @@ void GeDouJia::cardAnalyse()
     QList<Card*> handcards=dataInterface->getHandCards();
     switch(state)
     {
-    case 2004:
+    case DOU_SHEN_TIAN_QU:
         if(cardReady)
             decisionArea->enable(0);
         break;
@@ -282,9 +302,6 @@ void GeDouJia::onOkClicked()
     QList<Player*>selectedPlayers;
     QList<Card*>selectedCards;
 
-    QString command;
-    QString sourceID;
-    QString targetID;
     QString text;
     selectedPlayers=playerArea->getSelectedPlayers();
     selectedCards=handArea->getSelectedCards();
@@ -299,36 +316,41 @@ void GeDouJia::onOkClicked()
         if(baiShiUsed)
             baiShiFirst=false;
         break;
-    case 2001:
+    case XU_LI_CANG_YAN:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2001);
+        respond->set_respond_id(XU_LI_CANG_YAN);
 
         text=tipArea->getBoxCurrentText();
         if(text[0]=='1')
-            respond->add_args(0);
-        else
             respond->add_args(1);
+        else
+            respond->add_args(2);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2002:
-        NianDan2();
-        break;
-    case 2052:
+    case NIAN_DAN:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2001);
+        respond->set_respond_id(NIAN_DAN);
         respond->add_args(1);
         respond->add_dst_ids(selectedPlayers[0]->getID());
 
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2003:
+    case BAI_SHI_DOU_SHEN:
+        gui->reset();
+        text = tipArea->getBoxCurrentText();
+        if(text[0]=='1')
+            BaiShiHuanLongQuan();
+        else
+            DouShenTianQu();
+        break;
+    case BAI_SHI_HUAN_LONG_QUAN:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2003);
+        respond->set_respond_id(BAI_SHI_DOU_SHEN);
         respond->add_args(1);
 
         baiShiUsed=true;
@@ -337,17 +359,16 @@ void GeDouJia::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2004:
+    case DOU_SHEN_TIAN_QU:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2004);
-        respond->add_args(1);
+        respond->set_respond_id(BAI_SHI_DOU_SHEN);
+        respond->add_args(2);
 
         start=true;
         respond->add_args(selectedCards.size());
         foreach(Card*ptr,selectedCards){
-            respond->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            respond->add_card_ids(ptr->getID());
         }
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
@@ -358,60 +379,63 @@ void GeDouJia::onOkClicked()
 void GeDouJia::onCancelClicked()
 {
     Role::onCancelClicked();
-    QString command;
 
     network::Respond* respond;
 
     switch(state)
     {
-    case 2001:
+    case XU_LI_CANG_YAN:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2001);
-
+        respond->set_respond_id(XU_LI_CANG_YAN);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2002:
+    case NIAN_DAN:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2002);
-
+        respond->set_respond_id(NIAN_DAN);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2052:
-        NianDan1();
-        break;
-    case 2003:
+    case BAI_SHI_DOU_SHEN:
+    case BAI_SHI_HUAN_LONG_QUAN:
+    case DOU_SHEN_TIAN_QU:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2003);
-
-        emit sendCommand(network::MSG_RESPOND, respond);
-        gui->reset();
-        break;
-    case 2004:
-        respond = new network::Respond();
-        respond->set_src_id(myID);
-        respond->set_respond_id(2004);
-
+        respond->set_respond_id(BAI_SHI_DOU_SHEN);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
 }
 
-void GeDouJia::askForSkill(QString skill)
+void GeDouJia::askForSkill(Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("苍炎蓄力"))
-        CangYanXuLi();
-    else if(skill==QStringLiteral("念弹"))
-        NianDan1();
-    else if(skill==QStringLiteral("百式幻龙拳"))
+    switch(cmd->respond_id())
+    {
+    case XU_LI_YI_JI:
+    case CANG_YAN_ZHI_HUN:
+    case XU_LI_CANG_YAN:
+        XuLiCangYan(cmd->respond_id());
+        break;
+    case NIAN_DAN:
+        NianDan();
+        break;
+    case BAI_SHI_HUAN_LONG_QUAN:
         BaiShiHuanLongQuan();
-    else if(skill==QStringLiteral("斗神天驱"))
+        break;
+    case DOU_SHEN_TIAN_QU:
         DouShenTianQu();
+        break;
+    case BAI_SHI_DOU_SHEN:
+        BaiShiDouShen();
+        break;
+    default:
+        Role::askForSkill(cmd);
+    }
 }
 

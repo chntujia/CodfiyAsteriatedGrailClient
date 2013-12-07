@@ -6,12 +6,12 @@ class GeDouJia : public Role
     Q_OBJECT
 public:
     GeDouJia();
-    void CangYanXuLi();
-    void NianDan1();
-    void NianDan2();
+    void XuLiCangYan(int skillID);
+    void NianDan();
+    void BaiShiDouShen();
     void BaiShiHuanLongQuan();
     void DouShenTianQu();
-    void askForSkill(QString skill);
+    void askForSkill(network::Command* cmd);
 public slots:
     void onOkClicked();
     void onCancelClicked();
