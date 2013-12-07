@@ -1,5 +1,23 @@
 ﻿#include "QiDao.h"
 
+enum CAUSE{
+	QI_DAO = 1603,
+	WEI_LI_CI_FU = 1602,
+	XUN_JIE_CI_FU = 1601,
+	GUANG_HUI_XIN_YANG = 1604,
+	QI_HEI_XIN_YANG = 1605,
+	FA_LI_CHAO_XI = 1606
+};
+
+void QiDao::askForSkill(network::Command* cmd)
+{
+    if(cmd->respond_id() == QI_DAO){
+        QiDong();
+	}else{
+		return Role::askForSkill(cmd);
+	}
+}
+
 QiDao::QiDao()
 {
     makeConnection();
@@ -49,7 +67,7 @@ void QiDao::magicAction()
         buttonArea->enable(3);
     if (handArea->checkSpecility(QStringLiteral("迅捷赐福")))
         buttonArea->enable(4);
-    if(myself->getTap()&&myself->getToken(0)>0)
+    if(myself->getTap()&&myself->getToken(0)>0)//getTap 返回是否横置 getToken返回标记物数目
     {
         buttonArea->enable(5);
         buttonArea->enable(6);
@@ -58,31 +76,35 @@ void QiDao::magicAction()
 
 void QiDao::QiDong()
 {
-    state=1601;
+    state=QI_DAO;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动祈祷？"));
     QList<Card*> handcards=dataInterface->getHandCards();
-    bool flag=true;
-    int i;
+
+
     int n=handcards.size();
     decisionArea->enable(1);
+	bool flag=true;
     if(n<4)
     {
         flag=false;
-        for(i=0;i<n;i++)
+        for(int i=0;i<n;i++){
+
             if(handcards[i]->getElement()!="light")
             {
                 flag=true;
                 break;
             }
+		}
     }
-    if(flag)
-        decisionArea->enable(0);
+    if(flag || dataInterface->getMyself()->getEnergy()>=1){
+		 decisionArea->enable(0);
+	}
 }
 
 void QiDao::WeiLiCiFu()
 {
-    state=1602;
+    state=WEI_LI_CI_FU;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -98,7 +120,7 @@ void QiDao::WeiLiCiFu()
 
 void QiDao::XunJieCiFu()
 {
-    state=1603;
+    state=XUN_JIE_CI_FU;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -114,7 +136,7 @@ void QiDao::XunJieCiFu()
 
 void QiDao::GuangHuiXinYang()
 {
-    state=1604;
+    state=GUANG_HUI_XIN_YANG;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -132,7 +154,7 @@ void QiDao::GuangHuiXinYang()
 
 void QiDao::QiHeiXinYang()
 {
-    state=1605;
+    state=QI_HEI_XIN_YANG;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -151,21 +173,21 @@ void QiDao::cardAnalyse()
     switch (state)
     {
 //威力赐福
-    case 1602:
+    case WEI_LI_CI_FU:
         playerArea->enableMate();
         for(int i=0;i<players.size();i++)
            if(players[i]->checkBasicStatus(4))
                playerArea->disablePlayerItem(i);
         break;
 //迅捷赐福
-    case 1603:
+    case XUN_JIE_CI_FU:
         playerArea->enableMate();
         for(int i=0;i<players.size();i++)
            if(players[i]->checkBasicStatus(5))
                playerArea->disablePlayerItem(i);
         break;
 //光辉信仰
-    case 1604:
+    case GUANG_HUI_XIN_YANG:
         playerArea->enableMate();
         break;
     }
@@ -197,7 +219,9 @@ void QiDao::onOkClicked()
         if(text[0]=='1'){
             onceUsed=true;
 
-            respond = newRespond(1606);
+            respond = new network::Respond();
+			respond->set_src_id(myID);
+            respond->set_respond_id(FA_LI_CHAO_XI);
             respond->add_args(1);
             emit sendCommand(network::MSG_RESPOND, respond);
             magicAction();
@@ -205,41 +229,47 @@ void QiDao::onOkClicked()
         }
         break;
 //祈祷
-    case 1601:
-        respond = newRespond(1606);
+    case QI_DAO:
+        respond = new network::Respond();
+		respond->set_src_id(myID);
+        respond->set_respond_id(QI_DAO);
         respond->add_args(1);
+		
         start = true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //威力赐福
-    case 1602:
-        action = newAction(1602);
-        action->add_args(selectedCards[0]->getID());
+    case WEI_LI_CI_FU:
+        action = newAction(ACTION_MAGIC_SKILL, WEI_LI_CI_FU);
+		action->set_src_id(myID);
+		action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
 
-        dataInterface->removeHandCard(selectedCards[0]);
+        //dataInterface->removeHandCard(selectedCards[0]);
         usedMagic=true;
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //迅捷赐福
-    case 1603:
-        action = newAction(1603);
-        action->add_args(selectedCards[0]->getID());
+    case XUN_JIE_CI_FU:
+        action = newAction(ACTION_MAGIC_SKILL,XUN_JIE_CI_FU);
+		action->set_src_id(myID);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
 
-        dataInterface->removeHandCard(selectedCards[0]);
+        //dataInterface->removeHandCard(selectedCards[0]);
         usedMagic=true;
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
 //光辉信仰
-    case 1604:
-        action = newAction(1604);
+    case GUANG_HUI_XIN_YANG:
+        action = newAction(ACTION_MAGIC_SKILL,GUANG_HUI_XIN_YANG);
+		action->set_src_id(myID);
         foreach(Card*ptr,selectedCards){
-            action->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
+            //dataInterface->removeHandCard(ptr);
         }
         action->add_dst_ids(selectedPlayers[0]->getID());
 
@@ -248,8 +278,9 @@ void QiDao::onOkClicked()
         gui->reset();
         break;
 //漆黑信仰
-    case 1605:
-        action = newAction(1605);
+    case QI_HEI_XIN_YANG:
+        action = newAction(ACTION_MAGIC_SKILL,QI_HEI_XIN_YANG);
+		action->set_src_id(myID);
         action->add_args(1);
         action->add_dst_ids(selectedPlayers[0]->getID());
 
@@ -270,19 +301,23 @@ void QiDao::onCancelClicked()
     switch(state)
     {
 //祈祷
-    case 1601:
-        respond = newRespond(1606);
+    case QI_DAO:
+        respond = new network::Respond();
+		respond->set_src_id(myID);
+        respond->set_respond_id(QI_DAO);
+        respond->add_args(0);
+
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
 //威力赐福
-    case 1602:
+    case WEI_LI_CI_FU:
 //迅捷赐福
-    case 1603:
+    case XUN_JIE_CI_FU:
 //光辉信仰
-    case 1604:
+    case GUANG_HUI_XIN_YANG:
 //漆黑信仰
-    case 1605:
+    case QI_HEI_XIN_YANG:
         if(actionFlag==0)
             normal();
         else if(actionFlag==2)
@@ -290,15 +325,4 @@ void QiDao::onCancelClicked()
         break;
     }
 }
-void QiDao::askForSkill(QString skill)
-{
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("祈祷"))
-        QiDong();
-}
-void QiDao::additionalAction()
-{
-    //Role::additionalAction();
-    if(usedMagic && dataInterface->getMyself()->getEnergy()>0 && !onceUsed)
-        tipArea->addBoxItem(QStringLiteral("1.法力潮汐"));
-}
+

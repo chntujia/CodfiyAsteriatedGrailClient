@@ -9,9 +9,9 @@ public:
     void normal();
     void magicAction();
     void QiDong();
-    void FaLiChaoXi();
-    void askForSkill(QString skill);
-    void additionalAction();
+	void askForSkill(network::Command* cmd);
+
+
 public slots:
     void onOkClicked();
     void onCancelClicked();
