@@ -8,9 +8,10 @@ public:
     LingHun();
     void normal();
     void LingHunZhuanHuan();
-    void LingHunLianJie(int harmPoint=0);
+    void LingHunLianJie();
+    void LingHunLianJieReact(int harmPoint);
     void LingHunZengFu();
-    void askForSkill(QString skill);
+    void askForSkill(network::Command* cmd);
 public slots:
     void LingHunZhaoHuan();
     void LingHunJingXiang();

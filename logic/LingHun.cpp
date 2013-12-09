@@ -1,4 +1,18 @@
-﻿#include "LingHun.h"
+﻿
+#include "LingHun.h"
+
+enum CAUSE{
+        LING_HUN_ZHEN_BAO =2201,
+        LING_HUN_CI_YU =2202,
+        LING_HUN_ZENG_FU=2203,
+        LING_HUN_TUN_SHI=2204,
+        LING_HUN_ZHAO_HUAN=2205,
+        LING_HUN_ZHUAN_HUAN=2206,
+        LING_HUN_JING_XIANG=2207,
+        LING_HUN_LIAN_JIE=2208,
+        LING_HUN_LIAN_JIE_REACT=2209
+};
+
 
 LingHun::LingHun()
 {
@@ -6,23 +20,24 @@ LingHun::LingHun()
     makeConnection();
     setMyRole(this);
     lianJieUsed=false;
+
     Button *linghunzhaohuan;
-    linghunzhaohuan=new Button(3,"灵魂召还");
+    linghunzhaohuan=new Button(3,QStringLiteral("灵魂召还"));
     buttonArea->addButton(linghunzhaohuan);
     connect(linghunzhaohuan,SIGNAL(buttonSelected(int)),this,SLOT(LingHunZhaoHuan()));
 
     Button *linghunjingxiang;
-    linghunjingxiang=new Button(4,"灵魂镜像");
+    linghunjingxiang=new Button(4,QStringLiteral("灵魂镜像"));
     buttonArea->addButton(linghunjingxiang);
     connect(linghunjingxiang,SIGNAL(buttonSelected(int)),this,SLOT(LingHunJingXiang()));
 
     Button *linghunzhenbao;
-    linghunzhenbao=new Button(5,"灵魂震爆");
+    linghunzhenbao=new Button(5,QStringLiteral("灵魂震爆"));
     buttonArea->addButton(linghunzhenbao);
     connect(linghunzhenbao,SIGNAL(buttonSelected(int)),this,SLOT(LingHunZhenBao()));
 
     Button *linghunciyu;
-    linghunciyu=new Button(6,"灵魂赐予");
+    linghunciyu=new Button(6,QStringLiteral("灵魂赐予"));
     buttonArea->addButton(linghunciyu);
     connect(linghunciyu,SIGNAL(buttonSelected(int)),this,SLOT(LingHunCiYu()));
 }
@@ -44,7 +59,7 @@ void LingHun::normal()
 
 void LingHun::LingHunZhaoHuan()
 {
-    state=2201;
+    state= LING_HUN_ZHAO_HUAN;
     playerArea->reset();
     handArea->reset();
     tipArea->reset();
@@ -58,7 +73,7 @@ void LingHun::LingHunZhaoHuan()
 
 void LingHun::LingHunJingXiang()
 {
-    state=2202;
+    state=LING_HUN_JING_XIANG;
     playerArea->reset();
     handArea->reset();
     tipArea->reset();
@@ -68,17 +83,17 @@ void LingHun::LingHunJingXiang()
 
     if(handArea->getHandCardItems().size()>3)
     {
-        handArea->enableAll();
         handArea->setQuota(3);
     }
     else
-        playerArea->enableAll();
+        handArea->setQuota(1,7);
+    handArea->enableAll();
     playerArea->setQuota(1);
 }
 
 void LingHun::LingHunZhenBao()
 {
-    state=2203;
+    state=LING_HUN_ZHEN_BAO;
     playerArea->reset();
     handArea->reset();
     tipArea->reset();
@@ -92,9 +107,10 @@ void LingHun::LingHunZhenBao()
     decisionArea->disable(0);
 }
 
+//
 void LingHun::LingHunCiYu()
 {
-    state=2204;
+    state=LING_HUN_CI_YU;
     playerArea->reset();
     handArea->reset();
     tipArea->reset();
@@ -110,7 +126,7 @@ void LingHun::LingHunCiYu()
 
 void LingHun::LingHunZhuanHuan()
 {
-    state=2205;
+    state=LING_HUN_ZHUAN_HUAN;
     Player *myself=dataInterface->getMyself();
     tipArea->setMsg(QStringLiteral("请选择要转换的灵魂："));
     decisionArea->enable(0);
@@ -123,51 +139,40 @@ void LingHun::LingHunZhuanHuan()
     tipArea->showBox();
 }
 
-void LingHun::LingHunLianJie(int harmPoint)
+
+//[灵魂链接]
+void LingHun::LingHunLianJie()
 {
-    state=2206;
+    state=LING_HUN_LIAN_JIE;
     gui->reset();
     Player *myself=dataInterface->getMyself();
     decisionArea->enable(1);
-    if(!lianJieUsed){
     tipArea->setMsg(QStringLiteral("是否发动灵魂连接？如是请选择目标"));
+    playerArea->enableMate();
     playerArea->setQuota(1);
-    decisionArea->disable(0);
-    QList<Card*> handcards=dataInterface->getHandCards();
-    Player *myself=dataInterface->getMyself();
-    bool flag=true;
-    int i;
-    int n=handcards.size();
-    decisionArea->enable(1);
-    if(n<4)
-    {
-        flag=false;
-        for(i=0;i<n;i++)
-            if(handcards[i]->getElement()!="light")
-            {
-                flag=true;
-                break;
-            }
-        if(myself->getToken(0)>1)
-            flag=true;
-    }
-    if(flag)
-        playerArea->enableMate();
-    }
-    else
-    {
-        decisionArea->enable(0);
-        tipArea->setMsg(QStringLiteral("请选择要转移的伤害："));
-        int min=myself->getToken(1)<harmPoint?myself->getToken(1):harmPoint;
-        for(;min>=0;min--)
-            tipArea->addBoxItem(QString::number(min));
-        tipArea->showBox();
-    }
 }
 
+//[灵魂链接] 转移伤害
+void LingHun::LingHunLianJieReact(int harmPoint)
+{
+   state=LING_HUN_LIAN_JIE_REACT;
+   gui->reset();
+    Player *myself=dataInterface->getMyself();
+   tipArea->reset();
+   handArea->reset();
+   playerArea->reset();
+   decisionArea->enable(0);
+   decisionArea->enable(1);
+   tipArea->setMsg(QStringLiteral("请选择要转移的伤害："));
+   int min=myself->getToken(1)<harmPoint?myself->getToken(1):harmPoint;
+   for(;min>0;min--)                              //转移伤害数>0
+    tipArea->addBoxItem(QString::number(min));
+    tipArea->showBox();
+}
+// 【灵魂增幅】
 void LingHun::LingHunZengFu()
 {
-    state=2207;
+    state=LING_HUN_ZENG_FU;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动灵魂增幅？"));
     decisionArea->enable(1);
@@ -179,12 +184,12 @@ void LingHun::cardAnalyse()
     Role::cardAnalyse();
     switch(state)
     {
-    case 2201:
+    case LING_HUN_ZHAO_HUAN:
         decisionArea->enable(0);
         break;
-    case 2203:
-    case 2204:
-    case 2202:
+    case LING_HUN_ZHEN_BAO:
+    case LING_HUN_CI_YU:
+    case LING_HUN_JING_XIANG:
         playerArea->enableAll();
         break;
     }
@@ -196,10 +201,7 @@ void LingHun::onOkClicked()
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
 
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
+
     QString text;
 
     selectedCards=handArea->getSelectedCards();
@@ -210,56 +212,42 @@ void LingHun::onOkClicked()
 
     switch(state)
     {
-    case 2201:
-        action = newAction(2201);
+    case LING_HUN_ZHAO_HUAN:
+        action = newAction(ACTION_MAGIC_SKILL,LING_HUN_ZHAO_HUAN);
+         for(int i=0;i<selectedCards.size();i++)
+             action->add_card_ids(selectedCards[i]->getID());
+        emit sendCommand(network::MSG_ACTION, action);
+        gui->reset();
+        break;
+        
+     case  LING_HUN_JING_XIANG:
+        action = newAction(ACTION_MAGIC_SKILL,LING_HUN_JING_XIANG);
         foreach(Card*ptr,selectedCards){
-            action->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+             action->add_card_ids(ptr->getID());
         }
-
-        emit sendCommand(network::MSG_ACTION, action);
-        gui->reset();
-        break;
-    case 2202:
-        action = newAction(2202);
         action->add_dst_ids(selectedPlayers[0]->getID());
-
-        if(handArea->getHandCardItems().size()<=3)
-        {
-            action->add_args(100000);
-            foreach(Card*ptr,dataInterface->getHandCards())
-                dataInterface->removeHandCard(ptr);
-        }
-        else
-        {
-            foreach(Card*ptr,selectedCards){
-                action->add_args(ptr->getID());
-                dataInterface->removeHandCard(ptr);
-            }
-            command+=";";
-        }
-
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2203:
-        action = newAction(2203);
+
+    case LING_HUN_ZHEN_BAO:
+        action = newAction(ACTION_MAGIC_SKILL,LING_HUN_ZHEN_BAO);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-        action->add_args(selectedCards[0]->getID());
-
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2204:
-        action = newAction(2204);
+    case LING_HUN_CI_YU:
+        action = newAction(ACTION_MAGIC_SKILL,LING_HUN_CI_YU);
+        action->add_card_ids(selectedCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
-        action->add_args(selectedCards[0]->getID());
-
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2205:
-        respond = newRespond(2205);
+    case LING_HUN_ZHUAN_HUAN:
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(LING_HUN_ZHUAN_HUAN);
 
         text=tipArea->getBoxCurrentText();
         if(text[0].digitValue()==1)
@@ -269,27 +257,29 @@ void LingHun::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2206:
-        respond = newRespond(2206);
-
-        if(!lianJieUsed)
-        {
+    case LING_HUN_LIAN_JIE:
+            respond = new Respond();
+            respond->set_respond_id(LING_HUN_LIAN_JIE);
+            respond->set_src_id(myID);
             respond->add_dst_ids(selectedPlayers[0]->getID());
             respond->add_args(1);
-            start=true;
-            lianJieUsed=true;
-        }
-        else
-        {
-            respond->add_args(tipArea->getBoxCurrentText().toInt());
-        }
-        emit sendCommand(network::MSG_RESPOND, respond);
-        gui->reset();
+            emit sendCommand(network::MSG_RESPOND, respond);
+            gui->reset();
         break;
-    case 2207:
-        respond = newRespond(2207);
+    case LING_HUN_LIAN_JIE_REACT:
+            respond = new Respond();
+            respond->set_respond_id(LING_HUN_LIAN_JIE_REACT);
+            respond->set_src_id(myID);
+            respond->add_args(tipArea->getBoxCurrentText().toInt());
+            emit sendCommand(network::MSG_RESPOND, respond);
+            gui->reset();
+        break;
+    case LING_HUN_ZENG_FU:
+        respond = new Respond();
+        respond->set_respond_id(LING_HUN_ZENG_FU);
+        respond->set_src_id(myID);
+    //  respond->set_respond_id(skillCmd.respond_id());
         respond->add_args(1);
-        start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -299,45 +289,64 @@ void LingHun::onOkClicked()
 void LingHun::onCancelClicked()
 {
     Role::onCancelClicked();
-    QString command;
 
     network::Respond* respond;
 
     switch(state)
     {
-    case 2201:
-    case 2202:
-    case 2203:
-    case 2204:
+    case LING_HUN_ZHEN_BAO:
+    case LING_HUN_JING_XIANG:
+    case LING_HUN_ZHAO_HUAN:
+    case LING_HUN_CI_YU:
         normal();
         break;
-    case 2205:
-        respond = newRespond(2205);
+    case LING_HUN_ZHUAN_HUAN:
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond ->set_respond_id(LING_HUN_ZHUAN_HUAN);
+        respond->add_args(2);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2206:
-        respond = newRespond(2206);
+
+    case LING_HUN_LIAN_JIE:
+        respond = new Respond();
+        respond->set_respond_id(LING_HUN_LIAN_JIE);
+        respond->set_src_id(myID);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2207:
-        respond = newRespond(2207);
+    case LING_HUN_LIAN_JIE_REACT:
+        respond = new Respond();
+        respond->set_respond_id(LING_HUN_LIAN_JIE_REACT);
+        respond->set_src_id(myID);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case LING_HUN_ZENG_FU:
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond ->set_respond_id(LING_HUN_ZENG_FU);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
 }
 
-void LingHun::askForSkill(QString skill)
+void LingHun::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("灵魂转换"))
+     //灵魂链接稍后补上
+    if(cmd->respond_id() == LING_HUN_ZHUAN_HUAN)
         LingHunZhuanHuan();
-//    else if(skill==QStringLiteral("灵魂链接"))
-//        LingHunLianJie(command.split(';').at(3).toInt());
-    else if(skill==QStringLiteral("灵魂增幅"))
+    else if(cmd->respond_id() == LING_HUN_ZENG_FU)
         LingHunZengFu();
+    else if(cmd->respond_id() == LING_HUN_LIAN_JIE)
+        LingHunLianJie();
+    else if(cmd->respond_id() == LING_HUN_LIAN_JIE_REACT)
+        LingHunLianJieReact(cmd->args(0));
+    else
+        Role::askForSkill(cmd);
 }
-
-
