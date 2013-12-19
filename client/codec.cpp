@@ -65,8 +65,8 @@ void* proto_decoder(const char* msg, uint16_t& type)
         proto = new Gossip();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
-    case MSG_PICK_REQ:
-        proto = new CharactorPickRequest();
+    case MSG_ROLE_REQ:
+        proto = new RoleRequest();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         return proto;
         break;

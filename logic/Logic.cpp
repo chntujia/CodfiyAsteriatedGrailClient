@@ -178,7 +178,7 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
     QString temp;
     QString arg[10];
 
-    network::CharactorPickRequest* char_pick;
+    network::RoleRequest* char_pick;
 
     switch (proto_type)
     {
@@ -224,8 +224,9 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
                 roleID=player_info->role_id();
 
                 roles[targetID]=roleID;
+                count++;
             }
-            count++;
+
             if(count==dataInterface->getPlayerMax())
             {
                 disconnect(getClient(),0,this,0);
@@ -254,9 +255,9 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         }
         break;
 //选择角色
-    case network::MSG_PICK_REQ:
+    case network::MSG_ROLE_REQ:
         state=46;
-        char_pick = (network::CharactorPickRequest*) proto;
+        char_pick = (network::RoleRequest*) proto;
 
         tipArea=gui->getTipArea();
         decisionArea=gui->getDecisionArea();
@@ -343,17 +344,19 @@ void Logic::onOkClicked()
     BPArea* bpArea;
     RoleItem* role;
 
-    network::Pick* pick;
+    network::PickBan* pick;
     switch(state)
     {
     case 46:
         tipArea=gui->getTipArea();
         chosen=tipArea->getBoxCurrentText().split(".");
 
-        pick = new network::Pick();
-        pick->set_role_id(chosen[0].toInt());
+        pick = new network::PickBan();
+        pick->add_role_ids(chosen[0].toInt());
+        pick->set_strategy(network::ROLE_STRATEGY_31);
+        pick->set_is_pick(true);
 
-        emit sendCommand(network::MSG_PICK, pick);
+        emit sendCommand(network::MSG_PICK_BAN, pick);
         disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));;
         gui->reset();
         break;
