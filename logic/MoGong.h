@@ -8,29 +8,35 @@ class MoGong : public Role
 public:
     MoGong();
     void normal();
-    void askForSkill(QString skill);
     void turnBegin();
-    void additionalAction();
+ // void additionalAction();
+    void MoGuanChongJi();
     void MoGuanChongJiHit();
     void DuoChongSheJi();
-    void ChongNengMoYan1();
-    void ChongNengMoYan2();
+    void ChongNengMoYan();
+    void ChongNeng();
+    void MoYan();
     void ChongNengGaiPai();
     void MoYanGaiPai();
-    void MoGuanChongJi();
+    void attackAction();
+    void setAttackTarget();
+    void askForSkill(network::Command* cmd);
+
 public slots:
     void onOkClicked();
     void onCancelClicked();
     void cardAnalyse();
-    void coverCardAnalyse();    
+    void coverCardAnalyse();
+  //  void showCoverArea();
+  //  void closeCoverArea();
     void LeiGuangSanShe();
 private:
     bool MoGuanChongJiUsed;
     bool DuoChongSheJiUsed;
     bool ChongNengUsed;
-    int lastTarget;
-    int startChoice;
-    int chongnengNum;
+    int  lastTarget;     //上次攻击的目标  for【多重射击】
+    int  startChoice;
+    int  chongnengNum;
 };
 
 #endif // MOGONG_H

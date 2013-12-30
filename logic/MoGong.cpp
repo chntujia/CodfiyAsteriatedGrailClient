@@ -1,5 +1,18 @@
 ﻿#include "MoGong.h"
 
+enum CAUSE{
+    MO_GUAN_CHONG_JI=2601,
+    MO_GUAN_CHONG_JI_HIT=26011,
+    LEI_GUANG_SAN_SHE =2602,
+    LEI_GUANG_SAN_SHE_EXTRA=26021,
+    DUO_CHONG_SHE_JI=2603,
+    CHONG_NENG=2604,
+    CHONG_NENG_GAI_PAI=26041,
+    MO_YAN=2605,
+    MO_YAN_GAI_PAI=26051,
+    CHONG_NENG_MO_YAN=2606
+};
+
 MoGong::MoGong()
 {
     makeConnection();
@@ -7,7 +20,7 @@ MoGong::MoGong()
 
     Button *leiGuangSanShe, *checkCover;
 
-    leiGuangSanShe=new Button(3,"雷光散射");
+    leiGuangSanShe=new Button(3,QStringLiteral("雷光散射"));
     buttonArea->addButton(leiGuangSanShe);
     connect(leiGuangSanShe,SIGNAL(buttonSelected(int)),this,SLOT(LeiGuangSanShe()));
 
@@ -36,9 +49,9 @@ void MoGong::normal()
 
 void MoGong::MoGuanChongJi()
 {
-    state=2601;
+    state=MO_GUAN_CHONG_JI;
     gui->reset();
-    tipArea->setMsg("是否发动魔贯冲击？");
+    tipArea->setMsg(QStringLiteral("是否发动魔贯冲击？"));
     gui->showCoverArea(true);
     coverArea->enableElement("fire");
     coverArea->setQuota(1);
@@ -47,24 +60,24 @@ void MoGong::MoGuanChongJi()
 
 void MoGong::MoGuanChongJiHit()
 {
-    state = 2602;
+    state=MO_GUAN_CHONG_JI_HIT;
     gui->reset();
-    tipArea->setMsg("攻击命中，额外移除1火系充能伤害加1");
+    tipArea->setMsg(QStringLiteral("攻击命中，额外移除1火系充能伤害加1"));
     gui->showCoverArea(true);
-
     coverArea->enableElement("fire");
     coverArea->setQuota(1);
-    buttonArea->enable(1);
+    buttonArea->enable(1);  //??
     decisionArea->enable(1);
 }
 
+//【雷光散射】
 void MoGong::LeiGuangSanShe()
 {
-    state = 2603;
+    state=LEI_GUANG_SAN_SHE;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
-    tipArea->setMsg("请选择雷系充能");
+    tipArea->setMsg(QStringLiteral("请选择雷系充能"));
     gui->showCoverArea(true);
     coverArea->reset();
     coverArea->enableElement("thunder");
@@ -75,93 +88,95 @@ void MoGong::LeiGuangSanShe()
     coverArea->setQuota(1,n);
     decisionArea->enable(1);
 }
-
+//【多重射击】
 void MoGong::DuoChongSheJi()
 {
-    state = 2605;
+    state=DUO_CHONG_SHE_JI;
+    DuoChongSheJiUsed=true;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
-    tipArea->setMsg("请选择风系充能");
+    tipArea->setMsg(QStringLiteral("请选择风系充能"));
     gui->showCoverArea(true);
     coverArea->reset();
     coverArea->enableElement("wind");
     coverArea->setQuota(1);
     decisionArea->disable(0);
+    decisionArea->enable(3);  //added by Tony
 }
 
-void MoGong::ChongNengMoYan1()
+void MoGong::ChongNengMoYan()
 {
-    state = 2661;
+    state=CHONG_NENG_MO_YAN;
     gui->reset();
-    tipArea->setMsg("是否发动充能/魔眼？");
+    tipArea->setMsg(QStringLiteral("是否发动充能/魔眼？"));
     Player* myself = dataInterface->getMyself();
-    if(myself->getEnergy()>0)
-        tipArea->addBoxItem("1.充能");
-    if(myself->getGem()>0)
-        tipArea->addBoxItem("2.魔眼");
+        if(myself->getEnergy()>0)
+           tipArea->addBoxItem(QStringLiteral("1.充能"));   //水晶都能用宝石替代
+        if(myself->getGem()>0)
+            tipArea->addBoxItem(QStringLiteral("2.魔眼"));
     tipArea->showBox();
     decisionArea->enable(1);
-    if(myself->getEnergy()>0)
-        decisionArea->enable(0);
+    decisionArea->enable(0);
 }
 
-void MoGong::ChongNengMoYan2()
+//------弃牌逻辑有疑问------
+
+void MoGong::ChongNeng()
 {
-    state = 2662;
-    handArea->reset();
-    playerArea->reset();
-    tipArea->reset();
-    Player* myself = dataInterface->getMyself();
-    if(startChoice==1)
-    {
-        tipArea->setMsg("弃到4张手牌，并选择摸牌数量");
-        for(int i = 1; i < 5; i ++)
-            tipArea->addBoxItem(QString::number(i));
-        tipArea->showBox();
-        if(myself->getHandCardNum()<=4)
-            decisionArea->enable(0);
-        else
-        {
-            decisionArea->disable(0);
-            handArea->enableAll();
-            handArea->setQuota(myself->getHandCardNum()-4);
-        }
-        decisionArea->enable(1);
-    }
-    else
-    {
-        tipArea->setMsg("【选择目标角色】弃1张牌或【不选择目标】你摸3张牌");
-        playerArea->enableAll();
-        playerArea->setQuota(1);
-        decisionArea->enable(0);
-        decisionArea->enable(1);
-    }
+     state=CHONG_NENG;
+     gui->reset();
+     Player* myself = dataInterface->getMyself();
+
+     tipArea->setMsg(QStringLiteral("弃到4张手牌，并选择摸牌数量"));
+     for(int i = 1; i < 5; i ++)
+         tipArea->addBoxItem(QString::number(i));
+     tipArea->showBox();
+
+     if(myself->getHandCardNum()<=4)
+         decisionArea->enable(0);
+     else
+     {
+         decisionArea->disable(0);
+         handArea->enableAll();
+         handArea->setQuota(myself->getHandCardNum()-4);
+     }
+     decisionArea->enable(1);
+}
+
+void MoGong::MoYan()
+{
+     state=MO_YAN;
+     gui->reset();
+     tipArea->setMsg(QStringLiteral("【选择目标角色】弃1张牌或【不选择目标】你摸3张牌"));
+     playerArea->enableAll();
+     playerArea->setQuota(1);
+     decisionArea->enable(0);
+     decisionArea->enable(1);
 }
 
 void MoGong::ChongNengGaiPai()
 {
-    state = 2607;
+    state=CHONG_NENG_GAI_PAI;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
-    tipArea->setMsg("请选择最多"+QString::number(chongnengNum)+"张手牌盖做充能");
-    handArea->enableAll();
-    handArea->setQuota(0,chongnengNum);
-    decisionArea->enable(0);
-}
 
-void MoGong::MoYanGaiPai()
-{
-    state = 2608;
-    handArea->reset();
-    playerArea->reset();
-    tipArea->reset();
-    tipArea->setMsg(("请选择一张手牌盖做充能"));
-    handArea->enableAll();
-    handArea->setQuota(1);
-    if(dataInterface->getHandCards().size()==0)
-        decisionArea->enable(0);
+    QList<Card*> covercards=dataInterface->getCoverCards();
+
+    //控制充能数，保证不充满
+    int n=covercards.size();
+    chongnengNum=(chongnengNum+n>7)?(8-n):chongnengNum;
+
+    tipArea->setMsg(QStringLiteral("请选择最多")+QString::number(chongnengNum)+QStringLiteral("张手牌盖做充能"));
+
+    tipArea->setMsg(QStringLiteral("选择手牌盖做充能"));
+      handArea->enableAll();
+      handArea->setQuota(0,chongnengNum);
+  //  for(int i = 1; i <=chongnengNum; i ++)
+ //       tipArea->addBoxItem(QString::number(i));
+ //       tipArea->showBox();
+    decisionArea->enable(0);
 }
 
 void MoGong::cardAnalyse()
@@ -169,17 +184,16 @@ void MoGong::cardAnalyse()
     Role::cardAnalyse();
     switch(state)
     {
-    case 2662:
-        if(startChoice==1)
+    case CHONG_NENG:
             decisionArea->enable(0);
         break;
-    case 2607:
-        if(gui->getHandArea()->getSelectedCards().size()<gui->getHandArea()->getHandCardItems().size())
+    case CHONG_NENG_GAI_PAI:
+        if(gui->getHandArea()->getSelectedCards().size()<gui->getHandArea()->getHandCardItems().size()) //???
             decisionArea->enable(0);
         else
             decisionArea->disable(0);
         break;
-    case 2608:
+    case MO_YAN_GAI_PAI:
         decisionArea->enable(0);
         break;
     }
@@ -191,14 +205,16 @@ void MoGong::coverCardAnalyse()
     QList<Card*> selectedCoverCards = this->coverArea->getSelectedCards();
     switch(state)
     {
-    case 2601:
+    case MO_GUAN_CHONG_JI:
         if(selectedCoverCards[0]->getElement()=="fire")
             decisionArea->enable(0);
         break;
-    case 2602:
+  //  case 2602:
+      case MO_GUAN_CHONG_JI_HIT:
         decisionArea->enable(0);
         break;
-    case 2603:
+  //  case 2603:
+     case LEI_GUANG_SAN_SHE:
         if(selectedCoverCards.size()==1)
         {
             decisionArea->enable(0);
@@ -212,20 +228,36 @@ void MoGong::coverCardAnalyse()
             playerArea->setQuota(1);
         }
         break;
-    case 2605:
+  // case 2605:
+     case DUO_CHONG_SHE_JI:
         setAttackTarget();
-        playerArea->disablePlayerItem(lastTarget);
+ //       playerArea->disablePlayerItem(lastTarget);
         break;
     }
 }
 
+void MoGong::setAttackTarget()
+{
+  Role::setAttackTarget();
+  for(int i=0;i<playerList.size();i++)
+      if(playerList[i]->getID()==lastTarget){
+          playerArea->disablePlayerItem(i);
+          break;
+      }
+  if(MoGuanChongJiUsed)
+  {
+      for(int i=0;i<playerList.size();i++)
+          if(playerList[i]->getHandCardNum()==playerList[i]->getHandCardMax()){
+              playerArea->disablePlayerItem(i);
+              break;
+          }
+  }
+
+}
 void MoGong::onOkClicked()
 {
-    static QString command;
-    QString sourceID = QString::number(myID);
-    QString targetID;
-    QString text,cardID;
-    Player* myself = dataInterface->getMyself();
+
+    QString text;
     QList<Card*> selectedCards = handArea->getSelectedCards();
     QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
     QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
@@ -244,109 +276,91 @@ void MoGong::onOkClicked()
         if(selectedCards.size()>0&&selectedCards[0]->getType()=="attack")
             lastTarget = selectedPlayers[0]->getID();
         break;
-//额外行动询问
-    case 42:
-        text=tipArea->getBoxCurrentText();
-        switch (text[0].digitValue()){
-        case 1:
-            respond = newRespond(2604);
-            respond->add_args(1);
-            emit sendCommand(network::MSG_RESPOND, respond);
-            DuoChongSheJi();
-            break;
-        }
-        break;
-    case 2601:
-        respond = newRespond(2601);
-        respond->add_args(selectedCoverCards[0]->getID());
 
-        MoGuanChongJiUsed = true;
+      case MO_GUAN_CHONG_JI:
+        respond = newRespond(MO_GUAN_CHONG_JI);
+      //  respond->add_args(selectedCoverCards[0]->getID());
+        respond->add_args(1);
+        respond->add_card_ids(selectedCoverCards[0]->getID());
+        MoGuanChongJiUsed=true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2602:
-        respond = newRespond(2602);
-        respond->add_args(selectedCoverCards[0]->getID());
-
-        MoGuanChongJiUsed = true;
+       case MO_GUAN_CHONG_JI_HIT:
+        respond = newRespond(MO_GUAN_CHONG_JI_HIT);
+        respond->add_args(1);
+        respond->add_card_ids(selectedCoverCards[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2603:
-        action = newAction(2603);
+      case LEI_GUANG_SAN_SHE:
+        action = newAction(ACTION_MAGIC_SKILL,LEI_GUANG_SAN_SHE);
         if(selectedPlayers.size()!=0)
             action->add_dst_ids(selectedPlayers[0]->getID());
-        else
-            targetID=QString::number(-1);
         foreach(Card*ptr,selectedCoverCards)
-            action->add_args(ptr->getID());
-        gui->reset();
+             action->add_card_ids(ptr->getID());
         emit sendCommand(network::MSG_ACTION, action);
+        gui->reset();
         break;
-    case 2605:
-        respond = newRespond(2605);
-        respond->add_args(selectedCoverCards[0]->getID());
-        respond->add_dst_ids(selectedPlayers[0]->getID());
-
+      case DUO_CHONG_SHE_JI:
+        action = newAction(network::ACTION_ATTACK_SKILL,DUO_CHONG_SHE_JI); //攻击行动
+        action->add_card_ids(selectedCoverCards[0]->getID());
+        action->add_dst_ids(selectedPlayers[0]->getID());
         DuoChongSheJiUsed = true;
-        lastTarget = selectedPlayers[0]->getID();
-        usedAttack=true;
-        gui->reset();
-        emit sendCommand(network::MSG_RESPOND, respond);
+        emit sendCommand(network::MSG_ACTION, action);
+         gui->reset();
         break;
-    case 2661:
-        startChoice = tipArea->getBoxCurrentText()[0].digitValue();
-        ChongNengMoYan2();
-        break;
-    case 2662:
-        respond = newRespond(2606);
-
-        start = true;
-        if(startChoice==1)
-        {
-            respond->add_args(1);
-            foreach(Card* ptr, selectedCards)
-            {
-                respond->add_args(ptr->getID());
-                dataInterface->removeHandCard(ptr);
-            }
-            respond->add_args(100000);
-            chongnengNum = tipArea->getBoxCurrentText()[0].digitValue();
-            ChongNengUsed = true;
-        }
+      case CHONG_NENG_MO_YAN:
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(CHONG_NENG_MO_YAN);
+        text = tipArea->getBoxCurrentText();
+        if(text[0]=='1')  
+            respond->add_args(1);    
         else
-        {
             respond->add_args(2);
-            if(selectedPlayers.size()>0)
-                respond->add_dst_ids(selectedPlayers[0]->getID());
+        gui->reset();
+        emit sendCommand(network::MSG_RESPOND, respond);
+        break;
+    case CHONG_NENG:
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(CHONG_NENG);
+        respond->add_args(1);                                              //参数1:1表示充能
+        respond->add_args(selectedCards.size());                           //参数2：弃牌的张数
+        foreach(Card*ptr,selectedCards){
+            respond->add_card_ids(ptr->getID());
         }
+        respond->add_args(tipArea->getBoxCurrentText()[0].digitValue());  //参数3：摸牌的张数
+        ChongNengUsed=true;                                               //为【雷光散射】按钮服务
+        chongnengNum=tipArea->getBoxCurrentText()[0].digitValue();
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2607:
-        respond = newRespond(2607);
+    case MO_YAN:
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(MO_YAN);
+        respond->add_args(1);                                             //参数1:1表示魔眼
+        respond->add_args(selectedPlayers.size());                        //参数2：选择的目标个数
+        if(selectedPlayers.size()>0)
+            respond->add_dst_ids(selectedPlayers[0]->getID());
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
 
-        foreach(Card* ptr, selectedCards)
-        {
-            respond->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+      case CHONG_NENG_GAI_PAI:
+        respond = newRespond(CHONG_NENG_GAI_PAI);
+        respond->add_args(1);                       //参数1:1
+        respond->add_args(selectedCards.size());
+       foreach(Card*ptr,selectedCards){
+            respond->add_card_ids(ptr->getID());
         }
+ //       respond->add_args(tipArea->getBoxCurrentText()[0].digitValue());  //参数2：摸牌的张数
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2608:
-        respond = newRespond(2608);
 
-        if(selectedCards.size()==0)
-            respond->add_args(100000);
-        else
-        {
-            respond->add_args(selectedCards[0]->getID());
-            dataInterface->removeHandCard(selectedCards[0]);
-        }
-        emit sendCommand(network::MSG_RESPOND, respond);
-        gui->reset();
-        break;
     }
     Role::onOkClicked();
 }
@@ -354,43 +368,55 @@ void MoGong::onOkClicked()
 void MoGong::onCancelClicked()
 {
     Role::onCancelClicked();
-    static QString command;
 
     network::Respond* respond;
     switch(state)
     {
-    case 2601:
-        MoGuanChongJiUsed = false;
-        respond = newRespond(2601);
+    case MO_GUAN_CHONG_JI:
+        respond = newRespond(MO_GUAN_CHONG_JI);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2603:
+    case LEI_GUANG_SAN_SHE:
         normal();
         break;
-    case 2602:
+      case MO_GUAN_CHONG_JI_HIT:
+        respond = newRespond(MO_GUAN_CHONG_JI_HIT);
+        emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
-        respond = newRespond(2601);
+        break;
+      case  DUO_CHONG_SHE_JI:
+          gui->reset();
+        break;
+    case CHONG_NENG_MO_YAN:
+    case CHONG_NENG:
+    case MO_YAN:
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(CHONG_NENG_MO_YAN);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
         break;
-    case 2605:
-        DuoChongSheJi();
-        break;
-    case 2661:
-        respond = newRespond(2606);
-        emit sendCommand(network::MSG_RESPOND, respond);
-        break;
-    case 2662:
-        ChongNengMoYan1();
-        break;
+    case CHONG_NENG_GAI_PAI:
+      respond = newRespond(CHONG_NENG_GAI_PAI);
+      respond->add_args(0);
+      emit sendCommand(network::MSG_RESPOND, respond);
+      gui->reset();
+      break;
     }
 }
 
-void MoGong::additionalAction()
+void MoGong::attackAction()
 {
-    //Role::additionalAction();
-    if(usedAttack && !MoGuanChongJiUsed && dataInterface->getCoverCards().size()>0)
-        tipArea->addBoxItem(QStringLiteral("1.多重射击"));
+    //若是连续技的额外行动，则只能用风系
+    if(DUO_CHONG_SHE_JI == chosenAction){
+          DuoChongSheJi();
+    }
+    else{
+        Role::attackAction();
+    }
 }
 
 void MoGong::turnBegin()
@@ -399,19 +425,25 @@ void MoGong::turnBegin()
     MoGuanChongJiUsed = false;
     DuoChongSheJiUsed = false;
     ChongNengUsed = false;
+    lastTarget=-1;
 }
 
-void MoGong::askForSkill(QString skill)
+void MoGong::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("充能/魔眼"))
-        ChongNengMoYan1();
-    else if(skill==QStringLiteral("魔贯冲击命中"))
-        MoGuanChongJiHit();
-    else if(skill==QStringLiteral("充能盖牌"))
-        ChongNengGaiPai();
-    else if(skill==QStringLiteral("魔眼盖牌"))
-        MoYanGaiPai();
-    else if(skill==QStringLiteral("魔贯冲击"))
+     //灵魂链接稍后补上
+    if(cmd->respond_id() == CHONG_NENG_MO_YAN)
+         ChongNengMoYan();
+    else if(cmd->respond_id() == CHONG_NENG)
+           ChongNeng();
+    else if(cmd->respond_id() == MO_YAN)
+           MoYan();
+    else if(cmd->respond_id() == MO_GUAN_CHONG_JI_HIT)
+         MoGuanChongJiHit();
+    else if(cmd->respond_id() == CHONG_NENG_GAI_PAI)
+         ChongNengGaiPai();
+    else if(cmd->respond_id() == MO_GUAN_CHONG_JI)
         MoGuanChongJi();
+    else
+        Role::askForSkill(cmd);
 }
+
