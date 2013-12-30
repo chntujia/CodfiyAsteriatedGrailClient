@@ -157,7 +157,17 @@ enum CAUSE{
     NI_LIU = 2304,
     XUE_ZHI_ZU_ZHOU = 2351,
     XUE_ZHI_ZU_ZHOU_QI_PAI = 2352,
-    LIU_XUE = 2306
+    LIU_XUE=2306,    //added by WTF
+    MO_GUAN_CHONG_JI=2601,
+    MO_GUAN_CHONG_JI_HIT=26011,
+    LEI_GUANG_SAN_SHE =2602,
+    LEI_GUANG_SAN_SHE_EXTRA=26021,
+    DUO_CHONG_SHE_JI=2603,
+    CHONG_NENG=2604,
+    CHONG_NENG_GAI_PAI=26041,
+    MO_YAN=2605,
+    MO_YAN_GAI_PAI=26051,
+    CHONG_NENG_MO_YAN=2606
 };
 
 enum CHANGE{
@@ -434,7 +444,8 @@ QString getCauseString(int cause)
         return QStringLiteral("漆黑信仰");
     case FA_LI_CHAO_XI:
         return QStringLiteral("法力潮汐");
-
+    case DUO_CHONG_SHE_JI:
+        return QStringLiteral("多重射击");
     default:
         return "CauseString undefined";
     }
