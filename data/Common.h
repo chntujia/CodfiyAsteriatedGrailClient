@@ -133,6 +133,14 @@ enum CAUSE{
     MO_DAO_FA_DIAN = 1702,
     SHENG_JIE_FA_DIAN = 1703,
     FA_SHU_FAN_TAN = 1704,
+    JIAN_HUN_SHOU_HU=1901,
+    YANG_GON=1902,
+    JIAN_QI_ZHAN=1903,
+    JIAN_QI_ZHAN_EXTRA=19031,
+    TIAN_SHI_YU_E_MO=1904,
+    TIAN_SHI_ZHI_HUN=1905,
+    E_MO_ZHI_HUN=1906,
+    BU_QU_YI_ZHI=1907,
     NIAN_QI_LI_CHANG = 2001,
     XU_LI_YI_JI = 2002,
     NIAN_DAN = 2003,
@@ -446,6 +454,8 @@ QString getCauseString(int cause)
         return QStringLiteral("法力潮汐");
     case DUO_CHONG_SHE_JI:
         return QStringLiteral("多重射击");
+    case BU_QU_YI_ZHI:
+        return QStringLiteral("不屈意志");
     default:
         return "CauseString undefined";
     }
