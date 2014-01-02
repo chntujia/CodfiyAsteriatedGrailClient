@@ -6,13 +6,12 @@ class JianDi : public Role
     Q_OBJECT
 public:
     JianDi();
-    void JianHunShouHu(int cardID);
+    void JianHunShouHu();
     void JianQiZhan(int targetID);
-    void JianQiZhan2();
     void TianShiZhiHun();
+    void BuQiYiZhi();
     void EMoZhiHun();
-    void askForSkill(QString skill);
-    void additionalAction();
+    void askForSkill(network::Command* cmd);
     void coverCardAnalyse();
 public slots:
     void onOkClicked();
