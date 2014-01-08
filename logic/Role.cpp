@@ -311,7 +311,7 @@ void Role::attacked(QString element,int hitRate)
     gui->alert();
     QSound::play("sound/Warning.wav");
 }
-
+//add 充盈弃牌提示
 void Role::drop(int howMany, int cause)
 {
     state=3;
@@ -322,6 +322,15 @@ void Role::drop(int howMany, int cause)
         handArea->enableMagic();
         tipArea->setMsg(QStringLiteral("弃一张法牌，否则受两点法术伤害"));
         decisionArea->enable(1);
+        break;
+    case CHONG_YING_DISCARD:
+        handArea->enableAll();
+        tipArea->setMsg(QStringLiteral("弃一张牌，我方角色可选择不如此做【弃1张法术牌或雷系牌，增加1攻击伤害】"));
+        decisionArea->enable(1);
+        break;
+    case CHONG_YING:
+        handArea->enableAll();
+        tipArea->setMsg(QStringLiteral("弃一张牌【弃1张法术牌或雷系牌，增加1攻击伤害】"));
         break;
     default:
         handArea->enableAll();
@@ -917,8 +926,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 targetID = cmd->dst_ids(0);
                 cause = cmd->args(0);
                 howMany = cmd->args(1);
-
-                gui->logAppend(getCommandString(cmd));
+          //    gui->logAppend(getCommandString(cmd));  //getCauseString()
+                gui->logAppend("弃牌");
                 if(targetID!=myID)
                 {
                     gui->setEnable(0);
@@ -935,8 +944,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 targetID = cmd->dst_ids(0);
                 cause = cmd->args(0);
                 howMany = cmd->args(1);
-                gui->logAppend(getCommandString(cmd));
-
+      //        gui->logAppend(getCommandString(cmd));
+                gui->logAppend("弃盖牌");
                 if(targetID!=myID)
                 {
                     gui->setEnable(0);
