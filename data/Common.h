@@ -174,7 +174,14 @@ enum CAUSE{
     CHONG_NENG_GAI_PAI=26041,
     MO_YAN=2605,
     MO_YAN_GAI_PAI=26051,
-    CHONG_NENG_MO_YAN=2606
+    CHONG_NENG_MO_YAN=2606,
+    AN_ZHI_JIE_FANG=2901,
+    HUAN_YING_XING_CHEN=2902,
+    HEI_AN_SHU_FU=2903,
+    AN_ZHI_ZHANG_BI=2904,
+    CHONG_YING=2905,
+    CHONG_YING_DISCARD=29051,
+    QI_HEI_ZHI_QIANG=2906
 };
 
 enum CHANGE{
@@ -455,6 +462,8 @@ QString getCauseString(int cause)
         return QStringLiteral("多重射击");
     case BU_QU_YI_ZHI:
         return QStringLiteral("不屈意志");
+    case CHONG_YING:
+        return QStringLiteral("额外攻击行动");
     default:
         return "CauseString undefined";
     }
