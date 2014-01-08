@@ -1,12 +1,22 @@
 ﻿#include "MoQiang.h"
 
+enum CAUSE{
+    AN_ZHI_JIE_FANG=2901,
+    HUAN_YING_XING_CHEN=2902,
+    HEI_AN_SHU_FU=2903,
+    AN_ZHI_ZHANG_BI=2904,
+    CHONG_YING=2905,
+    QI_HEI_ZHI_QIANG=2906
+
+};
+
 MoQiang::MoQiang()
 {
     makeConnection();
     setMyRole(this);
 
     Button *chongying;
-    chongying=new Button(3,"充盈");
+    chongying=new Button(3,QStringLiteral("充盈"));
     buttonArea->addButton(chongying);
     connect(chongying,SIGNAL(buttonSelected(int)),this,SLOT(ChongYing()));
 }
@@ -25,49 +35,29 @@ void MoQiang::normal()
 
 void MoQiang::AnZhiJieFang()
 {
-    state=2901;
+    state=AN_ZHI_JIE_FANG;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动暗之解放？"));
-    QList<Card*> handcards=dataInterface->getHandCards();
-    bool flag=true;
-    int i;
-    int n=handcards.size();
-    decisionArea->enable(1);
-    flag=false;
-    for(i=0;i<n;i++)
-        if(handcards[i]->getType()!="magic")
-        {
-            flag=true;
-            break;
-        }
-
-    if(flag)
-        decisionArea->enable(0);
-}
-
-void MoQiang::HuanYingXingChen(int flag)
-{
-    state=2902;
-    gui->reset();
-    huanYingFlag=flag;
-    if(flag==0){
-    tipArea->setMsg(QStringLiteral("是否发动幻影星辰？"));
     decisionArea->enable(1);
     decisionArea->enable(0);
-    }
-    else
-    {
-        decisionArea->disable(1);
-        decisionArea->disable(0);
 
-        playerArea->enableAll();
-        playerArea->setQuota(1);
-    }
+}
+
+
+void MoQiang::HuanYingXingChen()
+{
+    state=HUAN_YING_XING_CHEN;
+    gui->reset();
+    tipArea->setMsg(QStringLiteral("是否发动幻影星辰？"));
+    playerArea->enableAll();
+    playerArea->setQuota(1);
+    decisionArea->enable(1);
+
 }
 
 void MoQiang::AnZhiBiZhang()
 {
-    state=2903;
+    state=AN_ZHI_ZHANG_BI;
     tipArea->setMsg(QStringLiteral("是否发动暗之壁障？"));
     handArea->setQuota(1,7);
 
@@ -80,7 +70,7 @@ void MoQiang::AnZhiBiZhang()
 
 void MoQiang::QiHeiZhiQiang()
 {
-    state=2904;
+    state= QI_HEI_ZHI_QIANG;
     tipArea->reset();
     tipArea->setMsg(QStringLiteral("是否发动漆黑之枪？如是请选择发动能量数："));
     decisionArea->enable(0);
@@ -95,7 +85,7 @@ void MoQiang::QiHeiZhiQiang()
 
 void MoQiang::ChongYing()
 {
-    state=2905;
+    state=CHONG_YING;
     playerArea->reset();
     handArea->reset();
     tipArea->reset();
@@ -115,31 +105,34 @@ void MoQiang::cardAnalyse()
     selectedCards=handArea->getSelectedCards();
     switch(state)
     {
-    case 2903:
-        cardReady=false;
-        if(selectedCards.size()==0)
-            decisionArea->disable(0);
-        else
-        {
-            foreach(Card*ptr,selectedCards)
-                for(int i=0;i<selectedCards.size();i++)
-                {
-                    if(ptr->getElement()!=selectedCards[i]->getElement())
-                    {
-                        if(ptr->getType()!="magic")
-                        {
-                            playerArea->reset();
-                            decisionArea->disable(0);
-                            cardReady=true;
-                            break;
-                        }
-                    }
-                }
-            if(!cardReady)
-                decisionArea->enable(0);
+    case AN_ZHI_ZHANG_BI:
+      cardReady=false;
+      if(selectedCards.size()==0)
+          decisionArea->disable(0);
+      else
+      {
+          foreach(Card*ptr,selectedCards)
+              for(int i=0;i<selectedCards.size();i++)
+              {
+                  if(ptr->getElement()!=selectedCards[i]->getElement())
+                  {
+                      if(ptr->getType()!="magic")
+                      {
+                          playerArea->reset();
+                          decisionArea->disable(0);
+                          cardReady=true;
+                          break;
+                      }
+                  }
+               }
+          if(!cardReady)
+              decisionArea->enable(0);
         }
-        break;
-    case 2905:
+
+
+      break;
+
+   case CHONG_YING:
         decisionArea->enable(0);
         break;
     }
@@ -150,62 +143,46 @@ void MoQiang::playerAnalyse()
     Role::playerAnalyse();
     switch(state)
     {
-    case 2902:
+    case HUAN_YING_XING_CHEN:
         decisionArea->enable(0);
         break;
     }
 }
 
+
 void MoQiang::turnBegin()
 {
     Role::turnBegin();
     jieFangFirst=false;
-    chongYingUsed=false;
 }
 
-void MoQiang::additionalAction()
+void MoQiang::askForSkill(Command* cmd)
 {
-    //Role::additionalAction();
-    if(chongYingUsed)
-        tipArea->addBoxItem("1.额外攻击行动（充盈）");
-}
-
-void MoQiang::moDaned(int nextID, int sourceID, int howMany)
-{
-    Role::moDaned(nextID,sourceID,howMany);
-    handArea->disableMagic();
-}
-
-void MoQiang::attacked(QString element, int hitRate)
-{
-    Role::attacked(element,hitRate);
-    handArea->disableMagic();
-}
-
-void MoQiang::askForSkill(QString skill)
-{
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("暗之解放"))
+    switch(cmd->respond_id())
+    {
+    case  AN_ZHI_JIE_FANG:
         AnZhiJieFang();
-//    else if(skill==QStringLiteral("幻影星辰"))
-//        HuanYingXingChen(command.split(';').at(3).toInt());
-    else if(skill==QStringLiteral("暗之壁障"))
-        AnZhiBiZhang();
-    else if(skill==QStringLiteral("漆黑之枪"))
+        break;
+    case  HUAN_YING_XING_CHEN:
+        HuanYingXingChen();
+        break;
+    case  QI_HEI_ZHI_QIANG:
         QiHeiZhiQiang();
+        break;
+    case  AN_ZHI_ZHANG_BI:
+        AnZhiBiZhang();
+        break;
+    default:
+        Role::askForSkill(cmd);
+    }
 }
+
 
 void MoQiang::onOkClicked()
 {
     Role::onOkClicked();
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
-
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
-    QString text;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
@@ -215,61 +192,46 @@ void MoQiang::onOkClicked()
 
     switch(state)
     {
-    case 42:
-        chongYingUsed=false;
-        text=tipArea->getBoxCurrentText();
-        if(text[0]=='1'){
-            respond = newRespond(2906);
-            respond->add_args(1);
-            emit sendCommand(network::MSG_RESPOND, respond);
-            attackAction();
-        }
-        break;
-    case 2901:
-        respond = newRespond(2901);
+      case AN_ZHI_JIE_FANG:
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(AN_ZHI_JIE_FANG);
         respond->add_args(1);
-
-        start=true;
         jieFangFirst=true;
+        gui->reset();
+        emit sendCommand(network::MSG_RESPOND, respond);
+        break;
+
+      case HUAN_YING_XING_CHEN:
+        respond = newRespond(HUAN_YING_XING_CHEN);
+        respond->add_args(2);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2902:
-        respond = newRespond(2902);
-        respond->add_args(huanYingFlag);
-        start=true;
-        if(huanYingFlag==1)
-        {
-            respond->add_dst_ids(selectedPlayers[0]->getID());
-        }
-        emit sendCommand(network::MSG_RESPOND, respond);
-
-        buttonArea->setEnabled(0);
-        gui->reset();
-        break;
-    case 2903:
-        respond = newRespond(2903);
-
+      case AN_ZHI_ZHANG_BI:
+        respond = newRespond(AN_ZHI_ZHANG_BI);
+        respond->add_args(1);
         for(int i=0;i<selectedCards.size();i++)
         {
-            respond->add_args(selectedCards[i]->getID());
-            dataInterface->removeHandCard(selectedCards[i]);
+            respond->add_card_ids(selectedCards[i]->getID());
+
         }
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2904:
-        respond = newRespond(2904);
-        respond->add_args(tipArea->getBoxCurrentText().toInt());
 
+    case QI_HEI_ZHI_QIANG:
+        respond = newRespond(QI_HEI_ZHI_QIANG);
+        respond->add_args(1);
+        respond->add_args(tipArea->getBoxCurrentText().toInt());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2905:
-        action = newAction(2905);
-        action->add_args(selectedCards[0]->getID());
-        chongYingUsed=true;
-        dataInterface->removeHandCard(selectedCards[0]);
+
+      case CHONG_YING:
+        action = newAction(ACTION_MAGIC_SKILL,CHONG_YING);
+        action->add_card_ids(selectedCards[0]->getID());
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
@@ -279,33 +241,44 @@ void MoQiang::onOkClicked()
 void MoQiang::onCancelClicked()
 {
     Role::onCancelClicked();
-    QString command;
 
     network::Respond* respond;
 
     switch(state)
     {
-    case 2901:
-        respond = newRespond(2901);
+
+    case AN_ZHI_JIE_FANG:
+        respond = new Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(AN_ZHI_JIE_FANG);
+        respond->add_args(0);
+        gui->reset();
+        emit sendCommand(network::MSG_RESPOND, respond);
+
+        break;
+
+    case HUAN_YING_XING_CHEN:
+        respond = newRespond(HUAN_YING_XING_CHEN);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2902:
-        respond = newRespond(2902);
+
+        case AN_ZHI_ZHANG_BI:
+        respond = newRespond(AN_ZHI_ZHANG_BI);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2903:
-        respond = newRespond(2903);
+
+      case QI_HEI_ZHI_QIANG:
+        respond = newRespond(QI_HEI_ZHI_QIANG);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2904:
-        respond = newRespond(2904);
-        emit sendCommand(network::MSG_RESPOND, respond);
-        gui->reset();
-        break;
-    case 2905:
+
+      case CHONG_YING:
         normal();
         break;
     }

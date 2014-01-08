@@ -8,14 +8,12 @@ public:
     MoQiang();
     void normal();
     void AnZhiJieFang();
-    void HuanYingXingChen(int flag);
+    void HuanYingXingChen();
     void AnZhiBiZhang();
     void QiHeiZhiQiang();
     void turnBegin();
-    void askForSkill(QString skill);
-    void additionalAction();
-    void attacked(QString element, int hitRate);
-    void moDaned(int nextID, int sourceID, int howMany);
+    void askForSkill(Command* cmd);
+
 public slots:
     void ChongYing();
     void onOkClicked();
@@ -23,10 +21,8 @@ public slots:
     void cardAnalyse();
     void playerAnalyse();
 private:
-    bool jieFangUsed;
+    bool jieFangUsed;     //for【充盈】button
     bool jieFangFirst;
-    bool chongYingUsed;
-    int huanYingFlag;
     bool cardReady;
 };
 
