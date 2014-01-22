@@ -1,5 +1,19 @@
 ﻿#include "DieWu.h"
 
+enum CAUSE{
+    SHENG_MING_ZHI_HUO=2401,
+    WU_DONG=2402,
+    WU_DONG_EXTRA=24021,
+    DU_FEN=2403,
+    CHAO_SHENG=2404,
+    JING_HUA_SHUI_YUE=2405,
+    DIAO_LING=2406,
+    DIAO_LING_EXTRA=24061,
+    YONG_HUA=2407,
+    DAO_NI_ZHI_DIE=2408,
+    DAO_NI_ZHI_DIE_EXTRA=24081
+};
+
 DieWu::DieWu()
 {
     makeConnection();
@@ -39,7 +53,7 @@ void DieWu::normal()
 
 void DieWu::WuDong1()
 {
-    state = 2411;
+    state=WU_DONG;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -47,8 +61,8 @@ void DieWu::WuDong1()
     decisionArea->enable(1);
     decisionArea->enable(0);
 
-    tipArea->setMsg(QStringLiteral("请先选择一项："));
-    tipArea->addBoxItem(QStringLiteral("1.摸1张牌【强制】"));
+        tipArea->setMsg(QStringLiteral("请先选择一项："));
+        tipArea->addBoxItem(QStringLiteral("1.摸1张牌【强制】"));
     if(dataInterface->getHandCards().size()>0)
         tipArea->addBoxItem(QStringLiteral("2.弃1张牌【强制】"));
     tipArea->showBox();
@@ -56,7 +70,7 @@ void DieWu::WuDong1()
 
 void DieWu::WuDong2()
 {
-    state = 2412;
+    state=WU_DONG_EXTRA;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -68,8 +82,8 @@ void DieWu::WuDong2()
 
 void DieWu::DuFen()
 {
-    state = 2402;
-    tipArea->setMsg("是否发动毒粉？");
+    state=DU_FEN;
+    tipArea->setMsg(QStringLiteral("是否发动毒粉？"));
 
     gui->showCoverArea(true);
     HandArea *coverArea = gui->getCoverArea();
@@ -81,11 +95,13 @@ void DieWu::DuFen()
 
 void DieWu::ChaoSheng()
 {
-    state = 2403;
-    tipArea->setMsg("是否发动朝圣？");
+    state=CHAO_SHENG;
+    handArea->reset();
+    playerArea->reset();
+    tipArea->reset();
+    tipArea->setMsg(QStringLiteral("是否发动朝圣？"));
 
     gui->showCoverArea(true);
-    HandArea *coverArea = gui->getCoverArea();
     coverArea->reset();
     coverArea->enableAll();
     coverArea->setQuota(1);
@@ -94,9 +110,9 @@ void DieWu::ChaoSheng()
 
 void DieWu::JingHuaShuiYue()
 {
-    state = 2404;
-    tipArea->setMsg("是否发动镜花水月？");
 
+    state= JING_HUA_SHUI_YUE;
+    tipArea->setMsg(QStringLiteral("是否发动镜花水月？"));
     gui->showCoverArea(true);
     HandArea *coverArea = gui->getCoverArea();
     coverArea->reset();
@@ -107,23 +123,17 @@ void DieWu::JingHuaShuiYue()
 
 void DieWu::DiaoLing()
 {
-    state = 2405;
-    if(diaoLingFlag)
-    {
-        tipArea->setMsg("是否发动凋零？");
-        playerArea->enableAll();
-        playerArea->setQuota(1);
-    }
-    else
-    {
-        tipArea->setMsg("非法术茧，无法发动凋零，请选择取消");
-    }
+    state=DIAO_LING;
+    tipArea->setMsg(QStringLiteral("是否发动凋零？"));
+    playerArea->enableAll();
+    playerArea->setQuota(1);
+
     decisionArea->enable(1);
 }
 
 void DieWu::YongHua()
 {
-    state = 2406;
+    state=YONG_HUA;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -133,16 +143,17 @@ void DieWu::YongHua()
 
 void DieWu::DaoNiZhiDie1()
 {
-    state = 2471;
+ // state = 2471;
+    state=DAO_NI_ZHI_DIE;
     handArea->reset();
     playerArea->reset();
     decisionArea->reset();
     tipArea->reset();
-    tipArea->setMsg("你弃2张牌，再选择一项：");
-    tipArea->addBoxItem("1.对目标角色造成1点法术伤害，该伤害不能用治疗抵御");
+    tipArea->setMsg(QStringLiteral("你弃2张牌，再选择一项："));
+    tipArea->addBoxItem(QStringLiteral("1.对目标角色造成1点法术伤害，该伤害不能用治疗抵御"));
     if(dataInterface->getMyself()->getToken(2)>=2)
-        tipArea->addBoxItem("2.（移除2个【茧】）移除1个【蛹】");
-    tipArea->addBoxItem("3.（自己造成4点法术伤害③）移除1个【蛹】");
+        tipArea->addBoxItem(QStringLiteral("2.（移除2个【茧】）移除1个【蛹】"));
+    tipArea->addBoxItem(QStringLiteral("3.（自己造成4点法术伤害③）移除1个【蛹】"));
     tipArea->showBox();
     QList<Card*> handcards=dataInterface->getHandCards();
     if(handcards.size()>1)
@@ -157,7 +168,8 @@ void DieWu::DaoNiZhiDie1()
 
 void DieWu::DaoNiZhiDie2()
 {
-    state = 2472;
+  //  state = 2472;
+    state=DAO_NI_ZHI_DIE_EXTRA;
     playerArea->reset();
     tipArea->reset();
 
@@ -180,10 +192,6 @@ void DieWu::DaoNiZhiDie2()
 void DieWu::onOkClicked()
 {
     Role::onOkClicked();
-    static QString command;
-    QString sourceID = QString::number(myID);
-    QString targetID;
-    QString text,cardID;
     QList<Card*> selectedCards = handArea->getSelectedCards();
     QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
     QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
@@ -193,14 +201,14 @@ void DieWu::onOkClicked()
 
     switch(state)
     {
-    case 2411:
+    case WU_DONG:
         if(tipArea->getBoxCurrentText()[0].digitValue()==1)
         {
             wudongmopai = true;
-            action = new network::Action();
+            action = newAction(ACTION_MAGIC_SKILL,WU_DONG);
             action->set_src_id(myID);
-            action->set_action_id(2401);
-            action->add_args(0);
+            action->set_action_id(WU_DONG);
+            action->add_args(1);
             emit sendCommand(network::MSG_ACTION, action);
             gui->reset();
         }
@@ -210,113 +218,96 @@ void DieWu::onOkClicked()
             WuDong2();
         }
         break;
-    case 2412:
-        action = new network::Action();
+
+      case WU_DONG_EXTRA:
+        action = newAction(ACTION_MAGIC_SKILL,WU_DONG);
         action->set_src_id(myID);
-        action->set_action_id(2401);
-        action->add_args(1);
-
-        if(dataInterface->getHandCards().size()!=0)
-        {
-            action->add_args(selectedCards[0]->getID());
-            dataInterface->removeHandCard(selectedCards[0]);
-        }
-        else
-            cardID = "-1";
-
+        action->set_action_id(WU_DONG);
+        action->add_args(2);
+        action->add_card_ids(selectedCards[0]->getID());
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2402:
+ //   case 2402:
+     case DU_FEN:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2402);
-        //respond->add_dst_ids(sourceID);
-        respond->add_args(selectedCoverCards[0]->getID());
-
-        dataInterface->removeCoverCard(selectedCoverCards[0]);
+        respond->set_respond_id(DU_FEN);
+        respond->add_args(1);
+        respond->add_card_ids(selectedCoverCards[0]->getID());
         coverArea->reset();
         gui->showCoverArea(false);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2403:
+
+      case CHAO_SHENG:
+        respond = newRespond(CHAO_SHENG);
+        respond->set_src_id(myID);
+        respond->add_args(1);
+        respond->add_args(selectedCoverCards[0]->getID());
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+
+    case  JING_HUA_SHUI_YUE:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2403);
-        respond->add_args(selectedCoverCards[0]->getID());
-
-        dataInterface->removeCoverCard(selectedCoverCards[0]);
+        respond->add_args(1);
+        respond->set_respond_id(JING_HUA_SHUI_YUE);
+        respond->add_card_ids(selectedCoverCards[0]->getID());
+        respond->add_card_ids(selectedCoverCards[1]->getID());
         coverArea->reset();
         gui->showCoverArea(false);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2404:
-        respond = new network::Respond();
-        respond->set_src_id(myID);
-        respond->set_respond_id(2404);
-        respond->add_args(selectedCoverCards[0]->getID());
-        respond->add_args(selectedCoverCards[1]->getID());
 
-        dataInterface->removeCoverCard(selectedCoverCards[0]);
-        dataInterface->removeCoverCard(selectedCoverCards[1]);
-        coverArea->reset();
-        gui->showCoverArea(false);
-        emit sendCommand(network::MSG_RESPOND, respond);
-        gui->reset();
-        break;
-    case 2405:
+     case DIAO_LING:
         respond = new network::Respond();
         respond->set_src_id(myID);
-        respond->set_respond_id(2405);
+        respond->set_respond_id(DIAO_LING);
+        respond->add_args(1);
         respond->add_dst_ids(selectedPlayers[0]->getID());
-
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2406:
-        action = new network::Action();
-        action->set_src_id(myID);
-        action->set_action_id(2406);
 
+     case YONG_HUA:
+        action = newAction(ACTION_MAGIC_SKILL,YONG_HUA);
+        action->set_src_id(myID);
+        action->set_action_id(YONG_HUA);
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-    case 2471:
+    case DAO_NI_ZHI_DIE:
         daoNiZhiDieFlag = tipArea->getBoxCurrentText()[0].digitValue();
         if(daoNiZhiDieFlag == 3)
         {
-            action = new network::Action();
+            action = newAction(ACTION_MAGIC_SKILL,DAO_NI_ZHI_DIE);
             action->set_src_id(myID);
-            action->set_action_id(2407);
-
+            action->set_action_id(DAO_NI_ZHI_DIE);
             action->add_args(daoNiZhiDieFlag);
 
             foreach(Card*ptr,selectedCards){
-                action->add_args(ptr->getID());
-                dataInterface->removeHandCard(ptr);
+                action->add_card_ids(ptr->getID());
             }
-
             emit sendCommand(network::MSG_ACTION, action);
             gui->reset();
         }
         else
             DaoNiZhiDie2();
         break;
-    case 2472:
-        action = new network::Action();
-        action->set_src_id(myID);
-        action->set_action_id(2407);
+    case DAO_NI_ZHI_DIE_EXTRA:
 
+        action = newAction(ACTION_MAGIC_SKILL,DAO_NI_ZHI_DIE);
+        action->set_src_id(myID);
+        action->set_action_id(DAO_NI_ZHI_DIE);
         action->add_args(daoNiZhiDieFlag);
 
         foreach(Card*ptr,selectedCards){
-            action->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
         }
-        for(int i=0;i<(2-selectedCards.size());i++)
-            action->add_args(10000);
 
         if(daoNiZhiDieFlag==1)
         {
@@ -324,9 +315,8 @@ void DieWu::onOkClicked()
         }
         else
         {
-            foreach(Card*ptr,selectedCards){
+            foreach(Card*ptr,selectedCoverCards){
                 action->add_args(ptr->getID());
-                dataInterface->removeHandCard(ptr);
             }
 
             coverArea->reset();
@@ -342,50 +332,50 @@ void DieWu::onCancelClicked()
 {
     Role::onCancelClicked();
 
-    network::Action *action;
     network::Respond *respond;
 
     switch(state)
     {
-    case 2411:
-    case 2406:
-    case 2471:
+    case WU_DONG:
+    case YONG_HUA:
+    case DAO_NI_ZHI_DIE:
         normal();
         break;
-    case 2402:
-        respond = newRespond(2402);
-
+    case DU_FEN:
+        respond = newRespond(DU_FEN);
+        respond->add_args(0);
         coverArea->reset();
         gui->showCoverArea(false);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2403:
-        respond = newRespond(2403);
-
+      case CHAO_SHENG:
+        respond = newRespond(CHAO_SHENG);
+        respond->add_args(0);
         coverArea->reset();
         gui->showCoverArea(false);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2404:
-        respond = newRespond(2404);
-
+      case  JING_HUA_SHUI_YUE:
+        respond = newRespond(JING_HUA_SHUI_YUE);
+        respond->set_src_id(myID);
+        respond->add_args(0);
         coverArea->reset();
         gui->showCoverArea(false);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2405:
-        respond = newRespond(2405);
-
+     case DIAO_LING:
+        respond = newRespond(DIAO_LING);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2412:
+      case WU_DONG_EXTRA:
         WuDong1();
         break;
-    case 2472:
+      case DAO_NI_ZHI_DIE_EXTRA:
         DaoNiZhiDie1();
         coverArea->reset();
         gui->showCoverArea(false);
@@ -398,10 +388,10 @@ void DieWu::cardAnalyse()
     Role::cardAnalyse();
     switch(state)
     {
-    case 2412:
+    case WU_DONG_EXTRA:
         decisionArea->enable(0);
         break;
-    case 2471:
+    case DAO_NI_ZHI_DIE:
         decisionArea->enable(0);
         break;
     }
@@ -409,17 +399,19 @@ void DieWu::cardAnalyse()
 
 void DieWu::coverCardAnalyse()
 {
+
     Role::coverCardAnalyse();
     QList<Card*> selectedCoverCards = this->coverArea->getSelectedCards();
-    switch(state)
+
+   switch(state)
     {
-    case 2402:
-    case 2403:
-    case 2407:
-    case 2472:
+    case DU_FEN:
+    case CHAO_SHENG:
+    case DAO_NI_ZHI_DIE_EXTRA:
         decisionArea->enable(0);
         break;
-    case 2404:
+
+    case JING_HUA_SHUI_YUE:
         if(selectedCoverCards[0]->getElement()!=selectedCoverCards[1]->getElement())
             decisionArea->disable(0);
         else
@@ -428,47 +420,26 @@ void DieWu::coverCardAnalyse()
     }
 }
 
-void DieWu::askForSkill(QString skill)
+
+void DieWu::askForSkill(Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("毒粉"))
+    switch(cmd->respond_id())
+    {
+
+    case DU_FEN:
         DuFen();
-    else if(skill==QStringLiteral("朝圣"))
+        break;
+    case CHAO_SHENG:
         ChaoSheng();
-    else if(skill==QStringLiteral("镜花水月"))
+        break;
+    case JING_HUA_SHUI_YUE:
         JingHuaShuiYue();
-}
-
-void DieWu::decipher(uint16_t proto_type, google::protobuf::Message* proto)
-{
-    if (proto_type == network::MSG_CMD_REQ)
-    {
-        Role::decipher(proto_type, proto);
-
-        network::CommandRequest* cmd_req = (network::CommandRequest*)proto;
-        if (cmd_req->cmd_type() == network::CMD_RESPOND)
-        {
-            for (int i = 0; i < cmd_req->commands_size(); ++i)
-            {
-                network::Command* cmd = (network::Command*)&(cmd_req->commands(i));
-                switch(cmd->respond_id())
-                {
-                //法术牌凋零询问
-                case 2451:
-                    diaoLingFlag = true;
-                    DiaoLing();
-                    break;
-                //非法术牌凋零询问
-                case 2452:
-                    diaoLingFlag = false;
-                    DiaoLing();
-                    break;
-                }
-            }
-        }
-    }
-    else
-    {
-        Role::decipher(proto_type, proto);
+        break;
+    case DIAO_LING:
+        DiaoLing();
+        break;
+    default:
+        Role::askForSkill(cmd);
     }
 }
+

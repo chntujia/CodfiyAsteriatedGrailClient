@@ -8,7 +8,7 @@ class DieWu : public Role
 public:
     DieWu();
     void normal();
-    void askForSkill(QString skill);
+    void askForSkill(Command* cmd);
     void WuDong2();
     void DuFen();
     void ChaoSheng();
@@ -20,13 +20,11 @@ public slots:
     void onCancelClicked();
     void cardAnalyse();
     void coverCardAnalyse();
-    void decipher(uint16_t, google::protobuf::Message*);
     void WuDong1();
     void YongHua();
     void DaoNiZhiDie1();
 private:
     bool wudongmopai;
-    bool diaoLingFlag;
     int daoNiZhiDieFlag;
 };
 
