@@ -183,6 +183,16 @@ enum CAUSE{
     MO_YAN=2605,
     MO_YAN_GAI_PAI=26051,
     CHONG_NENG_MO_YAN=2606,
+	XING_HONG_SHENG_YUE = 2801,
+    XING_HONG_XIN_YANG = 2802,
+	XUE_XING_DAO_YAN = 2803,
+    XUE_XING_DAO_YAN_1 = 2804,
+	XUE_XING_DAO_YAN_2 = 2805,
+	SHA_LU_SHENG_YAN = 2806,
+	RE_XUE_FEI_TENG = 2807,
+	JIE_JIAO_JIE_ZAO = 2808,
+	JIE_JIAO_JIE_ZAO_AFTER_MAGIC = 28081,
+	XING_HONG_SHI_ZI =2809,
     AN_ZHI_JIE_FANG=2901,
     HUAN_YING_XING_CHEN=2902,
     HEI_AN_SHU_FU=2903,
@@ -470,6 +480,22 @@ QString getCauseString(int cause)
         return QStringLiteral("多重射击");
     case BU_QU_YI_ZHI:
         return QStringLiteral("不屈意志");
+	case XING_HONG_SHENG_YUE:
+        return QStringLiteral("猩红圣约");
+	case XING_HONG_XIN_YANG:
+        return QStringLiteral("猩红信仰");
+	case XUE_XING_DAO_YAN:
+        return QStringLiteral("血腥祷言");
+	case SHA_LU_SHENG_YAN:
+        return QStringLiteral("杀戮盛宴");
+	case RE_XUE_FEI_TENG:
+        return QStringLiteral("热血沸腾");
+	case JIE_JIAO_JIE_ZAO:
+        return QStringLiteral("戒骄戒躁");
+	case JIE_JIAO_JIE_ZAO_AFTER_MAGIC:
+        return QStringLiteral("戒骄戒躁");
+	case XING_HONG_SHI_ZI:
+        return QStringLiteral("猩红十字");
     case CHONG_YING:
         return QStringLiteral("额外攻击行动");
     default:

@@ -9,7 +9,6 @@ public:
     ShengQiang();
     void normal();
     void askForSkill(Command *cmd);
-    void additionalAction();
     void turnBegin();
 public slots:
     void onOkClicked();

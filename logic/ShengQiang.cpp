@@ -255,25 +255,16 @@ void ShengQiang::askForSkill(network::Command* cmd)
     //Role::askForSkill(skill);
     if(cmd->respond_id() == TIAN_QIANG)
 	{
-        TianQiang();
-		
+		TianQiang();
 	}
-    else if(cmd->respond_id()== DI_QIANG)
+	else if(cmd->respond_id() == DI_QIANG)
 	{
-        DiQiang();
-		
+		DiQiang();
 	}
-}
-void ShengQiang::additionalAction()
-{
-    //Role::additionalAction();
-    if(HuiYaoAddition)
-        tipArea->addBoxItem(QStringLiteral("1.攻击行动(辉耀)"));
-    if(ChengJieAddition)
-        tipArea->addBoxItem(QStringLiteral("2.攻击行动(惩戒)"));
-    if(ShengGuangQiYuAddition)
-        tipArea->addBoxItem(QStringLiteral("3.攻击行动(圣光祈愈)"));
-
+    else
+	{
+       	Role::askForSkill(cmd);
+	}
 }
 
 void ShengQiang::turnBegin()

@@ -9,13 +9,11 @@ public:
     HongLian();
     void normal();
     void attackOrMagic();
-    void askForSkill(QString skill);
-    void additionalAction();
-    void XingHongShengYue();
+    void askForSkill(network::Command* cmd);
+    void XueXingDaoYan();
     void ShaLuShengYan();
     void XueXingDaoYan1();
     void XueXingDaoYan2();
-    void JieJiaoJieZao();
 public slots:
     void onOkClicked();
     void onCancelClicked();

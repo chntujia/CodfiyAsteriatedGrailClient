@@ -1,5 +1,18 @@
 ﻿#include "HongLian.h"
 
+enum CAUSE{
+    XING_HONG_SHENG_YUE = 2801,
+    XING_HONG_XIN_YANG = 2802,
+	XUE_XING_DAO_YAN = 2803,
+    XUE_XING_DAO_YAN_1 = 2804,
+	XUE_XING_DAO_YAN_2 = 2805,
+	SHA_LU_SHENG_YAN = 2806,
+	RE_XUE_FEI_TENG = 2807,
+	JIE_JIAO_JIE_ZAO = 2808,
+	JIE_JIAO_JIE_ZAO_AFTER_MAGIC = 28081,
+	XING_HONG_SHI_ZI =2809
+};
+
 HongLian::HongLian()
 {
     makeConnection();
@@ -21,27 +34,27 @@ void HongLian::normal()
         if(handcards[i]->getType() == QStringLiteral("magic"))
             magic++;
     }
-    if(magic>1&&myself->getToken(0)>0&&myself->getEnergy()>0)
+    if(magic>1 && myself->getToken(0)>0 && myself->getEnergy()>0)
         buttonArea->enable(3);
     unactionalCheck();
 }
 
-void HongLian::XingHongShengYue()
+void HongLian::XueXingDaoYan()
 {
-    state = 36;
-    tipArea->setMsg(QStringLiteral("是否发动腥红圣约？"));
+    state =XUE_XING_DAO_YAN;
+    tipArea->setMsg(QStringLiteral("是否发动血腥祷言？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
 }
 
 void HongLian::XueXingDaoYan1()
 {
-    state = 2811;
+    state = XUE_XING_DAO_YAN_1;
     gui->reset();
     Player* myself=dataInterface->getMyself();
 
     tipArea->setMsg(QStringLiteral("【血腥祷言】请选择分给第一人的治疗"));
-    for(int i = 1;i<=myself->getCrossNum();i++)
+    for(int i = 0;i<=myself->getCrossNum();i++)
         tipArea->addBoxItem(QString::number(i));
     tipArea->showBox();
 
@@ -54,7 +67,7 @@ void HongLian::XueXingDaoYan1()
 
 void HongLian::XueXingDaoYan2()
 {
-    state = 2812;
+    state = XUE_XING_DAO_YAN_2;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();
@@ -70,17 +83,9 @@ void HongLian::XueXingDaoYan2()
     decisionArea->enable(0);
 }
 
-void HongLian::ShaLuShengYan()
-{
-    state = 36;
-    tipArea->setMsg(QStringLiteral("是否发动杀戮盛宴？"));
-    decisionArea->enable(0);
-    decisionArea->enable(1);
-}
-
 void HongLian::XingHongShiZi()
 {
-    state = 2803;
+    state = XING_HONG_SHI_ZI;
     handArea->reset();
     playerArea->reset();
     tipArea->reset();    
@@ -97,7 +102,7 @@ void HongLian::cardAnalyse()
     Role::cardAnalyse();
     switch (state)
     {
-    case 2803:
+    case XING_HONG_SHI_ZI:
         playerArea->enableAll();
         break;
     }
@@ -109,7 +114,7 @@ void HongLian::onOkClicked()
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
 
-    static QString command;
+    //static QString command;
     QString text;
 
     selectedCards=handArea->getSelectedCards();
@@ -125,24 +130,9 @@ void HongLian::onOkClicked()
 
     switch(state)
     {
-    //额外行动询问
-    case 42:
-        text=tipArea->getBoxCurrentText();
-        switch (text[0].digitValue()){
-        case 1:
-            respond = new network::Respond();
-            respond->set_src_id(myID);
-            respond->set_respond_id(2802);
-            respond->add_args(1);
-
-            emit sendCommand(network::MSG_RESPOND, respond);
-            attackOrMagic();
-            break;
-        }
-        break;
-    case 2811:
+    case XUE_XING_DAO_YAN_1:
         cross[0] = tipArea->getBoxCurrentText().toInt();
-        if(myself->getCrossNum()>cross[0])
+		if(myself->getCrossNum()>cross[0] && 6 == playerList.size())
         {
             DaoYan_dst[0] = selectedPlayers[0]->getID();
             DaoYan_num[0] = tipArea->getBoxCurrentText().toInt();
@@ -153,7 +143,7 @@ void HongLian::onOkClicked()
         {
             respond = new network::Respond();
             respond->set_src_id(myID);
-            respond->set_respond_id(2801);
+            respond->set_respond_id(XUE_XING_DAO_YAN);
             respond->add_dst_ids(selectedPlayers[0]->getID());
             respond->add_args(tipArea->getBoxCurrentText().toInt());
 
@@ -161,7 +151,7 @@ void HongLian::onOkClicked()
             emit sendCommand(network::MSG_RESPOND, respond);
         }
         break;
-    case 2812:
+    case XUE_XING_DAO_YAN_2:
         if(selectedPlayers.size()>0)
         {
             DaoYan_dst[DaoYan_count] = selectedPlayers[0]->getID();
@@ -170,7 +160,8 @@ void HongLian::onOkClicked()
         }
         start = true;
 
-        respond = newRespond(2801);
+        respond = new Respond();
+		respond->set_respond_id(XUE_XING_DAO_YAN);
         for (int i = 0; i < DaoYan_count; ++i)
         {
             respond->add_dst_ids(DaoYan_dst[i]);
@@ -180,13 +171,13 @@ void HongLian::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case 2803:
-        action = newAction(2803);
+    case XING_HONG_SHI_ZI:
+		action = newAction(ACTION_MAGIC_SKILL, XING_HONG_SHI_ZI);
         action->add_dst_ids(selectedPlayers[0]->getID());
 
         foreach(Card*ptr,selectedCards){
-            action->add_args(ptr->getID());
-            dataInterface->removeHandCard(ptr);
+            action->add_card_ids(ptr->getID());
+            //dataInterface->removeHandCard(ptr);
         }
         gui->reset();
         emit sendCommand(network::MSG_ACTION, action);
@@ -203,24 +194,24 @@ void HongLian::onCancelClicked()
 
     switch(state)
     {
-    case 2811:
-        respond = new network::Respond();
+    case XUE_XING_DAO_YAN_1:
+        respond = newRespond(XUE_XING_DAO_YAN);
+		respond->add_args(0);
         respond->set_src_id(myID);
-        respond->set_respond_id(2801);
-
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
-    case 2812:
+    case XUE_XING_DAO_YAN_2:
         XueXingDaoYan1();
         break;
-    case 2803:
-        if(actionFlag==0)
+    case XING_HONG_SHI_ZI:
+        if(0 == actionFlag)
             normal();
-        else if(actionFlag==4)
+        else if(4 == actionFlag)
             attackOrMagic();
         break;
     }
 }
+
 void HongLian::attackOrMagic()
 {
     Role::attackOrMagic();
@@ -232,26 +223,21 @@ void HongLian::attackOrMagic()
         if(handcards[i]->getType() == QStringLiteral("magic"))
             magic++;
     }
-    if(magic>1&&myself->getToken(0)>0&&myself->getEnergy()>0)
+    if(magic>1 && myself->getToken(0)>0 && myself->getEnergy()>0)
         buttonArea->enable(3);
 }
 
-void HongLian::askForSkill(QString skill)
+void HongLian::askForSkill(network::Command* cmd)
 {
     //Role::askForSkill(skill);
-    if(skill==QStringLiteral("腥红圣约"))
-        XingHongShengYue();
-    else if(skill==QStringLiteral("杀戮盛宴"))
-        ShaLuShengYan();
-    else if(skill==QStringLiteral("血腥祷言"))
-        XueXingDaoYan1();
+	switch (cmd->respond_id())
+    {
+		case XUE_XING_DAO_YAN:
+			XueXingDaoYan1();
+			break;
+		default:
+			Role::askForSkill(cmd);
+    }
 }
 
-void HongLian::additionalAction()
-{
-    //Role::additionalAction();
-    Player* myself=dataInterface->getMyself();
-    if(myself->getEnergy()>0 && myself->getTap())
-        tipArea->addBoxItem(QStringLiteral("1.戒骄戒躁"));
-}
 
