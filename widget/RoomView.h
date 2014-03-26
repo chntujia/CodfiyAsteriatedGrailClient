@@ -12,8 +12,12 @@ class RoomView : public QGraphicsView
 public:
     RoomView();
     RoomScene* getScene(){return scene;}
+protected:
+    void closeEvent(QCloseEvent * event);
 private:
     RoomScene *scene;
+signals:
+    void closed();
 };
 
 #endif // ROOMVIEW_H

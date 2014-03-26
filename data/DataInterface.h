@@ -8,12 +8,15 @@
 #include "protocol/action_respond.pb.h"
 #include "protocol/base.pb.h"
 
+#define GUEST 9
+
 class DataInterface : public QObject
 {
     Q_OBJECT
 public:
     explicit DataInterface(QObject *parent = 0);    
     void initCardDB();
+    void initDefaultPlayerList();
     void initPlayerList(network::GameInfo* game_info);
     void initRoleList();
     void initRoleSkillDB();
@@ -29,6 +32,9 @@ public:
     void setMyself(Player* player);
     void setID(int id);
     void setPlayerMax(int playerMax);
+    void setNickName(int id, QString name) { if(id>=0 && id<playerMax) nickNameList[id] = name; playerList[id]->setNickname(name);}
+    void cleanRoom();
+    void setupRoom(bool isStarted);
     Player* getPlayerById(int id);
     Card* getCard(int id);
     int getID();
@@ -56,6 +62,7 @@ private:
     Player* myself;
     Team *red,*blue,*otherTeam,*myTeam;
     QStringList roleList;
+    QString nickNameList[8];
     int id;
     int playerMax;
     int firstPlayerID;

@@ -55,10 +55,11 @@ TeamArea::TeamArea()
     Num[8]=QPixmap("resource/number/8.png");
     Num[9]=QPixmap("resource/number/9.png");
 
-    if(red->getMoraleMax()==15)
-        avg=5;
-    else
-        avg=6;
+    avg=5;
+//    if(red->getMoraleMax()==15)
+//        avg=5;
+//    else
+//        avg=6;
     width=background.width();
     height=background.height();
 }
@@ -134,5 +135,5 @@ void TeamArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->drawText(width+40,13,QString::number(leftCardNum));
     painter->drawText(width+110,13,QString::number(droppedCardNum));
     painter->drawText(width+174,13,QString::number(round));
-    painter->drawText(width+225,13,QString::number(logic->getClient()->peerPort()));
+    painter->drawText(width+225,13,QString::number(roomID));
 }

@@ -18,9 +18,8 @@ public:
     ~ClientUI();
 
 
-private slots:
+public slots:
     void link();
-    void startGame();
     void showMessage(uint16_t proto_type, google::protobuf::Message* proto);
     void displayError(QAbstractSocket::SocketError);
 
@@ -30,7 +29,6 @@ private slots:
     void UserBackLogin();
 private:
     Client* tcpSocket;
-    int myID;
     Ui::ClientUI *ui;
 };
 

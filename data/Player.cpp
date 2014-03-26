@@ -10,6 +10,7 @@ Player::Player(int ID, int isRed, QString nickname):id(ID),handCardsMax(6),cross
     this->nickname=nickname;
     for(int i=0;i<5;i++ )
         specials[i]=false;
+    token[0] = token[1] = token[2] = NULL;
 }
 void Player::setRole(int roleID)
 {

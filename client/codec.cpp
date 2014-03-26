@@ -34,23 +34,15 @@ void* proto_decoder(const char* msg, uint16_t& type)
 	switch (header_ptr->type)
 	{
     case MSG_LOGIN_REP:
-        proto = new LoginReply();
+        proto = new LoginResponse();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
     case MSG_LOGOUT_REP:
-        proto = new LogoutReply();
+        proto = new LogoutResponse();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
-    case MSG_SINGLE_ROOM:
-        proto = new SingleRoom();
-        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
-        break;
-    case MSG_ROOMS:
-        proto = new Rooms();
-        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
-        break;
-    case MSG_READY:
-        proto = new ReadyToStart();
+    case MSG_ROOMLIST_REP:
+        proto = new RoomListResponse();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
     case MSG_SINGLE_PLAYER:
@@ -104,6 +96,10 @@ void* proto_decoder(const char* msg, uint16_t& type)
         break;
     case MSG_SKILL:
         proto = new SkillMsg();
+        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+        break;
+    case MSG_ERROR:
+        proto = new Error();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
 	default:

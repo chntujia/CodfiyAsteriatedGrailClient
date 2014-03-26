@@ -10,6 +10,8 @@ class PlayerArea : public QGraphicsObject
     friend class GUI;
 public:
     PlayerArea();
+    void init(bool playing = true);
+    void clear();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void sortPlayerItems();

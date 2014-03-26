@@ -1,11 +1,38 @@
 ﻿#include "widget/GUI.h"
+#include "widget/Animation.h"
 #include "data/DataInterface.h"
+
 GUI* gui=NULL;
 GUI::GUI(QObject *parent) :
     QObject(parent)
 {
 
 }
+
+QWidget *GUI::newWindow(int playerNum)
+{
+    RoomView* view = new RoomView;
+    gui->setWindow(view->window());
+    animation->setRoomScene(view->getScene());
+    view->show();
+    dataInterface->setPlayerMax(playerNum);
+    return view;
+}
+
+void GUI::setupRoom(bool isStarted)
+{
+    playerArea->init(isStarted);
+    buttonArea->init(isStarted);
+}
+
+void GUI::cleanRoom()
+{
+    handArea->cleanCardItem();
+    coverArea->cleanCardItem();
+    logArea->clear();
+    chatArea->clear();
+}
+
 void GUI::reset()
 {
     playerArea->reset();

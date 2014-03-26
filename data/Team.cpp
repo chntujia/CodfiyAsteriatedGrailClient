@@ -1,9 +1,7 @@
 ﻿#include "data/Team.h"
 
-Team::Team(bool isRed,int moraleMax):grail(0),crystal(0),gem(0)
+Team::Team(bool isRed):grail(0), crystal(0), gem(0), morale(0)
 {
-    this->moraleMax=moraleMax;
-    morale=moraleMax;
     this->isRed=isRed;
 }
 void Team::setGrail(int howMany)
@@ -24,6 +22,12 @@ void Team::setGem(int howMany)
 void Team::setMorale(int howMany)
 {
     morale=howMany;
+}
+
+void Team::setMoraleMax(int moraleMax)
+{
+    this->moraleMax=moraleMax;
+    morale=moraleMax;
 }
 
 int Team::getGrail()

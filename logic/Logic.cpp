@@ -31,7 +31,8 @@
 #include "MoGong.h"
 
 #define LOGINPERMIT 1
-#define GAMESTART 2
+#define LOBBY 2
+#define GAMESTART 3
 
 Logic* logic=NULL;
 Logic::Logic(QObject *parent) :
@@ -40,14 +41,54 @@ Logic::Logic(QObject *parent) :
     count=0;
     hasShownRole=false;
     hasSetRole=false;
+    myRole = NULL;
     state = -1;
     memset(roles,-1,sizeof(roles));
 }
-void Logic::readyToStart()
+
+void Logic::setupRoom(bool isStarted, GameInfo *gameInfo)
 {
-    network::StartReply *start_reply = new network::StartReply();
-    emit sendCommand(network::MSG_START_REP, start_reply);
+    if(!init_before_start && !isStarted) {
+        dataInterface->setupRoom(isStarted);
+        gui->setupRoom(isStarted);
+        init_before_start = true;
+    }
+    else if(!init_after_start && isStarted){
+        dataInterface->initPlayerList(gameInfo);
+        dataInterface->setupRoom(isStarted);
+        gui->setupRoom(isStarted);
+        init_after_start = true;
+        if(myID != GUEST){
+            network::ReadyForGameRequest* ready = new ReadyForGameRequest;
+            ready->set_type(ReadyForGameRequest_Type_SEAT_READY);
+            emit sendCommand(network::MSG_READY_GAME_REQ, ready);
+        }
+    }
 }
+
+void Logic::cleanRoom()
+{
+    init_before_start = false;
+    init_after_start = false;
+    count = 0;
+    dataInterface->cleanRoom();
+    gui->cleanRoom();    
+}
+
+void Logic::destroyRoom(){
+    network::LeaveRoomRequest* leave = new network::LeaveRoomRequest();
+    socket->sendMessage(network::MSG_LEAVE_ROOM_REQ, leave);
+    disconnect(socket, 0, this, 0);
+    makeConnection();
+    if(myRole)
+        delete myRole;
+}
+
+void Logic::makeConnection()
+{
+    connect(socket, SIGNAL(getMessage(uint16_t, google::protobuf::Message*)), logic, SLOT(getCommand(uint16_t, google::protobuf::Message*)));
+}
+
 void Logic::setMyRole(int roleID)
 {
     if(hasSetRole)
@@ -55,111 +96,111 @@ void Logic::setMyRole(int roleID)
     switch(roleID)
     {
     case 1:
-        new JianSheng;
+        myRole = new JianSheng;
         hasSetRole = true;
         break;
     case 2:
-        new KuangZhan;
+        myRole = new KuangZhan;
         hasSetRole = true;
         break;
     case 3:
-        new GongNv;
+        myRole = new GongNv;
         hasSetRole = true;
         break;
     case 4:
-        new FengYin;
+        myRole = new FengYin;
         hasSetRole = true;
         break;
     case 5:
-        new AnSha;
+        myRole = new AnSha;
         hasSetRole = true;
         break;
     case 6:
-        new ShengNv;
+        myRole = new ShengNv;
         hasSetRole = true;
         break;
     case 7:
-        new TianShi;
+        myRole = new TianShi;
         hasSetRole = true;
         break;
     case 8:
-        new MoDao;
+        myRole = new MoDao;
         hasSetRole = true;
         break;
     case 9:
-        new MoJian;
+        myRole = new MoJian;
         hasSetRole = true;
         break;
     case 10:
-        new ShengQiang;
+        myRole = new ShengQiang;
         hasSetRole = true;
         break;
     case 11:
-        new YuanSu;
+        myRole = new YuanSu;
         hasSetRole = true;
         break;
     case 12:
-        new MaoXian;
+        myRole = new MaoXian;
         hasSetRole = true;
         break;
     case 13:
-        new SiLing;
+        myRole = new SiLing;
         hasSetRole = true;
         break;
     case 14:
-        new ZhongCai;
+        myRole = new ZhongCai;
         hasSetRole = true;
         break;
     case 15:
-        new ShenGuan;
+        myRole = new ShenGuan;
         hasSetRole = true;
         break;
     case 16:
-        new QiDao;
+        myRole = new QiDao;
         hasSetRole = true;
         break;
     case 17:
-        new XianZhe;
+        myRole = new XianZhe;
         hasSetRole = true;
         break;
     case 18:
-        new LingFu;
+        myRole = new LingFu;
         hasSetRole = true;
         break;
     case 19:
-        new JianDi;
+        myRole = new JianDi;
         hasSetRole = true;
         break;
     case 20:
-        new GeDouJia;
+        myRole = new GeDouJia;
         hasSetRole = true;
         break;
     case 21:
-        new YongZhe;
+        myRole = new YongZhe;
         hasSetRole = true;
         break;
     case 22:
-        new LingHun;
+        myRole = new LingHun;
         hasSetRole = true;
         break;
     case 23:
-        new WuNv;
+        myRole = new WuNv;
         hasSetRole = true;
         break;
     case 24:
-        new DieWu;
+        myRole = new DieWu;
         hasSetRole = true;
         break;
     case 26:
-        new MoGong;
+        myRole = new MoGong;
         hasSetRole = true;
         break;
     case 28:
-        new HongLian;
+        myRole = new HongLian;
         hasSetRole = true;
         break;
     case 29:
-        new MoQiang;
+        myRole = new MoQiang;
         hasSetRole = true;
         break;
     }
@@ -173,80 +214,63 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
     BPArea* bpArea;
     QList<int> roleIDs;
     PlayerArea* playerArea;
-    QStringList nicknames;
     int playerMax,targetID,roleID,howMany,num;
-    QString temp;
     QString arg[10];
 
     network::RoleRequest* char_pick;
 
     switch (proto_type)
     {
-    //Port Redirect
-    case 150:
-        /*
-        temp=socket->GetAddr();
-        socket->disconnectFromHost();
-        socket->connectToHost(temp, arg[1].toInt());
-        socket->forwarded=true;
-        emit sendCommand("0;"+QString::number(socket->isRed)+";"+socket->nickname+";");
-        */
+    case network::MSG_ROOMLIST_REP:
+        lobby->fill((network::RoomListResponse*) proto);
         break;
-    case network::MSG_SINGLE_ROOM:
-        myID=((network::SingleRoom*)proto)->player_id();
-        dataInterface->setID(myID);
-        break;
+
     case network::MSG_GAME:
-        if(state == -1){
-            state = GAMESTART;
-            network::GameInfo* game_info = (network::GameInfo*) proto;
-
-            playerMax = game_info->player_infos_size();
-            dataInterface->setPlayerMax(playerMax);
-            //nicknames=arg[2].split(',');
-            dataInterface->initPlayerList(game_info);
-            if (playerMax==8)
-                dataInterface->initTeam(18);
-            else
-                dataInterface->initTeam(15);
-
-            //dataInterface初始化完成
-            emit gameStart();
+    {
+        network::GameInfo* game_info = (network::GameInfo*) proto;
+        if(game_info->has_player_id()){
+            myID = game_info->player_id();
+            dataInterface->setID(myID);
+            cleanRoom();
         }
-        else {
-            //角色宣告
-            network::GameInfo* game_info = (network::GameInfo*) proto;
-            for (int i = 0; i < game_info->player_infos_size(); ++i)
+        if(game_info->has_room_id()){
+            gui->getTeamArea()->setRoomID(game_info->room_id());
+        }
+        setupRoom(game_info->is_started(), game_info);
+
+        for (int i = 0; i < game_info->player_infos_size(); ++i)
+        {
+            network::SinglePlayerInfo* player_info = (network::SinglePlayerInfo*)&(game_info->player_infos(i));
+            targetID = player_info->id();
+            if(player_info->has_role_id())
             {
-                network::SinglePlayerInfo* player_info = (network::SinglePlayerInfo*)&(game_info->player_infos(i));
-
-                targetID=player_info->id();
-                roleID=player_info->role_id();
-
-                roles[targetID]=roleID;
+                roleID = player_info->role_id();
+                roles[targetID] = roleID;
                 count++;
             }
-
-            if(count==dataInterface->getPlayerMax())
-            {
-                disconnect(getClient(),0,this,0);
-
-                for(int i=0;i<dataInterface->getPlayerMax();i++)
-                    dataInterface->getPlayerList().at(i)->setRole(roles[i]);
-
-                for(int i=0;i<dataInterface->getPlayerMax();i++){
-                    gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
-                }
-
-                roleID = roles[myID];
-                dataInterface->getPlayerList().at(myID)->setRole(roleID);
-                setMyRole(roleID);
-                gui->getPlayerArea()->getPlayerItem(myID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
-
-                gui->getPlayerArea()->update();
+            if(player_info->has_nickname()){
+                dataInterface->setNickName(targetID, QString::fromStdString(player_info->nickname()));
             }
         }
+
+        if(count==dataInterface->getPlayerMax())
+        {
+            disconnect(getClient(),0,this,0);               
+
+            for(int i=0;i<dataInterface->getPlayerMax();i++){
+                dataInterface->getPlayerList().at(i)->setRole(roles[i]);
+                gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
+            }
+
+            roleID = myID == GUEST ? roles[0] : roles[myID];
+            setMyRole(roleID);
+            network::GameInfo* toRole = new network::GameInfo;
+            toRole->CopyFrom(*game_info);
+            myRole->decipher(network::MSG_GAME, toRole);
+        }
+        gui->getPlayerArea()->update();
         break;
+    }
     case network::MSG_GOSSIP:
         if(gui!=NULL)
         {
@@ -254,6 +278,24 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
             gui->logAppend(QString::fromStdString(gossip->txt()));
         }
         break;
+    case network::MSG_ERROR:
+    {
+        network::Error* error = (network::Error*)proto;
+        if(error->dst_id() == myID){
+            gui->reset();
+        }
+        switch(error->id())
+        {
+        //GE_DISCONNECTED
+        case 25:
+            gui->logAppend(QStringLiteral("玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线"));
+            break;
+        default:
+            gui->logAppend(QStringLiteral("错误代码") + QString::number(error->id()));
+            break;
+        }
+        break;
+    }
 //选择角色
     case network::MSG_ROLE_REQ:
         state=46;
@@ -384,6 +426,38 @@ void Logic::onOkClicked()
     }
 
 
+}
+
+void Logic::onButtonClicked(int id)
+{
+    switch(id)
+    {
+    //点名
+    case 0:
+        break;
+    //准备
+    case 1:
+        network::ReadyForGameRequest* ready = new ReadyForGameRequest;
+        ready->set_type(ReadyForGameRequest_Type_START_READY);
+        emit sendCommand(network::MSG_READY_GAME_REQ, ready);
+        break;
+    }
+}
+
+void Logic::onButtonUnclicked(int id)
+{
+    switch(id)
+    {
+    //点名
+    case 0:
+        break;
+    //准备
+    case 1:
+        network::ReadyForGameRequest* ready = new ReadyForGameRequest;
+        ready->set_type(ReadyForGameRequest_Type_CANCEL_START_REDAY);
+        emit sendCommand(network::MSG_READY_GAME_REQ, ready);
+        break;
+    }
 }
 
 void Logic::roleAnalyse()

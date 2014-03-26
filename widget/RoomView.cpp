@@ -13,3 +13,9 @@ RoomView::RoomView()
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     setWindowTitle("Codify");
 }
+
+void RoomView::closeEvent(QCloseEvent * event)
+{
+    QGraphicsView::closeEvent(event);
+    emit closed();
+}

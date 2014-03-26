@@ -236,7 +236,6 @@ void HandArea::cleanCardItem()
     }
     cardItems.clear();
     selectedCards.clear();
-    adjustCards();
 }
 
 void HandArea::adjustCards()

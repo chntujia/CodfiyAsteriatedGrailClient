@@ -10,7 +10,7 @@ Role::Role(QObject *parent) :
     QObject(parent)
 {
     Player*myself=dataInterface->getMyself();
-    myID=myself->getID();
+    myID = dataInterface->getID();
     int myColor=myself->getColor();
 
     network::GameInfo* gameInfo=dataInterface->getGameInfo();
@@ -18,21 +18,23 @@ Role::Role(QObject *parent) :
     red=dataInterface->getRedTeam();
     blue=dataInterface->getBlueTeam();
     playerList=dataInterface->getPlayerList();
-    int i;
-    //find myPos
-    for(i=0;i<playerMax;i++)
-        if(gameInfo->player_infos(i).id()==myID)
-            break;
-    int ptr;
-    do
-    {
-        i++;
-        if(i==playerMax)
-            i=0;
-        ptr=gameInfo->player_infos(i).id();
+    if(myID != GUEST){
+        int i;
+        //find myPos
+        for(i=0;i<playerMax;i++)
+            if(gameInfo->player_infos(i).id()==myID)
+                break;
+        int ptr;
+        do
+        {
+            i++;
+            if(i==playerMax)
+                i=0;
+            ptr=gameInfo->player_infos(i).id();
 
-    }while(playerList[ptr]->getColor()==myColor);
-    nextCounterClockwise=ptr;
+        }while(playerList[ptr]->getColor()==myColor);
+        nextCounterClockwise=ptr;
+    }
     handArea=gui->getHandArea();
     playerArea=gui->getPlayerArea();
     buttonArea=gui->getButtonArea();
@@ -869,6 +871,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         gui->logAppend("--------------------------------------");
         gui->logAppend(playerList[targetID]->getRoleName()+QStringLiteral("回合开始"));
         playerArea->setCurrentPlayerID(targetID);
+        teamArea->setRound(((network::TurnBegin*)proto)->round());
+        teamArea->update();
 
         if(targetID==dataInterface->getFirstPlayerID())
             teamArea->addRoundBy1();
@@ -926,8 +930,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 targetID = cmd->dst_ids(0);
                 cause = cmd->args(0);
                 howMany = cmd->args(1);
-          //    gui->logAppend(getCommandString(cmd));  //getCauseString()
-                gui->logAppend("弃牌");
+                gui->logAppend(getCommandString(cmd));
                 if(targetID!=myID)
                 {
                     gui->setEnable(0);
@@ -944,8 +947,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 targetID = cmd->dst_ids(0);
                 cause = cmd->args(0);
                 howMany = cmd->args(1);
-      //        gui->logAppend(getCommandString(cmd));
-                gui->logAppend("弃盖牌");
+                gui->logAppend(getCommandString(cmd));
                 if(targetID!=myID)
                 {
                     gui->setEnable(0);
@@ -1254,7 +1256,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             gui->chatAppend(gossip->id(), QString(gossip->txt().c_str()));
         break;
     }
-
     case network::MSG_GAME:
     // board更新
     {
@@ -1307,6 +1308,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 QSound::play("sound/Win.wav");
             else
                 QSound::play("sound/Lose.wav");
+            logic->makeConnection();
         }
 
         // 更新战绩区
@@ -1344,36 +1346,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             }
             teamArea->setDroppedCardNum(game_info->discard());
         }
-//        // 更新展示区
-//        if (game_info->show_cards_size() > 0)
-//        {
-//            msg+=":<font color=\'orange\'>";
-//            cards.clear();
-//            for(i=0;i<game_info->show_cards_size();i++)
-//            {
-//                cardID=game_info->show_cards(i);
-//                card=dataInterface->getCard(cardID);
-//                msg+=card->getInfo()+" ";
-//                cards<<card;
-//            }
-//            msg+="</font>";
-//            showArea->showCards(cards);
-
-//            player = playerList[game_info->show_from()];
-//            gui->logAppend(player->getRoleName()+QStringLiteral("展示了")+msg);
-//        }
-//        // 清空数组
-//        if (game_info->delete_field_size() > 0)
-//        {
-//            for (int i = 0; i < game_info->delete_field_size(); ++i)
-//            {
-//                if (strcmp(game_info->delete_field(i).c_str(), "show_cards") == 0)
-//                {
-//                    cards.clear();
-//                    showArea->showCards(cards);
-//                }
-//            }
-//        }
         // 更新玩家信息
         if (game_info->player_infos_size() > 0)
         {
@@ -1401,7 +1373,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     if (targetID == myID)
                     {
                         dataInterface->cleanHandCard();
-                        for (int k = 0; k < player_info->hand_count(); ++k)
+                        for (int k = 0; k < player_info->hands_size(); ++k)
                         {
                             cardID=player_info->hands(k);
                             card=dataInterface->getCard(cardID);
@@ -1543,6 +1515,24 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 playerArea->update();
             }
         }
+        break;
+    }
+    case network::MSG_ERROR:
+    {
+        network::Error* error = (network::Error*)proto;
+        if(error->dst_id() == myID){
+            gui->reset();
+        }
+        switch(error->id())
+        {
+        case GE_DISCONNECTED:
+            gui->logAppend(QStringLiteral("玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线"));
+            break;
+        default:
+            gui->logAppend(QStringLiteral("错误代码") + QString::number(error->id()));
+            break;
+        }
+        break;
     }
     default:
         break;

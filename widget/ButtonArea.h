@@ -3,7 +3,8 @@
 
 #include <QGraphicsObject>
 #include "Button.h"
-class DecisionArea:public QGraphicsObject
+
+class DecisionArea : public QGraphicsObject
 {
     Q_OBJECT
 public:
@@ -33,6 +34,8 @@ public:
     ButtonArea();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void init(bool playing);
+    void clear();
     void enable(int i);
     void disable(int i);
     void reset();

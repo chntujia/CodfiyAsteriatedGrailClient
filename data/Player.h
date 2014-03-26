@@ -42,10 +42,10 @@ public:
     void setTap(bool flag){tap=flag;}
     void setSpecial(int type,bool flag);
     void cleanSpecial();
-    void setToken(int id,int howMany){token[id]->num=howMany;}
+    void setToken(int id,int howMany){if(token[id])token[id]->num=howMany;}
     void addToken(int id,Token *token);
     void changeHandCardNumTo(int num){handCardsNum = num;}
-    void changeCoverCardNumTo(int num){token[2]->num = num;}
+    void changeCoverCardNumTo(int num){if(token[2])token[2]->num = num;}
     void addBasicStatus(int type,Card* card);
     void removeBasicStatus(Card* card);
     void cleanBasicStatus();

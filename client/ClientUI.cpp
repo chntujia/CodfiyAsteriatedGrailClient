@@ -37,7 +37,6 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(link()));
     connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(tcpSocket,SIGNAL(readyToStart()),this,SLOT(startGame()));
     connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
              this,SLOT(displayError(QAbstractSocket::SocketError)));
     connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(showMessage(uint16_t, google::protobuf::Message*)));
@@ -69,7 +68,7 @@ ClientUI::ClientUI(QWidget *parent) :
    // tcpSocket->sendMessage("60");
 
     //FIXME: AUTO CONNECT FOR DEBUG
-    ui->connectButton->click();
+    //ui->connectButton->click();
 }
 
 ClientUI::~ClientUI()
@@ -78,36 +77,34 @@ ClientUI::~ClientUI()
 }
 void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto)
 {
-    network::LoginReply* login_rep;
+    network::LoginResponse* login_rep;
     switch (proto_type)
     {
     case network::MSG_LOGIN_REP:
     {
-        login_rep = (network::LoginReply*)proto;
-        myID=login_rep->serial_num();
-        ui->board->append(QStringLiteral("你的ID是：")+myID);
+        login_rep = (network::LoginResponse*)proto;
 
         // TODO: 登陆失败
-        int result = login_rep->state();
-        switch (result)
-        {
-        case 0: // 成功
-            ui->LabError->setText("登入成功");
-            ui->frameLogin->hide();
-            ui->frameRegist->hide();
-            ui->frameLobby->show();
-            ui->nickname->setText(QString::fromStdString(login_rep->nickname()));
-            ui->nickname->setEnabled(0);
-            break;
-        case 1: // 帐号错误
-            ui->LabError->setText("用户名或密码错误");
-            break;
-        case 2: // 帐号被封停
-            ui->LabError->setText("您的帐号已被封停，请联系客服");
-            break;
-        default:// 其它错误
-            ui->LabError->setText("未知错误");
-        }
+//        int result = login_rep->state();
+//        switch (result)
+//        {
+//        case 0: // 成功
+//            ui->LabError->setText("登入成功");
+//            ui->frameLogin->hide();
+//            ui->frameRegist->hide();
+//            ui->frameLobby->show();
+//            ui->nickname->setText(QString::fromStdString(login_rep->nickname()));
+//            ui->nickname->setEnabled(0);
+//            break;
+//        case 1: // 帐号错误
+//            ui->LabError->setText("用户名或密码错误");
+//            break;
+//        case 2: // 帐号被封停
+//            ui->LabError->setText("您的帐号已被封停，请联系客服");
+//            break;
+//        default:// 其它错误
+//            ui->LabError->setText("未知错误");
+//        }
         break;
     }
     /*
@@ -146,18 +143,6 @@ void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto
     }
 }
 
-void ClientUI::startGame()
-{
-    //FIXME: 先自动开始
-//    QMessageBox *prop=new QMessageBox(QMessageBox::Critical,"Warning",QStringLiteral("人齐开饭，请点击Start。"));
-//    QSound::play("sound/Game start.wav");
-//    prop->exec();
-    ui->board->append(QStringLiteral("请开始游戏"));
-    ui->startButton->setEnabled(1);
-    ui->startButton->click();
-    disconnect(this);
-}
-
 void ClientUI::link()
 {
     //tcpSocket->link("192.168.56.1",50000);
@@ -166,9 +151,9 @@ void ClientUI::link()
     tcpSocket->nickname=ui->nickname->text();
     tcpSocket->isRed=ui->comboBox->currentIndex()-1;
 
-    network::EnterRoom *enter= new network::EnterRoom();
-    enter->set_room_id(0);
-    tcpSocket->sendMessage(network::MSG_ENTER_ROOM, enter);
+//    network::EnterRoom *enter= new network::EnterRoom();
+//    enter->set_room_id(0);
+//    tcpSocket->sendMessage(network::MSG_ENTER_ROOM, enter);
 //    QFile *fp=new QFile("account");
 //    QTextStream account(fp);
 //    fp->open(QIODevice::WriteOnly);

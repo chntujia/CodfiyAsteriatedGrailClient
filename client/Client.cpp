@@ -7,7 +7,6 @@ Client::Client()
 {
     forwarded=false;
     connect(this,SIGNAL(readyRead()),this,SLOT(readMessage()));
-    connect(logic,SIGNAL(gameStart()),this,SIGNAL(readyToStart()));
     connect(logic,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),this,SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
     connect(this,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     logic->setClient(this);

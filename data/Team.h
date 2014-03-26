@@ -4,11 +4,12 @@
 class Team
 {
 public:
-    Team(bool isRed, int moraleMax=15);
+    Team(bool isRed);
     void setGrail(int howMany);
     void setCrystal(int howMany);
     void setGem(int howMany);
     void setMorale(int howMany);
+    void setMoraleMax(int moraleMax);
     bool getColor();
     int getGrail();
     int getCrystal();

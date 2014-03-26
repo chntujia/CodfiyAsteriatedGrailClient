@@ -29,7 +29,7 @@ RoomScene::RoomScene()
     handArea->setPos(HandPos);
     gui->setHandArea(handArea);
 
-    playerArea=new PlayerArea;
+    playerArea = new PlayerArea;
     addItem(playerArea);
     playerArea->setPos(PlayerAreaPos);
     gui->setPlayerArea(playerArea);

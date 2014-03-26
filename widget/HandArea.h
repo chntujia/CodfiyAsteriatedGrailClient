@@ -10,7 +10,6 @@ class HandArea : public QGraphicsObject
     friend class GUI;
 public:
     HandArea();
-
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void adjustCards();

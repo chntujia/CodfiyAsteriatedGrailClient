@@ -1,6 +1,7 @@
 ﻿#include "ButtonArea.h"
 #include "data/DataInterface.h"
 #include "widget/GUI.h"
+
 DecisionArea::DecisionArea()
 {
     okButton=new Button(0,QStringLiteral("确 定"));
@@ -132,31 +133,47 @@ void DecisionArea::reset()
 
 ButtonArea::ButtonArea()
 {
-    Button *button;
-    button=new Button(0,QStringLiteral("购买"));
-    button->setParentItem(this);
-    button->setPos(0,0);
-    buttons<<button;
-
-    button=new Button(1,QStringLiteral("合成"));
-    button->setParentItem(this);
-    button->setPos(82,0);
-    buttons<<button;
-
-    button=new Button(2,QStringLiteral("提炼"));
-    button->setParentItem(this);
-    button->setPos(164,0);
-    buttons<<button;
-
-
-
-    for(int i=0;i<buttons.count();i++)
-    {
-        connect(buttons[i],SIGNAL(buttonSelected(int)),this,SLOT(onButtonSelected(int)));
-        connect(buttons[i],SIGNAL(buttonUnselected(int)),this,SLOT(onButtonUnselected(int)));
-    }
-
 }
+
+void ButtonArea::init(bool playing)
+{
+    Button *button;
+    clear();
+    if(playing){
+        button = new Button(0, QStringLiteral("购买"));
+        addButton(button);
+
+        button = new Button(1, QStringLiteral("合成"));
+        addButton(button);
+
+        button = new Button(2, QStringLiteral("提炼"));
+        addButton(button);
+    }
+    else{
+        button = new Button(0, QStringLiteral("点名"));
+        addButton(button);
+
+        button = new Button(1, QStringLiteral("准备"));
+        addButton(button);
+
+        foreach(Button* b, buttons){
+            connect(b, SIGNAL(buttonSelected(int)), logic, SLOT(onButtonClicked(int)));
+            connect(b, SIGNAL(buttonUnselected(int)), logic, SLOT(onButtonUnclicked(int)));
+        }
+        if(dataInterface->getID() != GUEST)
+            enable(1);
+    } 
+}
+
+void ButtonArea::clear()
+{
+    foreach(Button* b, buttons)
+    {
+        delete b;
+    }
+    buttons.clear();
+}
+
 QRectF ButtonArea::boundingRect() const
 {
     return QRectF(0, 0, 750, 150);
@@ -176,6 +193,7 @@ void ButtonArea::onButtonSelected(int id)
     }
     update();
 }
+
 void ButtonArea::addButton(Button* button)
 {
     button->setParentItem(this);

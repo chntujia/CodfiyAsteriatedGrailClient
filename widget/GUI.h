@@ -18,6 +18,9 @@ class GUI : public QObject
     Q_OBJECT
 public:
     explicit GUI(QObject *parent = 0);
+    void setupRoom(bool isStarted);
+    void cleanRoom();
+    QWidget* newWindow(int playerNum);
     void setWindow(QWidget*win){window=win;}
     void setHandArea(HandArea* handArea);
     void setPlayerArea(PlayerArea* playerArea);

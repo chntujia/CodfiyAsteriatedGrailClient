@@ -8,10 +8,16 @@ static const QPointF PlayerPos6[]={QPointF(5,510),QPointF(698,270),QPointF(550,6
 static const QPointF PlayerPos4[]={QPointF(5,510),QPointF(698,270),QPointF(350,60),QPointF(5,270)};
 PlayerArea::PlayerArea():least(1),most(1)
 {
+
+}
+
+void PlayerArea::init(bool playing)
+{
     int i;
     //根据座次建立
-    QList<Player*> playerList=dataInterface->getPlayerList();
-    int playerSum=playerList.count();
+    QList<Player*> playerList = dataInterface->getPlayerList();
+    int playerSum = playerList.count();
+    clear();
     for(i=0;i<playerSum;i++)
     {
         playerItems<<new PlayerItem(playerList[i]);
@@ -27,17 +33,30 @@ PlayerArea::PlayerArea():least(1),most(1)
     //根据ID排序
     sortPlayerItems();
     dataInterface->sortPlayers();
-    //设置队友
     int myID=dataInterface->getID();
-    playerList=dataInterface->getPlayerList();
-    Player* player=playerList[myID];
-    int myColor=player->getColor();
-    for(i=0;i<playerList.count();i++)
-        if(playerList[i]->getColor()!=myColor)
-            enemy<<i;
+    //观战的人跳过
+    if(myID != GUEST && playing){
+        //设置队友        
+        playerList=dataInterface->getPlayerList();
+        Player* player=playerList[myID];
+        int myColor=player->getColor();
+        for(i=0;i<playerList.count();i++)
+            if(playerList[i]->getColor()!=myColor)
+                enemy<<i;
+    }
     currentPlayerID=dataInterface->getFirstPlayerID();
-
 }
+
+void PlayerArea::clear()
+{
+    foreach(PlayerItem*p, playerItems)
+    {
+        delete p;
+    }
+    playerItems.clear();
+    enemy.clear();
+}
+
 void PlayerArea::reset()
 {
     disableAll();
@@ -53,9 +72,11 @@ QRectF PlayerArea::boundingRect() const
 
 void PlayerArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    PlayerItem* currentPlayerItem;
-    currentPlayerItem=playerItems[currentPlayerID];
-    painter->drawPixmap(currentPlayerItem->x()-5,currentPlayerItem->y()-4,QPixmap("resource/yourTurn.png"));
+    if(!playerItems.empty()){
+        PlayerItem* currentPlayerItem;
+        currentPlayerItem=playerItems[currentPlayerID];
+        painter->drawPixmap(currentPlayerItem->x()-5,currentPlayerItem->y()-4,QPixmap("resource/yourTurn.png"));
+    }
 }
 
 void PlayerArea::setCurrentPlayerID(int id)

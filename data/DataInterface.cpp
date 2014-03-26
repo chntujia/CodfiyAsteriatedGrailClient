@@ -11,7 +11,39 @@ DataInterface::DataInterface(QObject *parent) :
     initRoleList();
     initRoleSkillDB();
     initButtonDB();
+
+    red = new Team(1);
+    blue = new Team(0);
+    gameInfo = NULL;
 }
+
+void DataInterface::cleanRoom()
+{
+    red->setCrystal(0);
+    red->setGem(0);
+    red->setGrail(0);
+    red->setMorale(0);
+    blue->setCrystal(0);
+    blue->setGem(0);
+    blue->setGrail(0);
+    blue->setMorale(0);
+    handcards.clear();
+    coverCards.clear();
+}
+
+void DataInterface::setupRoom(bool isStarted)
+{
+    if(!isStarted){
+        initDefaultPlayerList();
+    }
+    else{
+        if (playerMax==8)
+            initTeam(18);
+        else
+            initTeam(15);
+    }
+}
+
 void DataInterface::initCardDB()
 {
     QFile fp("data/cardDB.txt");
@@ -100,23 +132,53 @@ void DataInterface::initRoleSkillDB()
     fp.close();
 }
 
+void DataInterface::initDefaultPlayerList()
+{
+    int i, isRed, myPos;
+    myPos = id == GUEST ? 0 : id;
+    foreach(Player* p, playerList)
+        delete p;
+    playerList.clear();
+    //设置座次，分队
+    for(i = myPos; i < playerMax; i++)
+    {
+        isRed = i % 2;
+        playerList << new Player(i, isRed, "");
+    }
+
+    firstPlayerID = 0;
+
+    for(i = 0; i < myPos; i++)
+    {
+        isRed = i % 2;
+        playerList << new Player(i, isRed, "");
+
+    }
+    myself = playerList[0];
+}
+
 void DataInterface::initPlayerList(network::GameInfo* game_info)
 {
     int i,isRed,pID,myPos;
+    if(gameInfo != NULL)
+        delete gameInfo;
     gameInfo = new network::GameInfo;
     gameInfo->CopyFrom(*game_info);
+    network::SinglePlayerInfo player;
+    int myViewPoint = id == GUEST ? 0 : id;
     //find myPos
     for(i=0;i<playerMax;i++)
-        if(game_info->player_infos(i).id()==id)
+        if(game_info->player_infos(i).id() == myViewPoint)
             break;
     myPos=i;
+    playerList.clear();
     //设置座次，分队    
     for(;i<playerMax;i++)
     {
-        pID=game_info->player_infos(i).id();
-        isRed=game_info->player_infos(i).team();
-        playerList<<new Player(pID,isRed,"");
-
+        player = game_info->player_infos(i);
+        pID = player.id();
+        isRed = player.team();
+        playerList<<new Player(pID, isRed, nickNameList[pID]);
     }
 
     pID=game_info->player_infos(0).id();
@@ -135,8 +197,9 @@ void DataInterface::initPlayerList(network::GameInfo* game_info)
 
 void DataInterface::initTeam(int moraleMax)
 {
-    red=new Team(1,moraleMax);
-    blue=new Team(0,moraleMax);
+    red->setMoraleMax(moraleMax);
+    blue->setMoraleMax(moraleMax);
+
     if (myself->getColor()){
         myTeam=red;
         otherTeam=blue;

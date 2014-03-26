@@ -15,6 +15,8 @@ public:
     void changeLeftCardNum(int delta){leftCardNum+=delta;}
     void setDroppedCardNum(int howMany){droppedCardNum=howMany;}
     void setLeftCardNum(int howMany){leftCardNum=howMany;}
+    void setRoomID(int howMany){roomID = howMany; update();}
+    void setRound(int howMany) { round = howMany; }
     int getDroppedCardNum(){return droppedCardNum;}
     int getleftCardNum(){return leftCardNum;}
 private:
@@ -26,6 +28,7 @@ private:
     int avg;
     int round;
     int droppedCardNum,leftCardNum;
+    int roomID;
 };
 
 #endif // TEAMAREA_H

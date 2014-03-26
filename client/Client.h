@@ -15,7 +15,6 @@ public:
     void link(QString addr,int port);
     QString GetAddr() { return m_addr; }
 signals:
-    void readyToStart();
     void getMessage(uint16_t proto_type, google::protobuf::Message* proto);
 public slots:
     void readMessage();
