@@ -231,6 +231,17 @@ void Role::normal()
         buttonArea->enable(2);
     tipArea->setMsg(QStringLiteral("轮到你了"));
     unactionalCheck();
+	
+	//[YongZhe]挑衅 
+	if(playerList[myID]->getSpecial(1) == 1){
+		gui->reset();
+		tipArea->setMsg(QStringLiteral("你被勇者挑衅了"));
+		playerArea->setQuota(1);
+		handArea->setQuota(1);
+		handArea->enableAttack();
+		decisionArea->enable(3);
+		//FIXME 注意目前禁止法术技能的按钮并没有被禁止点选，不过它们无法被发动
+	}
 }
 
 //无法行动检测

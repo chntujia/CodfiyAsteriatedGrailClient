@@ -12,14 +12,13 @@ public:
     void JinDuanZhiLi();
     void SiDou();
     void turnBegin();
-    void askForSkill(QString skill);
+    void askForSkill(network::Command* cmd);
     void additionalAction();
 public slots:
     void onOkClicked();
     void onCancelClicked();
     void TiaoXin();
 private:
-    int jinDuanZhiLi;
 };
 
 

@@ -1,5 +1,14 @@
 ﻿#include "YongZhe.h"
 
+enum CAUSE{
+	TIAO_XIN = 2101,
+    JIN_DUAN_ZHI_LI = 2102,
+	NU_HOU = 2103,
+	MING_JING_ZHI_SHUI = 2104,
+	SI_DOU = 2105,
+	JING_PI_LI_JIE = 2106,
+};
+
 YongZhe::YongZhe()
 {
     makeConnection();
@@ -28,7 +37,8 @@ void YongZhe::normal()
 
 void YongZhe::NuHou()
 {
-    state=36;
+	gui->reset();
+    state=NU_HOU;
     tipArea->setMsg(QStringLiteral("是否发动怒吼？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
@@ -36,7 +46,8 @@ void YongZhe::NuHou()
 
 void YongZhe::MingJingZhiShui()
 {
-    state=36;
+	gui->reset();
+    state=MING_JING_ZHI_SHUI;
     tipArea->setMsg(QStringLiteral("是否发动明镜止水？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
@@ -44,15 +55,18 @@ void YongZhe::MingJingZhiShui()
 
 void YongZhe::JinDuanZhiLi()
 {
-    state=2102;
+	gui->reset();
+    state=JIN_DUAN_ZHI_LI;
     tipArea->setMsg(QStringLiteral("是否发动禁断之力？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
+	
 }
 
 void YongZhe::SiDou()
 {
-    state=36;
+	gui->reset();
+    state=SI_DOU;
     tipArea->setMsg(QStringLiteral("是否发动死斗？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
@@ -60,11 +74,8 @@ void YongZhe::SiDou()
 
 void YongZhe::TiaoXin()
 {
-    state=2101;
-
-    handArea->reset();
-    tipArea->reset();
-    playerArea->reset();
+	gui->reset();
+    state=TIAO_XIN;
 
     playerArea->enableEnemy();
     playerArea->setQuota(1);
@@ -90,33 +101,34 @@ void YongZhe::onOkClicked()
 
     switch(state)
     {
-    //额外行动询问
-    case 42:
-        text=tipArea->getBoxCurrentText();
-        if(text[0].digitValue()==1)
-        {
-            respond = newRespond(2103);
-            respond->add_args(1);
-            emit sendCommand(network::MSG_RESPOND, respond);
-            jinDuanZhiLi--;                     
-            attackAction();
-        }
-        break;
+
     //挑衅
-    case 2101:
-        action = newAction(2101);
+	case TIAO_XIN:
+        action = newAction(ACTION_MAGIC_SKILL,TIAO_XIN);
+		action->set_src_id(myID);
         action->add_dst_ids(selectedPlayers[0]->getID());
         action->add_args(1);
+		usedMagic=true;
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
     //禁断之力
-    case 2102:
-        respond = newRespond(2102);
+    case JIN_DUAN_ZHI_LI:
+        respond = newRespond(JIN_DUAN_ZHI_LI);
         respond->add_args(1);
-        jinDuanZhiLi++;
-        foreach(Card*ptr,dataInterface->getHandCards())
-            dataInterface->removeHandCard(ptr);
+		 
+        foreach(Card*ptr,dataInterface->getHandCards()){
+			respond->add_card_ids(ptr->getID());
+		}
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+	 //怒火，明镜止水，死斗
+    case NU_HOU:
+	case MING_JING_ZHI_SHUI:
+	case SI_DOU:
+        respond = newRespond(state);
+        respond->add_args(1);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -127,44 +139,47 @@ void YongZhe::onCancelClicked()
 {
     Role::onCancelClicked();
     QString command;
-
+	network::Action* action;
     network::Respond* respond;
     switch(state)
     {
-    case 2101:
-        normal();
-        break;
-    //禁断之力
-    case 2102:
-        respond = newRespond(2102);
-        emit sendCommand(network::MSG_RESPOND, respond);
+
+    //禁断之力，怒吼，明镜止水，死斗
+    case JIN_DUAN_ZHI_LI:
+    case NU_HOU:
+	case MING_JING_ZHI_SHUI:
+	case SI_DOU:
+		respond = newRespond(state);
+        respond->add_args(0);
         gui->reset();
+		emit sendCommand(network::MSG_RESPOND, respond);
         break;
+
     }
 }
 void YongZhe::turnBegin()
 {
     Role::turnBegin();
-    jinDuanZhiLi=0;
 }
 
-void YongZhe::askForSkill(QString skill)
+void YongZhe::askForSkill(network::Command* cmd)
 {
-    //Role::askForSkill(skill);
-    if(skill==QStringLiteral("怒吼"))
-        NuHou();
-    else if(skill==QStringLiteral("明镜止水"))
-        MingJingZhiShui();
-    else if(skill==QStringLiteral("禁断之力"))
-        JinDuanZhiLi();
-    else if(skill==QStringLiteral("死斗"))
-        SiDou();
-}
-
-void YongZhe::additionalAction()
-{
-    //Role::additionalAction();
-    if(jinDuanZhiLi>0)
-        tipArea->addBoxItem(QStringLiteral("1.攻击行动（精疲力竭）"));
+    switch(cmd->respond_id())
+    {
+		case TIAO_XIN:
+			return TiaoXin();
+		case JIN_DUAN_ZHI_LI:
+			return JinDuanZhiLi();
+		case NU_HOU:
+			return NuHou();
+		case MING_JING_ZHI_SHUI:
+			return MingJingZhiShui();
+		case SI_DOU:
+			return SiDou();
+	
+		break;
+	default:
+        Role::askForSkill(cmd);
+    }
 }
 
