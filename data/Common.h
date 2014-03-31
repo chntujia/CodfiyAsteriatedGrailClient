@@ -469,6 +469,8 @@ QString getCauseString(int cause)
         return QStringLiteral("血之诅咒弃牌");
     case LIU_XUE:
         return QStringLiteral("流血");
+	case QI_DAO:
+		return QStringLiteral("祈祷");
     case WEI_LI_CI_FU:
         return QStringLiteral("威力赐福");
     case XUN_JIE_CI_FU:
