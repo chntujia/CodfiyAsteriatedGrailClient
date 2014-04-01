@@ -275,7 +275,7 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         if(gui!=NULL)
         {
             network::Gossip* gossip = (network::Gossip*) proto;
-            gui->logAppend(QString::fromStdString(gossip->txt()));
+            gui->chatAppend(gossip->id(), QString::fromStdString(gossip->txt()));
         }
         break;
     case network::MSG_ERROR:

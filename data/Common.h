@@ -483,6 +483,8 @@ QString getCauseString(int cause)
         return QStringLiteral("法力潮汐");
     case DUO_CHONG_SHE_JI:
         return QStringLiteral("多重射击");
+    case JIAN_QI_ZHAN:
+        return QStringLiteral("剑气斩");
     case BU_QU_YI_ZHI:
         return QStringLiteral("不屈意志");
 	case XING_HONG_SHENG_YUE:

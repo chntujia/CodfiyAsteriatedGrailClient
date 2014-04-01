@@ -1413,7 +1413,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     if (player->getCrossNum() > player_info->heal_count())
                     {
                        howMany = player->getCrossNum() - player_info->heal_count();
-                       msg=playerList[targetID]->getRoleName()+QStringLiteral("使用了")+QString::number(howMany)+QStringLiteral("点治疗");
+                       msg=playerList[targetID]->getRoleName()+QStringLiteral("减少了")+QString::number(howMany)+QStringLiteral("点治疗");
                        gui->logAppend(msg);
                     }
                     else

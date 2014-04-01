@@ -9,7 +9,6 @@ public:
     MoGong();
     void normal();
     void turnBegin();
- // void additionalAction();
     void MoGuanChongJi();
     void MoGuanChongJiHit();
     void DuoChongSheJi();
@@ -19,7 +18,6 @@ public:
     void ChongNengGaiPai();
     void MoYanGaiPai();
     void attackAction();
-    void setAttackTarget();
     void askForSkill(network::Command* cmd);
 
 public slots:

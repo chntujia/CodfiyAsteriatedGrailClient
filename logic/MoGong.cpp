@@ -231,29 +231,11 @@ void MoGong::coverCardAnalyse()
   // case 2605:
      case DUO_CHONG_SHE_JI:
         setAttackTarget();
- //       playerArea->disablePlayerItem(lastTarget);
+        playerArea->disablePlayerItem(lastTarget);
         break;
     }
 }
 
-void MoGong::setAttackTarget()
-{
-  Role::setAttackTarget();
-  for(int i=0;i<playerList.size();i++)
-      if(playerList[i]->getID()==lastTarget){
-          playerArea->disablePlayerItem(i);
-          break;
-      }
-  if(MoGuanChongJiUsed)
-  {
-      for(int i=0;i<playerList.size();i++)
-          if(playerList[i]->getHandCardNum()==playerList[i]->getHandCardMax()){
-              playerArea->disablePlayerItem(i);
-              break;
-          }
-  }
-
-}
 void MoGong::onOkClicked()
 {
 

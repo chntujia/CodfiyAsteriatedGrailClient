@@ -22,7 +22,7 @@ ClientUI::ClientUI(QWidget *parent) :
 
     tcpSocket=new Client;
     tcpSocket->link("127.0.0.1",11227);
-    //tcpSocket->link("192.168.56.1",60000);
+    //tcpSocket->link("211.152.34.94",11227);
 
     QRegExp rx1("^[A-Za-z][A-Za-z0-9_]{6,12}");
     ui->regLoginName->setValidator(new QRegExpValidator(rx1, this));
