@@ -145,6 +145,9 @@ void YongZhe::onCancelClicked()
     {
 
     //禁断之力，怒吼，明镜止水，死斗
+	case TIAO_XIN:
+		normal();
+		break;
     case JIN_DUAN_ZHI_LI:
     case NU_HOU:
 	case MING_JING_ZHI_SHUI:
