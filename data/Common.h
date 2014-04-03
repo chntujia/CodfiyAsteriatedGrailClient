@@ -470,6 +470,8 @@ QString getCauseString(int cause)
         return QStringLiteral("灵魂吞噬");
 	case LING_HUN_ZHAO_HUAN:
         return QStringLiteral("灵魂召还");
+	case LING_HUN_ZHUAN_HUAN:
+        return QStringLiteral("灵魂转换");
 	case LING_HUN_JING_XIANG:
         return QStringLiteral("灵魂镜像");
 	case LING_HUN_LIAN_JIAN:
