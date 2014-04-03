@@ -136,6 +136,11 @@ enum CAUSE{
     MO_DAO_FA_DIAN = 1702,
     SHENG_JIE_FA_DIAN = 1703,
     FA_SHU_FAN_TAN = 1704,
+	FENG_XING = 1801,
+	LEI_MING = 1802,
+	NIAN_ZHOU = 1803,
+	BAI_GUI_YE_XING = 1804,
+	LING_LI_BENG_JIE = 1805,
     JIAN_HUN_SHOU_HU=1901,
     YANG_GON=1902,
     JIAN_QI_ZHAN=1903,
@@ -455,6 +460,22 @@ QString getCauseString(int cause)
         return QStringLiteral("蓄力一击/苍炎之魂");
     case BAI_SHI_DOU_SHEN:
         return QStringLiteral("百式幻龙拳/斗神天驱");
+	case LING_HUN_ZHEN_BAO:
+        return QStringLiteral("灵魂震爆");
+	case LING_HUN_CI_YU:
+        return QStringLiteral("灵魂赐予");
+	case LING_HUN_ZENG_FU:
+        return QStringLiteral("灵魂增幅");
+	case LING_HUN_TUN_SHI:
+        return QStringLiteral("灵魂吞噬");
+	case LING_HUN_ZHAO_HUAN:
+        return QStringLiteral("灵魂召还");
+	case LING_HUN_JING_XIANG:
+        return QStringLiteral("灵魂镜像");
+	case LING_HUN_LIAN_JIAN:
+        return QStringLiteral("灵魂链接");
+	case LING_HUN_LIAN_JIE_REACT:
+        return QStringLiteral("灵魂链接响应");
     case XUE_ZHI_BEI_MING:
         return QStringLiteral("血之悲鸣");
     case TONG_SHENG_GONG_SI:
@@ -483,8 +504,28 @@ QString getCauseString(int cause)
         return QStringLiteral("法力潮汐");
     case DUO_CHONG_SHE_JI:
         return QStringLiteral("多重射击");
+	case FENG_XING:
+        return QStringLiteral("风行");
+	case LEI_MING:
+        return QStringLiteral("雷鸣");
+	case NIAN_ZHOU:
+        return QStringLiteral("念咒");
+	case BAI_GUI_YE_XING:
+        return QStringLiteral("百鬼夜行");
+	case LING_LI_BENG_JIE:
+        return QStringLiteral("灵力崩解");
+	case JIAN_HUN_SHOU_HU:
+        return QStringLiteral("剑魂守护");
+	case YANG_GON:
+        return QStringLiteral("佯攻");
     case JIAN_QI_ZHAN:
         return QStringLiteral("剑气斩");
+	case TIAN_SHI_YU_E_MO:
+        return QStringLiteral("天使与恶魔");
+	case TIAN_SHI_ZHI_HUN:
+        return QStringLiteral("天使之魂");
+	case E_MO_ZHI_HUN:
+        return QStringLiteral("恶魔之魂");
     case BU_QU_YI_ZHI:
         return QStringLiteral("不屈意志");
 	case XING_HONG_SHENG_YUE:
