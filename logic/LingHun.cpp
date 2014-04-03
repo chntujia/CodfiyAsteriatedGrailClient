@@ -263,6 +263,7 @@ void LingHun::onOkClicked()
             respond->set_src_id(myID);
             respond->add_dst_ids(selectedPlayers[0]->getID());
             respond->add_args(1);
+			start=true;
             emit sendCommand(network::MSG_RESPOND, respond);
             gui->reset();
         break;
@@ -280,6 +281,7 @@ void LingHun::onOkClicked()
         respond->set_src_id(myID);
     //  respond->set_respond_id(skillCmd.respond_id());
         respond->add_args(1);
+		start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
