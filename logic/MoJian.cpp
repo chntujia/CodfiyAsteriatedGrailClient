@@ -51,6 +51,16 @@ void MoJian::XiuLuoLianZhan()
     decisionArea->enable(3);
 }
 
+void MoJian::AnYingNingJu()
+{
+    state = AN_YING_NING_JU;
+    gui->reset();
+    tipArea->setMsg(QStringLiteral("是否发动暗影凝聚？"));
+
+    decisionArea->enable(0);
+    decisionArea->enable(1);
+}
+
 void MoJian::AnYingLiuXing()
 {
     state=AN_YING_LIU_XING;
@@ -114,8 +124,9 @@ void MoJian::onOkClicked()
         gui->reset();
         break;
 
- //【暗影凝聚】||【黑暗震颤】，36为：简单的技能发动询问
-      case 36:
+ //【暗影凝聚
+      case AN_YING_NING_JU:
+        start = true;
         respond = new Respond();
         respond->set_src_id(myID);
         respond->set_respond_id(skillCmd.respond_id());
@@ -143,8 +154,8 @@ void MoJian::onCancelClicked()
     case AN_YING_LIU_XING:
         normal();
         break;
-//【暗影凝聚】||【黑暗震颤】，36为：简单的技能发动询问
-      case AN_YING_NING_JU:                   //代码有问题需要改写
+//【暗影凝聚】
+      case AN_YING_NING_JU:
         respond = new Respond();
         respond->set_src_id(myID);
         respond ->set_respond_id(AN_YING_NING_JU);
@@ -154,7 +165,6 @@ void MoJian::onCancelClicked()
         break;
     }
 }
-
 
 void MoJian::attackAction()
 {
@@ -167,7 +177,19 @@ void MoJian::attackAction()
     }
 }
 
+void MoJian::askForSkill(network::Command* cmd)
+{
+    if(cmd->respond_id() == AN_YING_NING_JU)
+        AnYingNingJu();
+    else
+        Role::askForSkill(cmd);
+}
 
-
+void MoJian::attacked(QString element, int hitRate)
+{
+    Role::attacked(element,hitRate);
+    if(isMyTurn)
+        handArea->disableMagic();
+}
 
 

@@ -8,12 +8,17 @@ public:
     MoJian();
     void normal();
     void attackAction();
+    void askForSkill(network::Command* cmd);
+    void attacked(QString element, int hitRate);
+    void XiuLuoLianZhan();
+    void AnYingNingJu();
+
 public slots:
     void onOkClicked();
     void onCancelClicked();
     void cardAnalyse();
     void AnYingLiuXing();
-    void XiuLuoLianZhan();
+
 };
 
 #endif // MOJIAN_H

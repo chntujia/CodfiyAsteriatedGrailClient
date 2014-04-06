@@ -886,6 +886,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         if(targetID!=myID)
         {
             isMyTurn=0;
+            gui->reset();
             gui->setEnable(0);
         }
         else
