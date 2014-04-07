@@ -54,7 +54,7 @@ void HongLian::XueXingDaoYan1()
     Player* myself=dataInterface->getMyself();
 
     tipArea->setMsg(QStringLiteral("【血腥祷言】请选择分给第一人的治疗"));
-    for(int i = 0;i<=myself->getCrossNum();i++)
+    for(int i = 1;i<=myself->getCrossNum();i++)
         tipArea->addBoxItem(QString::number(i));
     tipArea->showBox();
 

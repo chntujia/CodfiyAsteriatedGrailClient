@@ -30,6 +30,7 @@
 #include "LingFu.h"
 #include "MoGong.h"
 #include "NvWuShen.h"
+#include <QSound>
 
 #define LOGINPERMIT 1
 #define LOBBY 2
@@ -318,6 +319,8 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         tipArea->setMsg(QStringLiteral("请选择角色："));
         tipArea->showBox();
         decisionArea->enable(0);
+        gui->alert();
+        QSound::play("sound/Warning.wav");
         break;
     case 51:
         // TODO:BP模式，暂不可用
