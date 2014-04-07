@@ -107,7 +107,7 @@ void DataInterface::initRoleList()
     roleList<<QStringLiteral("[灵魂术士]");
     roleList<<QStringLiteral("[巫女]");
     roleList<<QStringLiteral("[蝶舞者]");
-    roleList<<QStringLiteral("[]");
+    roleList<<QStringLiteral("[女武神]");
     roleList<<QStringLiteral("[魔弓]");
     roleList<<QStringLiteral("[]");
     roleList<<QStringLiteral("[红莲骑士]");

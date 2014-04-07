@@ -181,6 +181,13 @@ enum CAUSE{
     DIAO_LING=2406,
     YONG_HUA=2407,
     DAO_NI_ZHI_DIE=2408,
+    SHEN_SHENG_ZHUI_JI_AFTER_ATTACK = 2701,
+    SHEN_SHENG_ZHUI_JI_AFTER_MAGIC = 27011,
+    ZHI_XU_ZHI_YIN = 2702,
+    HE_PING_XING_ZHE = 2703,
+    JUN_SHEN_WEI_GUANG = 2704,
+    JUN_SHEN_WEI_GUANG_2 = 27042,
+    YING_LING_ZHAO_HUAN = 2705,
     MO_GUAN_CHONG_JI=2601,
     MO_GUAN_CHONG_JI_HIT=26011,
     LEI_GUANG_SAN_SHE =2602,
@@ -548,6 +555,24 @@ QString getCauseString(int cause)
         return QStringLiteral("猩红十字");
     case CHONG_YING:
         return QStringLiteral("额外攻击行动");
+    case SHEN_SHENG_ZHUI_JI_AFTER_ATTACK:
+        return QStringLiteral("神圣追击");
+        break;
+    case SHEN_SHENG_ZHUI_JI_AFTER_MAGIC:
+        return QStringLiteral("神圣追击");
+        break;
+    case ZHI_XU_ZHI_YIN:
+        return QStringLiteral("秩序之印");
+        break;
+    case HE_PING_XING_ZHE:
+        return QStringLiteral("和平行者");
+        break;
+    case JUN_SHEN_WEI_GUANG:
+        return QStringLiteral("军神威光");
+        break;
+    case YING_LING_ZHAO_HUAN:
+        return QStringLiteral("英灵召唤");
+        break;
     default:
         return "CauseString undefined";
     }

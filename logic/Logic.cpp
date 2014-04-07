@@ -29,6 +29,7 @@
 #include "MoQiang.h"
 #include "LingFu.h"
 #include "MoGong.h"
+#include "NvWuShen.h"
 
 #define LOGINPERMIT 1
 #define LOBBY 2
@@ -189,6 +190,10 @@ void Logic::setMyRole(int roleID)
         break;
     case 24:
         myRole = new DieWu;
+        hasSetRole = true;
+        break;
+    case 25:
+        myRole = new NvWuShen;
         hasSetRole = true;
         break;
     case 26:
