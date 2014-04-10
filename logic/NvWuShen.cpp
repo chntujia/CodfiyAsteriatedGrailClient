@@ -1,13 +1,13 @@
 ﻿#include "NvWuShen.h"
 
 enum CAUSE{
-    SHEN_SHENG_ZHUI_JI_AFTER_ATTACK = 2701,
-    SHEN_SHENG_ZHUI_JI_AFTER_MAGIC = 27011,
-    ZHI_XU_ZHI_YIN = 2702,
-    HE_PING_XING_ZHE = 2703,
-    JUN_SHEN_WEI_GUANG = 2704,
-    JUN_SHEN_WEI_GUANG_2 = 27042,
-    YING_LING_ZHAO_HUAN = 2705
+    SHEN_SHENG_ZHUI_JI_AFTER_ATTACK = 2501,
+    SHEN_SHENG_ZHUI_JI_AFTER_MAGIC = 25011,
+    ZHI_XU_ZHI_YIN = 2502,
+    HE_PING_XING_ZHE = 2503,
+    JUN_SHEN_WEI_GUANG = 2504,
+    JUN_SHEN_WEI_GUANG_2 = 25042,
+    YING_LING_ZHAO_HUAN = 2505
 };
 
 NvWuShen::NvWuShen()
@@ -34,7 +34,7 @@ void NvWuShen::JunShenWeiGuang()
     tipArea->setMsg(QStringLiteral("选择军神威光效果"));
     tipArea->addBoxItem(QStringLiteral("1.你+1【治疗】"));
     if(myTeam->getEnergy()>1) {
-        tipArea->addBoxItem(QStringLiteral("2.（移除己方【战绩区】2星石）你无视上限+2【治疗】"));
+        tipArea->addBoxItem(QStringLiteral("2.移除已方战绩区2星石无视上限+2治疗"));
     }
     tipArea->showBox();
     decisionArea->enable(0);
@@ -77,7 +77,7 @@ void NvWuShen::YingLingZhaoHuan()
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动英灵召唤？（若你额外弃1张法术牌【展示】）本次攻击伤害额外+1"));
     handArea->enableMagic();
-    handArea->setQuota(1);
+    handArea->setQuota(0, 1);
     decisionArea->enable(1);
     decisionArea->enable(0);
 }
@@ -145,6 +145,9 @@ void NvWuShen::onOkClicked()
             respond->add_args(1);
 			respond->add_card_ids(selectedCards[0]->getID());
         }
+        else {
+            respond->add_args(0);
+        }
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
@@ -164,6 +167,7 @@ void NvWuShen::onCancelClicked()
         break;
     case YING_LING_ZHAO_HUAN:
         respond = newRespond(YING_LING_ZHAO_HUAN);
+        respond->add_args(0);
         respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();

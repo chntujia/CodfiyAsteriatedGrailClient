@@ -60,9 +60,7 @@ void LingHun::normal()
 void LingHun::LingHunZhaoHuan()
 {
     state= LING_HUN_ZHAO_HUAN;
-    playerArea->reset();
-    handArea->reset();
-    tipArea->reset();
+    gui->reset();
 
     handArea->enableMagic();
     handArea->setQuota(1,7);
@@ -74,9 +72,7 @@ void LingHun::LingHunZhaoHuan()
 void LingHun::LingHunJingXiang()
 {
     state=LING_HUN_JING_XIANG;
-    playerArea->reset();
-    handArea->reset();
-    tipArea->reset();
+    gui->reset();
 
     decisionArea->enable(1);
     decisionArea->disable(0);
@@ -94,9 +90,7 @@ void LingHun::LingHunJingXiang()
 void LingHun::LingHunZhenBao()
 {
     state=LING_HUN_ZHEN_BAO;
-    playerArea->reset();
-    handArea->reset();
-    tipArea->reset();
+    gui->reset();
 
     playerArea->setQuota(1);
 
@@ -111,9 +105,7 @@ void LingHun::LingHunZhenBao()
 void LingHun::LingHunCiYu()
 {
     state=LING_HUN_CI_YU;
-    playerArea->reset();
-    handArea->reset();
-    tipArea->reset();
+    gui->reset();
 
     playerArea->setQuota(1);
 
@@ -127,6 +119,7 @@ void LingHun::LingHunCiYu()
 void LingHun::LingHunZhuanHuan()
 {
     state=LING_HUN_ZHUAN_HUAN;
+    gui->reset();
     Player *myself=dataInterface->getMyself();
     tipArea->setMsg(QStringLiteral("请选择要转换的灵魂："));
     decisionArea->enable(0);
