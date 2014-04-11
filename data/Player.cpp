@@ -128,6 +128,12 @@ void Player::setRole(int roleID)
         roleName=QStringLiteral("[魔弓]");
         addToken(2,new Token(QStringLiteral("充能"),8,2));
         break;
+    case 27:
+        roleName=QStringLiteral("[英灵人形]");
+        addToken(0, new Token(QStringLiteral("战纹"),3,0));
+        addToken(1, new Token(QStringLiteral("魔纹"),3,1));
+        tapSource="resource/tap/XuSiBengFa.png";
+        break;
     case 28:
         roleName=QStringLiteral("[红莲骑士]");
         tapSource="resource/tap/ReXueFeiTeng.png";

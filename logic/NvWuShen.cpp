@@ -180,6 +180,7 @@ void NvWuShen::onCancelClicked()
 
 void NvWuShen::askForSkill(network::Command* cmd)
 {
+    gui->alert();
     switch (cmd->respond_id())
     {
     case JUN_SHEN_WEI_GUANG:

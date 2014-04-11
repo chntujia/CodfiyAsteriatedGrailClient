@@ -69,7 +69,9 @@ HEADERS += client/Client.h \
            widget/TeamArea.h \
            widget/TipArea.h \
     data/Common.h \
-    logic/NvWuShen.h
+    logic/NvWuShen.h \
+    logic/YingLingRenXing.h \
+
 FORMS += client/ClientUI.ui client/Lobby.ui
 SOURCES += main.cpp \
            client/Client.cpp \
@@ -128,4 +130,5 @@ SOURCES += main.cpp \
            widget/TeamArea.cpp \
            widget/TipArea.cpp \
     logic/LingFu.cpp \
-    logic/NvWuShen.cpp
+    logic/NvWuShen.cpp \
+    logic/YinhLingRenXing.cpp

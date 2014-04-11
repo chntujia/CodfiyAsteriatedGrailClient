@@ -30,6 +30,7 @@
 #include "LingFu.h"
 #include "MoGong.h"
 #include "NvWuShen.h"
+#include "YingLingRenXing.h"
 #include <QSound>
 
 #define LOGINPERMIT 1
@@ -199,6 +200,10 @@ void Logic::setMyRole(int roleID)
         break;
     case 26:
         myRole = new MoGong;
+        hasSetRole = true;
+        break;
+    case 27:
+        myRole = new YingLingRenXing;
         hasSetRole = true;
         break;
     case 28:
