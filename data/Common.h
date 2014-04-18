@@ -157,6 +157,12 @@ enum CAUSE{
     DOU_SHEN_TIAN_QU = 2006,
     XU_LI_CANG_YAN = 2025,
     BAI_SHI_DOU_SHEN = 2046,
+	TIAO_XIN = 2101,
+    JIN_DUAN_ZHI_LI = 2102,
+	NU_HOU = 2103,
+	MING_JING_ZHI_SHUI = 2104,
+	SI_DOU = 2105,
+	JING_PI_LI_JIE = 2106,
     LING_HUN_ZHEN_BAO =2201,
     LING_HUN_CI_YU =2202,
     LING_HUN_ZENG_FU=2203,
@@ -543,6 +549,18 @@ QString getCauseString(int cause)
         return QStringLiteral("恶魔之魂");
     case BU_QU_YI_ZHI:
         return QStringLiteral("不屈意志");
+	case TIAO_XIN:
+		return QStringLiteral("挑衅");
+	case JIN_DUAN_ZHI_LI:
+		return QStringLiteral("禁断之力");
+	case NU_HOU:
+		return QStringLiteral("怒吼");
+	case MING_JING_ZHI_SHUI:
+		return QStringLiteral("明镜止水");
+	case SI_DOU:
+		return QStringLiteral("死斗");
+	case JING_PI_LI_JIE:
+		return QStringLiteral("精疲力竭");
 	case XING_HONG_SHENG_YUE:
         return QStringLiteral("猩红圣约");
 	case XING_HONG_XIN_YANG:
