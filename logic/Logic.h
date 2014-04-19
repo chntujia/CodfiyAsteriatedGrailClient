@@ -38,6 +38,7 @@ private:
     bool init_before_start;
     bool init_after_start;
     int roles[8];
+    QMutex mutex;
 };
 extern Logic* logic;
 #endif // LOGIC_H

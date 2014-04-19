@@ -32,7 +32,12 @@ public:
     void setMyself(Player* player);
     void setID(int id);
     void setPlayerMax(int playerMax);
-    void setNickName(int id, QString name) { if(id>=0 && id<playerMax) nickNameList[id] = name; playerList[id]->setNickname(name);}
+    void setNickName(int id, QString name) {
+        if(id>=0 && id<playerMax){
+            nickNameList[id] = name;
+            playerList[id]->setNickname(name);
+        }
+    }
     void cleanRoom();
     void setupRoom(bool isStarted);
     Player* getPlayerById(int id);

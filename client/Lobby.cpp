@@ -68,10 +68,10 @@ void Lobby::onItemClicked(QModelIndex index)
 void Lobby::onCreateRoom()
 {
     //FIXME: popup
-    newWindow(6);
+    newWindow(4);
     network::CreateRoomRequest* create = new network::CreateRoomRequest();
     create->set_role_strategy(ROLE_STRATEGY_ANY);
-    create->set_max_player(6);
+    create->set_max_player(4);
     logic->getClient()->sendMessage(network::MSG_CREATE_ROOM_REQ, create);
 }
 

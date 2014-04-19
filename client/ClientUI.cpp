@@ -19,19 +19,20 @@ ClientUI::ClientUI(QWidget *parent) :
         ui->editPassword->setText(account.readLine());
         fp->close();
     }
-    int port = 11227;
-    fp=new QFile("port");
+    int port = 11228;
+    QString ip = "127.0.0.1";
+    fp=new QFile("config");
     if(fp->exists())
     {
         QTextStream config(fp);
         fp->open(QIODevice::ReadOnly);
+        ip = config.readLine();
         port = config.readLine().toInt();
         fp->close();
     }
     tcpSocket=new Client;
     //tcpSocket->link("127.0.0.1",port);
-    tcpSocket->link("211.152.34.94",port);
-//tcpSocket->link("119.247.98.139",port);
+    tcpSocket->link(ip, port);
     QRegExp rx1("^[A-Za-z][A-Za-z0-9_]{6,12}");
     ui->regLoginName->setValidator(new QRegExpValidator(rx1, this));
     ui->editLoginName->setValidator(new QRegExpValidator(rx1, this));

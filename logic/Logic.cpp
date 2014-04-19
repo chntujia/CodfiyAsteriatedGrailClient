@@ -220,6 +220,7 @@ void Logic::setMyRole(int roleID)
 
 void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
 {
+    QMutexLocker locker(&mutex);
     TipArea *tipArea;
     DecisionArea* decisionArea;
     BPArea* bpArea;
@@ -393,6 +394,7 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
 
 void Logic::onOkClicked()
 {
+    QMutexLocker locker(&mutex);
     QStringList chosen;
     TipArea *tipArea;
     QList<int> roles;

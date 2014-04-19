@@ -69,6 +69,7 @@ protected:
     int chosenAction;
 	//FIXME: 暂时只保存了额外行动跟响应类技能时的CMD
     network::Command skillCmd;
+    QMutex mutex;
 };
 
 

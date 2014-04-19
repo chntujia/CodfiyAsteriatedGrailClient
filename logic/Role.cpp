@@ -528,12 +528,12 @@ void Role::askForSkill(Command *cmd)
     tipArea->setMsg(QStringLiteral("是否发动") + getCauseString(cmd->respond_id()) + "?");
     decisionArea->enable(0);
     decisionArea->enable(1);
-    gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void Role::onCancelClicked()
 {
+    QMutexLocker locker(&mutex);
+
     network::Respond* respond;
     switch(state)
     {
@@ -599,6 +599,8 @@ void Role::onCancelClicked()
 
 void Role::onOkClicked()
 {
+    QMutexLocker locker(&mutex);
+
     QList<Card*>selectedCards;
     QList<Player*>selectedPlayers;
 
@@ -857,6 +859,8 @@ network::Respond* Role::newRespond(uint32_t respond_id)
 
 void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 {
+    QMutexLocker locker(&mutex);
+
     int targetID;
     int cardID;
     int hitRate;
@@ -1107,6 +1111,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 if(targetID==myID)
                 {
                     gui->setEnable(1);
+                    gui->alert();
+                    QSound::play("sound/Warning.wav");
                     skillCmd.CopyFrom(*cmd);
                     myRole->askForSkill(cmd);
                 }

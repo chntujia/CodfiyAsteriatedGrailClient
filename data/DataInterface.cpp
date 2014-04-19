@@ -171,6 +171,8 @@ void DataInterface::initPlayerList(network::GameInfo* game_info)
         if(game_info->player_infos(i).id() == myViewPoint)
             break;
     myPos=i;
+    foreach(Player* ptr, playerList)
+        delete ptr;
     playerList.clear();
     //设置座次，分队    
     for(;i<playerMax;i++)
@@ -188,7 +190,7 @@ void DataInterface::initPlayerList(network::GameInfo* game_info)
     {
         pID=game_info->player_infos(i).id();
         isRed=game_info->player_infos(i).team();
-        playerList<<new Player(pID,isRed,"");
+        playerList<<new Player(pID, isRed, nickNameList[pID]);
 
     }
     myself=playerList[0];

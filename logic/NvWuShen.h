@@ -16,7 +16,6 @@ public slots:
     void onOkClicked();
     void onCancelClicked();
     void ZhiXuZhiYin();
-private:
 
 };
 

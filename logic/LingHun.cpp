@@ -272,7 +272,6 @@ void LingHun::onOkClicked()
         respond = new Respond();
         respond->set_respond_id(LING_HUN_ZENG_FU);
         respond->set_src_id(myID);
-    //  respond->set_respond_id(skillCmd.respond_id());
         respond->add_args(1);
 		start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
@@ -333,7 +332,6 @@ void LingHun::onCancelClicked()
 
 void LingHun::askForSkill(network::Command* cmd)
 {
-     //灵魂链接稍后补上
     if(cmd->respond_id() == LING_HUN_ZHUAN_HUAN)
         LingHunZhuanHuan();
     else if(cmd->respond_id() == LING_HUN_ZENG_FU)
