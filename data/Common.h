@@ -619,6 +619,22 @@ QString getCauseString(int cause)
         return QStringLiteral("符文改造");
     case SHUANG_CHONG_HUI_XIANG:
         return QStringLiteral("双重回响");
+    case MO_GUAN_CHONG_JI:
+    case MO_GUAN_CHONG_JI_HIT:
+        return QStringLiteral("魔贯冲击");
+    case LEI_GUANG_SAN_SHE:
+    case LEI_GUANG_SAN_SHE_EXTRA:
+        return QStringLiteral("雷光散射");
+    case DUO_CHONG_SHE_JI:
+        return QStringLiteral("多重射击");
+    case CHONG_NENG:
+    case CHONG_NENG_GAI_PAI:
+        return QStringLiteral("充能");
+    case MO_YAN:
+    case MO_YAN_GAI_PAI:
+        return QStringLiteral("魔眼");
+    case CHONG_NENG_MO_YAN:
+        return QStringLiteral("充能&魔眼");
     default:
         return "CauseString undefined";
     }

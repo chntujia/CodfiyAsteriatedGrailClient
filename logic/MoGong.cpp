@@ -164,18 +164,11 @@ void MoGong::ChongNengGaiPai()
 
     QList<Card*> covercards=dataInterface->getCoverCards();
 
-    //控制充能数，保证不充满
-    int n=covercards.size();
-    chongnengNum=(chongnengNum+n>7)?(8-n):chongnengNum;
-
     tipArea->setMsg(QStringLiteral("请选择最多")+QString::number(chongnengNum)+QStringLiteral("张手牌盖做充能"));
 
     tipArea->setMsg(QStringLiteral("选择手牌盖做充能"));
       handArea->enableAll();
       handArea->setQuota(0,chongnengNum);
-  //  for(int i = 1; i <=chongnengNum; i ++)
- //       tipArea->addBoxItem(QString::number(i));
- //       tipArea->showBox();
     decisionArea->enable(0);
 }
 
@@ -317,6 +310,7 @@ void MoGong::onOkClicked()
         ChongNengUsed=true;                                               //为【雷光散射】按钮服务
         chongnengNum=tipArea->getBoxCurrentText()[0].digitValue();
         emit sendCommand(network::MSG_RESPOND, respond);
+        start=true;
         gui->reset();
         break;
     case MO_YAN:
@@ -328,6 +322,7 @@ void MoGong::onOkClicked()
         if(selectedPlayers.size()>0)
             respond->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
+        start=true;
         gui->reset();
         break;
 
