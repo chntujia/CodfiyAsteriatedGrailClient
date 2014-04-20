@@ -42,6 +42,7 @@ void JianDi::JianHunShouHu()
     tipArea->setMsg(QStringLiteral("是否发动剑魂守护？"));
     decisionArea->enable(0);
     decisionArea->enable(1);
+    handArea->disableAll();
 }
 
 void JianDi::JianQiZhan(int targetID)
