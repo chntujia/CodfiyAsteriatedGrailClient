@@ -83,8 +83,10 @@ void Logic::destroyRoom(){
     socket->sendMessage(network::MSG_LEAVE_ROOM_REQ, leave);
     disconnect(socket, 0, this, 0);
     makeConnection();
-    if(myRole)
+    if(myRole){
         delete myRole;
+        myRole = NULL;
+    }
 }
 
 void Logic::makeConnection()

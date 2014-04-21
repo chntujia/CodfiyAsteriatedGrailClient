@@ -523,8 +523,6 @@ QString getCauseString(int cause)
         return QStringLiteral("漆黑信仰");
     case FA_LI_CHAO_XI:
         return QStringLiteral("法力潮汐");
-    case DUO_CHONG_SHE_JI:
-        return QStringLiteral("多重射击");
 	case FENG_XING:
         return QStringLiteral("风行");
 	case LEI_MING:
