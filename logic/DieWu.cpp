@@ -121,12 +121,17 @@ void DieWu::JingHuaShuiYue()
     decisionArea->enable(1);
 }
 
-void DieWu::DiaoLing()
+void DieWu::DiaoLing(int type)
 {
     state=DIAO_LING;
-    tipArea->setMsg(QStringLiteral("是否发动凋零？"));
-    playerArea->enableAll();
-    playerArea->setQuota(1);
+    if(type == 2)
+    {
+        tipArea->setMsg(QStringLiteral("是否发动凋零？"));
+        playerArea->enableAll();
+        playerArea->setQuota(1);
+    }
+    else
+        tipArea->setMsg(QStringLiteral("非法术牌不能发动凋零"));
 
     decisionArea->enable(1);
 }
@@ -436,7 +441,7 @@ void DieWu::askForSkill(Command* cmd)
         JingHuaShuiYue();
         break;
     case DIAO_LING:
-        DiaoLing();
+        DiaoLing(cmd->args(0));
         break;
     default:
         Role::askForSkill(cmd);

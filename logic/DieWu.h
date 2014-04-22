@@ -13,7 +13,7 @@ public:
     void DuFen();
     void ChaoSheng();
     void JingHuaShuiYue();
-    void DiaoLing();
+    void DiaoLing(int type);
     void DaoNiZhiDie2();
 public slots:
     void onOkClicked();
