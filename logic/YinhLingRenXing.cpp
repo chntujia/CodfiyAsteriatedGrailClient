@@ -87,12 +87,13 @@ void YingLingRenXing::FuWenGaiZao()
 	decisionArea->enable(1);
 }
 
-void YingLingRenXing::ShuangChongHuiXiang()
+void YingLingRenXing::ShuangChongHuiXiang(int previous)
 {
 	state = SHUANG_CHONG_HUI_XIANG;
 	gui->reset();
 	tipArea->setMsg(QStringLiteral("发动【双重回响】，并选择目标角色"));
 	playerArea->enableAll();
+    playerArea->disablePlayerItem(previous);
 	playerArea->setQuota(1);
 
 	decisionArea->enable(1);
@@ -255,7 +256,7 @@ void YingLingRenXing::askForSkill(network::Command* cmd)
 		FuWenGaiZao();
 		break;
 	case SHUANG_CHONG_HUI_XIANG:
-		ShuangChongHuiXiang();
+        ShuangChongHuiXiang(cmd->args(0));
 		break;
 	default:
 		Role::askForSkill(cmd);

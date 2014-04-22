@@ -187,8 +187,7 @@ enum CAUSE{
     DIAO_LING=2406,
     YONG_HUA=2407,
     DAO_NI_ZHI_DIE=2408,
-    SHEN_SHENG_ZHUI_JI_AFTER_ATTACK = 2501,
-    SHEN_SHENG_ZHUI_JI_AFTER_MAGIC = 25011,
+    SHEN_SHENG_ZHUI_JI = 2501,
     ZHI_XU_ZHI_YIN = 2502,
     HE_PING_XING_ZHE = 2503,
     JUN_SHEN_WEI_GUANG = 2504,
@@ -577,9 +576,7 @@ QString getCauseString(int cause)
         return QStringLiteral("猩红十字");
     case CHONG_YING:
         return QStringLiteral("额外攻击行动");
-    case SHEN_SHENG_ZHUI_JI_AFTER_ATTACK:
-        return QStringLiteral("神圣追击");
-    case SHEN_SHENG_ZHUI_JI_AFTER_MAGIC:
+    case SHEN_SHENG_ZHUI_JI:
         return QStringLiteral("神圣追击");
     case ZHI_XU_ZHI_YIN:
         return QStringLiteral("秩序之印");
