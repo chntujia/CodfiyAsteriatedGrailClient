@@ -281,6 +281,7 @@ void MoGong::onOkClicked()
         action = newAction(network::ACTION_ATTACK_SKILL,DUO_CHONG_SHE_JI); //攻击行动
         action->add_card_ids(selectedCoverCards[0]->getID());
         action->add_dst_ids(selectedPlayers[0]->getID());
+        lastTarget = selectedPlayers[0]->getID();
         DuoChongSheJiUsed = true;
         emit sendCommand(network::MSG_ACTION, action);
          gui->reset();
