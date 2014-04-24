@@ -3,6 +3,7 @@
 
 #include <QGraphicsObject>
 #include "PlayerItem.h"
+#include "data/SafeList.h"
 class LineContainer;
 class PlayerArea : public QGraphicsObject
 {
@@ -26,7 +27,7 @@ public:
     void drawLineBetween(int id1,int id2);
     void setQuota(int howMany){least=most=howMany;}
     void setQuota(int least,int most){this->least=least;this->most=most;}
-    QList<Player*> getSelectedPlayers();
+    SafeList<Player *> getSelectedPlayers();
     PlayerItem* getPlayerItem(int id){return playerItems.at(id);}
 
 public slots:
@@ -36,11 +37,11 @@ signals:
     void playerReady();
     void playerUnready();
 private:
-    QList<PlayerItem*> playerItems;
-    QList<Player*> selectedPlayers;
+    SafeList<PlayerItem*> playerItems;
+    SafeList<Player*> selectedPlayers;
     int least,most;
     int currentPlayerID;
-    QList<int> enemy;
+    SafeList<int> enemy;
 };
 
 #endif // PLAYERAREA_H

@@ -2,6 +2,7 @@
 #define BUTTONAREA_H
 
 #include <QGraphicsObject>
+#include "data/SafeList.h"
 #include "Button.h"
 
 class DecisionArea : public QGraphicsObject
@@ -40,7 +41,7 @@ public:
     void disable(int i);
     void reset();
     void addButton(Button* button);
-    QList<Button*> getButtons();
+    SafeList<Button*> getButtons();
     void setEnabled(bool enable);
     void addOutsideTurnButton(Button* button);
 signals:
@@ -50,7 +51,7 @@ public slots:
     void onButtonUnselected(int id);
 
 private:
-    QList<Button*> buttons;
+    SafeList<Button*> buttons;
     Button* selectedButton;
 };
 

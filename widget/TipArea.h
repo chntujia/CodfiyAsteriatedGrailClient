@@ -5,6 +5,7 @@
 #include <QComboBox>
 #include <QGraphicsProxyWidget>
 #include "widget/CardItem.h"
+#include "data/SafeList.h"
 class TipArea : public QGraphicsObject
 {
     Q_OBJECT
@@ -36,7 +37,7 @@ private:
     QString msg;
     QComboBox *box;
     QGraphicsProxyWidget *boxItem;
-    QList<CardItem*> cardItems;
+    SafeList<CardItem*> cardItems;
     Card* selectedCard;    
 };
 

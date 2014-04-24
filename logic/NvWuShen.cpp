@@ -85,17 +85,15 @@ void NvWuShen::YingLingZhaoHuan()
 void NvWuShen::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
-
+    SafeList<Card*> selectedCards;
 
     selectedCards=handArea->getSelectedCards();
-    selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
     int choice;
     int crystal, gem;
+    try{
     switch(state)
     {
     case JUN_SHEN_WEI_GUANG:
@@ -151,6 +149,10 @@ void NvWuShen::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

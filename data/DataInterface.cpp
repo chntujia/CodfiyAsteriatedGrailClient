@@ -299,17 +299,17 @@ int DataInterface::getPlayerMax()
     return playerMax;
 }
 
-QList<Player*> DataInterface::getPlayerList()
+SafeList<Player*> DataInterface::getPlayerList()
 {
     return playerList;
 }
 
-QList<Card*> DataInterface::getHandCards()
+SafeList<Card*> DataInterface::getHandCards()
 {
     return handcards;
 }
 
-QList<Card*> DataInterface::getCoverCards()
+SafeList<Card*> DataInterface::getCoverCards()
 {
     return coverCards;
 }

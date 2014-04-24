@@ -128,13 +128,8 @@ void GongNv::cardAnalyse()
 void GongNv::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
-
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
     QString text;
 
     selectedCards=handArea->getSelectedCards();
@@ -142,7 +137,7 @@ void GongNv::onOkClicked()
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
 //额外行动询问
@@ -206,6 +201,9 @@ void GongNv::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

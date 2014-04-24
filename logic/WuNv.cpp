@@ -141,7 +141,7 @@ void WuNv::XueZhiZuZhouQiPai()
     state = XUE_ZHI_ZU_ZHOU_QI_PAI;
     gui->reset();
     tipArea->setMsg(QStringLiteral("请弃3张手牌（不足则全弃）"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     if(handcards.size()>=3)
         handArea->setQuota(3);
     else
@@ -172,14 +172,15 @@ void WuNv::cardAnalyse()
 void WuNv::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
+    try{
     switch(state)
     {
     case TONG_SHENG_GONG_SI:
@@ -243,6 +244,10 @@ void WuNv::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

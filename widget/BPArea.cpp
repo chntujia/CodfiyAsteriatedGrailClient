@@ -20,7 +20,7 @@ BPArea::BPArea():least(1),most(1)
     currentSum = 0;
 }
 
-void BPArea::BPStart(int num, QList<int> roles)
+void BPArea::BPStart(int num, SafeList<int> roles)
 {
 /*    QString queue = dataInterface->getQueue();
     int red =0, blue = 0, max = queue.size()/2;
@@ -118,7 +118,7 @@ void BPArea::setMsg(QString msg)
     update();
 }
 
-QList<int> BPArea::getSelectedRoles()
+SafeList<int> BPArea::getSelectedRoles()
 {
     return selectedRoles;
 }

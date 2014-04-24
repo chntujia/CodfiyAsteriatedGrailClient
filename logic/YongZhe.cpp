@@ -87,18 +87,13 @@ void YongZhe::TiaoXin()
 void YongZhe::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Player*>selectedPlayers;
-
-    QString command;
-    QString sourceID;
-    QString targetID;
-    QString text;
+    SafeList<Player*>selectedPlayers;
 
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
 
@@ -132,6 +127,10 @@ void YongZhe::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

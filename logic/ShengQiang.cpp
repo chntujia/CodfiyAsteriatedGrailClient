@@ -35,7 +35,7 @@ void ShengQiang::normal()
     if(handArea->checkElement("water"))
         buttonArea->enable(3);
     bool chengjieflag = false;
-    QList<Player*>players=dataInterface->getPlayerList();
+    SafeList<Player*>players=dataInterface->getPlayerList();
     for(int i=0;i<players.size();i++)
     {
         if(myself->getID()==players[i]->getID())
@@ -125,7 +125,7 @@ void ShengQiang::ShengGuangQiYu()
 void ShengQiang::cardAnalyse()
 {
     Role::cardAnalyse();
-
+    try{
     switch (state)
     {
     case HUI_YAO:
@@ -133,7 +133,7 @@ void ShengQiang::cardAnalyse()
         break;
     case CHENG_JIE:
         Player* myself=dataInterface->getMyself();
-        QList<Player*>players=dataInterface->getPlayerList();
+        SafeList<Player*>players=dataInterface->getPlayerList();
         for(int i=0;i<players.size();i++)
         {
             if(myself->getID()==players[i]->getID())
@@ -143,19 +143,18 @@ void ShengQiang::cardAnalyse()
         }
         break;
     }
+    }catch(int error){
+        logic->onError(error);
+    }
 
 }
 
 void ShengQiang::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
-    static QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
     QString text;
 
     selectedCards=handArea->getSelectedCards();
@@ -163,7 +162,7 @@ void ShengQiang::onOkClicked()
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
     case 42:
@@ -221,6 +220,10 @@ void ShengQiang::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

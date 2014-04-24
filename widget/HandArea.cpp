@@ -257,7 +257,7 @@ void HandArea::adjustCards()
     }
 }
 
-QList<Card*> HandArea::getSelectedCards()
+SafeList<Card*> HandArea::getSelectedCards()
 {
     return selectedCards;
 }

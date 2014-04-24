@@ -241,7 +241,7 @@ void ButtonArea::disable(int i)
     buttons[i]->setOpacity(0.5);
 }
 
-QList<Button*> ButtonArea::getButtons()
+SafeList<Button*> ButtonArea::getButtons()
 {
     return buttons;
 }

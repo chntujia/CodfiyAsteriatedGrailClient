@@ -72,7 +72,7 @@ void GeDouJia::BaiShiHuanLongQuan()
     state=BAI_SHI_HUAN_LONG_QUAN;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动百式幻龙拳？"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     bool flag=true;
     int i;
     int n=handcards.size();
@@ -96,7 +96,7 @@ void GeDouJia::DouShenTianQu()
     state=DOU_SHEN_TIAN_QU;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动斗神天驱？如是，请选择要弃的牌"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     cardReady=false;
     bool flag=true;
     int i;
@@ -129,7 +129,7 @@ void GeDouJia::cardAnalyse()
 {
     tipArea->reset();
     Role::cardAnalyse();
-    QList<Card*> handcards=dataInterface->getHandCards();
+
     switch(state)
     {
     case DOU_SHEN_TIAN_QU:
@@ -143,12 +143,13 @@ void GeDouJia::playerAnalyse()
 {
     Role::playerAnalyse();
     Player*myself = dataInterface->getMyself();
-    QList<Card*> selectedCards=handArea->getSelectedCards();
-    QList<Player*>selectedPlayers=playerArea->getSelectedPlayers();
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
+    SafeList<Player*> selectedPlayers=playerArea->getSelectedPlayers();
     if(myself->getTap()==0){
         baiShiUsed=false;
         baiShiTargetID=-1;
     }
+    try{
     switch(state)
     {
     case 1:
@@ -172,6 +173,9 @@ void GeDouJia::playerAnalyse()
             decisionArea->enable(0);
         }
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 
@@ -299,15 +303,15 @@ void GeDouJia::extract()
 void GeDouJia::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Player*>selectedPlayers;
-    QList<Card*>selectedCards;
+    SafeList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
 
     QString text;
     selectedPlayers=playerArea->getSelectedPlayers();
     selectedCards=handArea->getSelectedCards();
 
     network::Respond* respond;
-
+    try{
     switch(state)
     {
     case 1:
@@ -373,6 +377,9 @@ void GeDouJia::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

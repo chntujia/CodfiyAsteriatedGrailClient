@@ -79,7 +79,7 @@ void QiDao::QiDong()
     state=QI_DAO;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动祈祷？"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
 
 
     int n=handcards.size();
@@ -169,7 +169,8 @@ void QiDao::QiHeiXinYang()
 void QiDao::cardAnalyse()
 {
     Role::cardAnalyse();
-    QList<Player*>players=dataInterface->getPlayerList();
+    SafeList<Player*>players=dataInterface->getPlayerList();
+    try{
     switch (state)
     {
 //威力赐福
@@ -191,18 +192,17 @@ void QiDao::cardAnalyse()
         playerArea->enableMate();
         break;
     }
+
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void QiDao::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
-
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
     QString text;
 
     selectedCards=handArea->getSelectedCards();
@@ -210,7 +210,7 @@ void QiDao::onOkClicked()
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
 //额外行动询问
@@ -288,6 +288,10 @@ void QiDao::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

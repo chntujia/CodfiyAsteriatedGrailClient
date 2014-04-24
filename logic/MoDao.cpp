@@ -37,7 +37,7 @@ MoDao::MoDao()
 
     network::GameInfo* gameInfo=dataInterface->getGameInfo();
     int playerMax=dataInterface->getPlayerMax();
-    QList<Player*>playerList=dataInterface->getPlayerList();
+    SafeList<Player*>playerList=dataInterface->getPlayerList();
     int i;
     //find myPos
     for(i=0;i<playerMax;i++)
@@ -137,9 +137,9 @@ void MoDao::cardAnalyse()
 {
     Role::cardAnalyse();
 
-    QList<Card*> selectedCards=handArea->getSelectedCards();
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
     QString cardName;
-
+    try{
     switch (state)
     {
 //normal action
@@ -165,19 +165,22 @@ void MoDao::cardAnalyse()
         playerArea->enableEnemy();
         break;
     }
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void MoDao::onOkClicked()
 {    
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
 //NORMALACTION
@@ -229,6 +232,9 @@ void MoDao::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
     Role::onOkClicked();
 }

@@ -113,7 +113,7 @@ void TianShi::TianShiZhiGe1()
 }
 void TianShi::TianShiZhiGe2()
 {
-    QList<Player*> players=dataInterface->getPlayerList();
+    SafeList<Player*> players=dataInterface->getPlayerList();
     int i;
     state=TIAN_SHI_ZHI_GE_2;
 
@@ -206,9 +206,9 @@ void TianShi::cardAnalyse()
 {
     Role::cardAnalyse();
 
-    QList<Player*>players=dataInterface->getPlayerList();
+    SafeList<Player*>players=dataInterface->getPlayerList();
     int i;
-
+    try{
     switch (state)
     {
     case FENG_ZHI_JIE_JING:
@@ -225,27 +225,26 @@ void TianShi::cardAnalyse()
                 playerArea->enablePlayerItem(i);
         break;
     }
+
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void TianShi::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
     QString text;
-    int n;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
 //风之洁净
@@ -365,6 +364,10 @@ void TianShi::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

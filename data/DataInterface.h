@@ -48,9 +48,9 @@ public:
     Team* getMyTeam(){return myTeam;}
     Team* getOtherTeam(){return otherTeam;}
     int getPlayerMax();
-    QList<Card*> getHandCards();
-    QList<Card*> getCoverCards();
-    QList<Player*> getPlayerList();
+    SafeList<Card*> getHandCards();
+    SafeList<Card*> getCoverCards();
+    SafeList<Player*> getPlayerList();
     Team* getRedTeam();
     Team* getBlueTeam();
     network::GameInfo* getGameInfo(){return gameInfo;}
@@ -58,12 +58,12 @@ public:
     QString getButtonInfo(QString skill){return buttonDB[skill];}
     QString getRoleSkillInfo(int roleID){return roleSkillDB[roleID];}
 private:
-    QList<Card*> cardDB;
+    SafeList<Card*> cardDB;
     QMap<QString,QString> buttonDB;
     QMap<int,QString> roleSkillDB;
-    QList<Player*> playerList;
-    QList<Card*> handcards;
-    QList<Card*> coverCards;
+    SafeList<Player*> playerList;
+    SafeList<Card*> handcards;
+    SafeList<Card*> coverCards;
     Player* myself;
     Team *red,*blue,*otherTeam,*myTeam;
     QStringList roleList;

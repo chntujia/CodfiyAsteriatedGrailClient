@@ -51,7 +51,7 @@ void ZhongCai::YiShiZhongDuan()
     state=YI_SHI_ZHONG_DUAN;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动仪式中断？"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     Player *myself=dataInterface->getMyself();
     bool flag=true;
     int i;
@@ -78,7 +78,7 @@ void ZhongCai::ZhongCaiYiShi()
     state=ZHONG_CAI_YI_SHI;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动仲裁仪式？"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     Player *myself=dataInterface->getMyself();
     bool flag=true;
     int i;
@@ -133,18 +133,15 @@ void ZhongCai::PanJueTianPing()
 void ZhongCai::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Player*>selectedPlayers;
+    SafeList<Player*>selectedPlayers;
 
-    QString command;
-    QString sourceID;
-    QString targetID;
     QString text;
 
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
     case YI_SHI_ZHONG_DUAN:
@@ -177,6 +174,10 @@ void ZhongCai::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

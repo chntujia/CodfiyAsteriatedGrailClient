@@ -60,7 +60,7 @@ private:
     int width;
     int height;
     bool selected;
-    QList<StatusItem*> statusItems;
+    SafeList<StatusItem*> statusItems;
 
 };
 

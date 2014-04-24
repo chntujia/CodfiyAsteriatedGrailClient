@@ -162,8 +162,6 @@ void MoGong::ChongNengGaiPai()
     playerArea->reset();
     tipArea->reset();
 
-    QList<Card*> covercards=dataInterface->getCoverCards();
-
     tipArea->setMsg(QStringLiteral("请选择最多")+QString::number(chongnengNum)+QStringLiteral("张手牌盖做充能"));
 
     tipArea->setMsg(QStringLiteral("选择手牌盖做充能"));
@@ -195,7 +193,8 @@ void MoGong::cardAnalyse()
 void MoGong::coverCardAnalyse()
 {
     Role::coverCardAnalyse();
-    QList<Card*> selectedCoverCards = this->coverArea->getSelectedCards();
+    SafeList<Card*> selectedCoverCards = this->coverArea->getSelectedCards();
+    try{
     switch(state)
     {
     case MO_GUAN_CHONG_JI:
@@ -227,19 +226,22 @@ void MoGong::coverCardAnalyse()
         playerArea->disablePlayerItem(lastTarget);
         break;
     }
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void MoGong::onOkClicked()
 {
 
     QString text;
-    QList<Card*> selectedCards = handArea->getSelectedCards();
-    QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
-    QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
+    SafeList<Card*> selectedCards = handArea->getSelectedCards();
+    SafeList<Card*> selectedCoverCards = coverArea->getSelectedCards();
+    SafeList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
 //NORMALACTION
@@ -339,6 +341,9 @@ void MoGong::onOkClicked()
         gui->reset();
         break;
 
+    }
+    }catch(int error){
+        logic->onError(error);
     }
     Role::onOkClicked();
 }

@@ -27,7 +27,7 @@ void HongLian::normal()
 {
     Role::normal();
     Player* myself=dataInterface->getMyself();
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     int magic = 0;
     for(int i=0; i<handcards.size();i++)
     {
@@ -111,11 +111,8 @@ void HongLian::cardAnalyse()
 void HongLian::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
-
-    //static QString command;
-    QString text;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
@@ -127,7 +124,7 @@ void HongLian::onOkClicked()
     static int DaoYan_count;
     static int DaoYan_dst[2];
     static int DaoYan_num[2];
-
+    try{
     switch(state)
     {
     case XUE_XING_DAO_YAN_1:
@@ -183,6 +180,9 @@ void HongLian::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         break;
     }
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void HongLian::onCancelClicked()
@@ -216,7 +216,7 @@ void HongLian::attackOrMagic()
 {
     Role::attackOrMagic();
     Player* myself=dataInterface->getMyself();
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     int magic = 0;
     for(int i=0; i<handcards.size();i++)
     {

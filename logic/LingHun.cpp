@@ -191,8 +191,8 @@ void LingHun::cardAnalyse()
 void LingHun::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
 
     QString text;
@@ -202,7 +202,7 @@ void LingHun::onOkClicked()
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
     case LING_HUN_ZHAO_HUAN:
@@ -277,6 +277,10 @@ void LingHun::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

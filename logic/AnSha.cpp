@@ -29,7 +29,7 @@ void AnSha::QianXing()
     state=QIAN_XING;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动潜行？"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     bool flag=true;
     int i;
     int n=handcards.size();
@@ -74,12 +74,12 @@ void AnSha::cardAnalyse()
 void AnSha::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    int howMany,i;
-    QString command;
+    SafeList<Card*> selectedCards;
+    int i;
     network::Respond* respond;
 
     selectedCards=handArea->getSelectedCards();
+    try{
     switch(state)
     {
     //水影询问
@@ -105,16 +105,15 @@ void AnSha::onOkClicked()
         gui->reset();
         break;
     }
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void AnSha::onCancelClicked()
 {
     Role::onCancelClicked();
-    QList<Card*>selectedCards;
-    QString command;
     network::Respond* respond;
-
-    selectedCards=handArea->getSelectedCards();
     switch(state)
     {
     //水影询问

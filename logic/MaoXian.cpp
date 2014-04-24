@@ -73,7 +73,7 @@ void MaoXian::normal()
     if(dataInterface->getMyTeam()->getEnergy()>0)
         buttonArea->enable(2);
 //欺诈
-    QList<Card*>handcards=dataInterface->getHandCards();
+    SafeList<Card*>handcards=dataInterface->getHandCards();
     for(int i=0;i<handcards.size()-1;i++)
         for(int j=i+1;j<handcards.size();j++)
             if(handcards[i]->getElement()==handcards[j]->getElement()){
@@ -95,7 +95,7 @@ void MaoXian::attackOrMagic()
 {
     Role::attackOrMagic();
     Player* myself=dataInterface->getMyself();
-    QList<Card*>handcards=dataInterface->getHandCards();
+    SafeList<Card*>handcards=dataInterface->getHandCards();
     for(int i=0;i<handcards.size()-1;i++)
         for(int j=i+1;j<handcards.size();j++)
             if(handcards[i]->getElement()==handcards[j]->getElement()){
@@ -113,7 +113,7 @@ void MaoXian::attackOrMagic()
 void MaoXian::attackAction()
 {
     Role::attackAction();
-    QList<Card*>handcards=dataInterface->getHandCards();
+    SafeList<Card*>handcards=dataInterface->getHandCards();
     for(int i=0;i<handcards.size()-1;i++)
         for(int j=i+1;j<handcards.size();j++)
             if(handcards[i]->getElement()==handcards[j]->getElement()){
@@ -174,7 +174,8 @@ void MaoXian::TouTianHuanRi()
 void MaoXian::cardAnalyse()
 {
     Role::cardAnalyse();
-    QList<Card*> selectedCards=handArea->getSelectedCards();
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
+    try{
     switch (state)
     {
     case 10:
@@ -185,6 +186,9 @@ void MaoXian::cardAnalyse()
                 break;
             }            
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 
@@ -237,8 +241,8 @@ void MaoXian::onOkClicked()
         state = QI_ZHA;
     }
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     QString text;
     int flag;
@@ -247,7 +251,7 @@ void MaoXian::onOkClicked()
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
-
+    try{
     switch(state)
     {
 //欺诈
@@ -355,6 +359,9 @@ void MaoXian::onOkClicked()
         gui->reset();
         emit sendCommand(network::MSG_ACTION, action);
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

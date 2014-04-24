@@ -12,13 +12,13 @@ public:
     BPArea();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void BPStart(int num, QList<int> roles);
+    void BPStart(int num, SafeList<int> roles);
     void enableRoleItem(int roleID);
     void disableRoleItem(int roleID);
     void setMsg(QString msg);
     void setQuota(int howMany){least=most=howMany;}
     void setQuota(int least,int most){this->least=least;this->most=most;}
-    QList<int> getSelectedRoles();
+    SafeList<int> getSelectedRoles();
     void ban(int playerID, int roleID);
     void choose(int playerID, int roleID);
     RoleItem *getRoleByID(int ID);
@@ -40,12 +40,12 @@ private:
     int currentSum;
     QPixmap background;
     QString msg;
-    QList<int> selectedRoles;
-    QList<RoleItem*> roleItems;
-    QList<int> left;
-    QList<int> playerIDs;
-    QList<int> color;
-    QList<int> orderInTeam;
+    SafeList<int> selectedRoles;
+    SafeList<RoleItem*> roleItems;
+    SafeList<int> left;
+    SafeList<int> playerIDs;
+    SafeList<int> color;
+    SafeList<int> orderInTeam;
 signals:
     void roleReady();
     void roleUnready();

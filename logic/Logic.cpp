@@ -226,9 +226,9 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
     TipArea *tipArea;
     DecisionArea* decisionArea;
     BPArea* bpArea;
-    QList<int> roleIDs;
+    SafeList<int> roleIDs;
     PlayerArea* playerArea;
-    int playerMax,targetID,roleID,howMany,num;
+    int targetID,roleID,howMany,num;
     QString arg[10];
 
     network::RoleRequest* char_pick;
@@ -399,7 +399,7 @@ void Logic::onOkClicked()
     QMutexLocker locker(&mutex);
     QStringList chosen;
     TipArea *tipArea;
-    QList<int> roles;
+    SafeList<int> roles;
     BPArea* bpArea;
     RoleItem* role;
 
@@ -485,5 +485,14 @@ void Logic::roleAnalyse()
     case 52:
     case 55:
         decisionArea->enable(0);
+    }
+}
+
+void Logic::onError(int error)
+{
+    TipArea* tipArea;
+    if(gui && (tipArea = gui->getTipArea())){
+        tipArea->setMsg(QStringLiteral("错误代码：") + QString::number(error)
+                  + QStringLiteral(";可尝试等待系统重发"));
     }
 }

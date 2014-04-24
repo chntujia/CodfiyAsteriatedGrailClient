@@ -126,16 +126,11 @@ void JianDi::onOkClicked()
 {
     Role::onOkClicked();
 
-    QString command;
-    QString sourceID;
-    QString targetID;
-    QString text,cardID;
-    QList<Card*> selectedCards = handArea->getSelectedCards();
-    QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
-    QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
+    SafeList<Card*> selectedCoverCards = coverArea->getSelectedCards();
+    SafeList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
 
     network::Respond* respond;
-
+    try{
     switch(state)
     {
       case JIAN_HUN_SHOU_HU:
@@ -189,6 +184,9 @@ void JianDi::onOkClicked()
         break;
     }
     gui->showCoverArea(false);
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void JianDi::onCancelClicked()

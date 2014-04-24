@@ -76,8 +76,9 @@ void Role::coverCardAnalyse()
 void Role::cardAnalyse()
 {
     int i;
-    QList<Card*> selectedCards=handArea->getSelectedCards();
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
     QString cardName;
+    try{
     switch (state)
     {
 //normal action
@@ -152,6 +153,10 @@ void Role::cardAnalyse()
         }
         break;
     }
+
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void Role::playerAnalyse()
@@ -180,9 +185,6 @@ void Role::setAttackTarget()
 void Role::exchangeCards()
 {
     network::Action* action = newAction(30);
-    QList<Card*> handcards=dataInterface->getHandCards();
-    int i;
-    int n=handcards.count();
     emit sendCommand(network::MSG_ACTION, action);
 }
 
@@ -205,7 +207,7 @@ void Role::normal()
 {
     gui->reset();
 
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     Player* myself=dataInterface->getMyself();
     Team* myTeam=dataInterface->getMyTeam();
     int n=handcards.count();
@@ -239,8 +241,8 @@ void Role::normal()
 void Role::unactionalCheck()
 {
     bool actional=false;
-    QList<Button*>buttons=buttonArea->getButtons();
-    QList<CardItem*>cardItems=handArea->getHandCardItems();
+    SafeList<Button*>buttons=buttonArea->getButtons();
+    SafeList<CardItem*>cardItems=handArea->getHandCardItems();
     for(int i=0;i<buttons.size();i++)
         if(buttons[i]->isEnabled()&&i!=2)
         {
@@ -601,10 +603,9 @@ void Role::onOkClicked()
 {
     QMutexLocker locker(&mutex);
 
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*>selectedCards;
+    SafeList<Player*>selectedPlayers;
 
-    QString command;
     QString text;
     int i,boxCurrentIndex;
 
@@ -613,6 +614,7 @@ void Role::onOkClicked()
 
     network::Action* action;
     network::Respond* respond;
+    try{
     switch(state)
     {
 //NORMALACTION
@@ -830,6 +832,9 @@ void Role::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
     }
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 network::Action* Role::newAction(uint32_t action_type)
@@ -869,11 +874,11 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 
     Card*card;
     Player*player;    
-    QList<Card*> cards;
+    SafeList<Card*> cards;
     QString msg;
     QString cardName;
 
-
+    try{
     switch (proto_type)
     {
     case network::MSG_TURN_BEGIN:
@@ -1552,6 +1557,9 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         break;
     }
     delete proto;
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 

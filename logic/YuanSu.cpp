@@ -153,13 +153,9 @@ void YuanSu::cardAnalyse()
 void YuanSu::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
-    QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
     QString text;    
     bool water=false;
     selectedCards=handArea->getSelectedCards();
@@ -168,7 +164,7 @@ void YuanSu::onOkClicked()
     network::Action* action;
     network::Respond* respond;
     int magic;
-
+    try{
     switch(state)
     {
 //额外行动询问
@@ -248,6 +244,10 @@ void YuanSu::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

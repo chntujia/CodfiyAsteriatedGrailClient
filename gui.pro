@@ -71,6 +71,7 @@ HEADERS += client/Client.h \
     data/Common.h \
     logic/NvWuShen.h \
     logic/YingLingRenXing.h \
+    data/SafeList.h
 
 FORMS += client/ClientUI.ui client/Lobby.ui
 SOURCES += main.cpp \

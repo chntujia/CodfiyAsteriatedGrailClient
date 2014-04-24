@@ -15,7 +15,7 @@ void PlayerArea::init(bool playing)
 {
     int i;
     //根据座次建立
-    QList<Player*> playerList = dataInterface->getPlayerList();
+    SafeList<Player*> playerList = dataInterface->getPlayerList();
     int playerSum = playerList.count();
     clear();
     for(i=0;i<playerSum;i++)
@@ -199,7 +199,7 @@ void PlayerArea::onPlayerUnselected(int id)
         emit playerUnready();
     }
 }
-QList<Player*> PlayerArea::getSelectedPlayers()
+SafeList<Player*> PlayerArea::getSelectedPlayers()
 {
     return selectedPlayers;
 }

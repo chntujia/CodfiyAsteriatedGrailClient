@@ -160,7 +160,7 @@ void DieWu::DaoNiZhiDie1()
         tipArea->addBoxItem(QStringLiteral("2.（移除2个【茧】）移除1个【蛹】"));
     tipArea->addBoxItem(QStringLiteral("3.（自己造成4点法术伤害③）移除1个【蛹】"));
     tipArea->showBox();
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     if(handcards.size()>1)
         handArea->setQuota(2);
     else if(handcards.size()==1)
@@ -197,13 +197,13 @@ void DieWu::DaoNiZhiDie2()
 void DieWu::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*> selectedCards = handArea->getSelectedCards();
-    QList<Card*> selectedCoverCards = coverArea->getSelectedCards();
-    QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
+    SafeList<Card*> selectedCards = handArea->getSelectedCards();
+    SafeList<Card*> selectedCoverCards = coverArea->getSelectedCards();
+    SafeList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
 
     network::Action *action;
     network::Respond *respond;
-
+    try{
     switch(state)
     {
     case WU_DONG:
@@ -331,6 +331,9 @@ void DieWu::onOkClicked()
         gui->reset();;
         break;
     }
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void DieWu::onCancelClicked()
@@ -406,8 +409,8 @@ void DieWu::coverCardAnalyse()
 {
 
     Role::coverCardAnalyse();
-    QList<Card*> selectedCoverCards = this->coverArea->getSelectedCards();
-
+    SafeList<Card*> selectedCoverCards = this->coverArea->getSelectedCards();
+    try{
    switch(state)
     {
     case DU_FEN:
@@ -422,6 +425,9 @@ void DieWu::coverCardAnalyse()
         else
             decisionArea->enable(0);
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

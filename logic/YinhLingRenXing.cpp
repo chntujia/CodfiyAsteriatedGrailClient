@@ -103,8 +103,9 @@ void YingLingRenXing::ShuangChongHuiXiang(int previous)
 void YingLingRenXing::cardAnalyse()
 {
 	Role::cardAnalyse();
-    QList<Card*> selectedCards=handArea->getSelectedCards();
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
     bool cardReady = true;
+    try{
     switch(state)
     {
     case MO_WEN_RONG_HE:
@@ -142,13 +143,17 @@ void YingLingRenXing::cardAnalyse()
         }
     	break;
     }
+
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void YingLingRenXing::onOkClicked()
 {
 	Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
     Player* myself=dataInterface->getMyself();
 
 
@@ -158,6 +163,7 @@ void YingLingRenXing::onOkClicked()
     network::Respond* respond;
 
     int choice;
+    try{
     switch(state)
     {
     case NU_HUO_MO_WEN:
@@ -216,6 +222,10 @@ void YingLingRenXing::onOkClicked()
     	emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

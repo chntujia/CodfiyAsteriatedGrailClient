@@ -100,9 +100,10 @@ void MoQiang::ChongYing()
 
 void MoQiang::cardAnalyse()
 {
-    QList<Card*>selectedCards;
+    SafeList<Card*> selectedCards;
     Role::cardAnalyse();
     selectedCards=handArea->getSelectedCards();
+    try{
     switch(state)
     {
     case AN_ZHI_ZHANG_BI:
@@ -135,6 +136,9 @@ void MoQiang::cardAnalyse()
    case CHONG_YING:
         decisionArea->enable(0);
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 
@@ -181,15 +185,15 @@ void MoQiang::askForSkill(Command* cmd)
 void MoQiang::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
       case AN_ZHI_JIE_FANG:
@@ -235,6 +239,10 @@ void MoQiang::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

@@ -79,7 +79,7 @@ void TipArea::clearStatus()
 void TipArea::showStatus(int id)
 {
     Player* player=dataInterface->getPlayerList().at(id);
-    QList<BasicStatus*> status=player->getBasicStatus();
+    SafeList<BasicStatus*> status=player->getBasicStatus();
     Card* card;
     int i;
     reset();

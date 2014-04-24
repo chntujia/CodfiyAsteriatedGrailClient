@@ -29,7 +29,7 @@ void SiLing::normal()
 {
     Role::normal();
     Player* myself=dataInterface->getMyself();
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     if(handArea->checkElement("earth"))
         buttonArea->enable(3);
     bool siChu = false;
@@ -100,7 +100,8 @@ void SiLing::cardAnalyse()
 {
     Role::cardAnalyse();
     bool siChu = true;
-    QList<Card*> selectedCards=handArea->getSelectedCards();
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
+    try{
     switch (state)
     {
     case WEN_YI:
@@ -118,26 +119,23 @@ void SiLing::cardAnalyse()
             playerArea->enableAll();
         break;
     }
+
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void SiLing::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
-
-    static QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
-    QString text;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
-    network::Respond* respond;
-
+    try{
     switch(state)
     {
     case WEN_YI:
@@ -161,6 +159,10 @@ void SiLing::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

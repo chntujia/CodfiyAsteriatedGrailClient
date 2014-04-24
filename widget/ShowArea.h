@@ -3,6 +3,7 @@
 
 #include <QGraphicsObject>
 #include "data/Card.h"
+#include "data/SafeList.h"
 class ShowArea : public QGraphicsObject
 {
     Q_OBJECT
@@ -10,9 +11,9 @@ public:
     ShowArea();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void showCards(QList<Card*>);
+    void showCards(SafeList<Card*>);
 private:
-    QList<Card*> cards;
+    SafeList<Card*> cards;
     
 };
 

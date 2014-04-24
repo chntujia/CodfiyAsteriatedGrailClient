@@ -3,6 +3,7 @@
 
 #include <QGraphicsObject>
 #include "data/Card.h"
+#include "data/SafeList.h"
 class BasicStatus
 {
     friend class StatusItem;
@@ -71,7 +72,7 @@ public:
     bool getTap(){return tap;}
     QString getFaceSource(){return faceSource;}
     QString getTapSource(){return tapSource;}
-    QList<BasicStatus*> getBasicStatus(){return BasicStatusList;}
+    SafeList<BasicStatus*> getBasicStatus(){return BasicStatusList;}
     void setPos(int pos){this->pos = pos;}
     int getPos(){return pos;}
 signals:
@@ -96,7 +97,7 @@ protected:
     int roleID;    
     bool tap;
     bool specials[5];
-    QList<BasicStatus*> BasicStatusList;
+    SafeList<BasicStatus*> BasicStatusList;
     Token* token[3];
     QString faceSource;
     QString tapSource;

@@ -88,7 +88,7 @@ void FengYin::WuXiShuFu()
 void FengYin::FengYinPoSui()
 {
     state = FENG_YIN_PO_SUI;
-    QList<Player*>players = dataInterface->getPlayerList();
+    SafeList<Player*>players = dataInterface->getPlayerList();
 
     handArea->reset();
     playerArea->reset();
@@ -120,12 +120,12 @@ void FengYin::onUnready()
 void FengYin::cardAnalyse()
 {
     Role::cardAnalyse();
-
+    try{
     switch (state)
     {
     case FENG_ZHI_FENG_YIN:
-        QList<Player*>players=dataInterface->getPlayerList();
-        QList<Card*>selectedCards=handArea->getSelectedCards();
+        SafeList<Player*> players=dataInterface->getPlayerList();
+        SafeList<Card*> selectedCards=handArea->getSelectedCards();
         playerArea->enableEnemy();
         //检测是否已有相同的封印
         for(int i=0;i<players.size();i++){
@@ -136,6 +136,9 @@ void FengYin::cardAnalyse()
             }
         }
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 
@@ -157,14 +160,14 @@ void FengYin::playerAnalyse()
 void FengYin::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
-
+    try{
     switch(state)
     {
 //封印法术
@@ -190,6 +193,9 @@ void FengYin::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

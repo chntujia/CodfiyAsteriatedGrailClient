@@ -93,15 +93,15 @@ void MoJian::cardAnalyse()
 void MoJian::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
   case  XIU_LUO_LIAN_ZHAN:
@@ -136,14 +136,15 @@ void MoJian::onOkClicked()
         break;
 
     }
+
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void MoJian::onCancelClicked()
 {
     Role::onCancelClicked();
-    QList<Player*>selectedPlayers;
-    selectedPlayers=playerArea->getSelectedPlayers();  //added
-
     network::Respond* respond;
     switch(state)
     {

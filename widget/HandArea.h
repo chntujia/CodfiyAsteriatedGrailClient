@@ -3,7 +3,7 @@
 
 #include <QGraphicsObject>
 #include "CardItem.h"
-
+#include "data/SafeList.h"
 class HandArea : public QGraphicsObject
 {
     Q_OBJECT
@@ -28,13 +28,13 @@ public:
     bool checkElement(QString element);
     bool checkType(QString type);
     void reset();
-    QList<Card*> getSelectedCards();
+    SafeList<Card *> getSelectedCards();
     void addCardItem(Card* card);
     void removeCardItem(Card* card);
     void cleanCardItem();
     void setQuota(int howMany){least=most=howMany;}
     void setQuota(int least,int most){this->least=least;this->most=most;}
-    QList<CardItem*> getHandCardItems(){return cardItems;}
+    SafeList<CardItem*> getHandCardItems(){return cardItems;}
 signals:
     void cardReady();
     void cardUnready();
@@ -45,8 +45,8 @@ public slots:
 
 private:
     QPixmap pixmap;
-    QList<CardItem*> cardItems;
-    QList<Card*> selectedCards;
+    SafeList<CardItem*> cardItems;
+    SafeList<Card*> selectedCards;
     int least;
     int most;
 };

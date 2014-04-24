@@ -48,7 +48,7 @@ Animation::Animation():QObject()
 //暂时不再使用!!
 //如果希望产生动画效果的item是临时生成，动画之后又自动消失的，一定要把new出的临时对象装进这个列表，否则会内存泄露
 //这个函数内有线程锁，会等待上一次使用临时对象的动画（目前只有itemFlash）完毕之后，销毁上一次的临时对象，然后返回容纳临时对象的容器
-QList<QGraphicsObject *> Animation::getTempItems()
+SafeList<QGraphicsObject *> Animation::getTempItems()
 {
 //    while(busy)
 //    {

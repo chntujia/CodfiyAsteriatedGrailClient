@@ -17,6 +17,7 @@ public:
     void setClient(Client* socket){this->socket=socket;}
     void setLobby(Lobby* l) { lobby = l; }
     void setMyRole(int roleID=0);
+    void onError(int error);
     Client* getClient(){return socket;}
 signals:
     void sendCommand(uint16_t proto_type, google::protobuf::Message* proto);  

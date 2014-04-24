@@ -50,12 +50,12 @@ void LingFu::normal()
 void LingFu::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*> selectedCards = handArea->getSelectedCards();
-    QList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
+    SafeList<Card*> selectedCards = handArea->getSelectedCards();
+    SafeList<Player*> selectedPlayers = playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
     //灵符
@@ -91,6 +91,9 @@ void LingFu::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    }
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

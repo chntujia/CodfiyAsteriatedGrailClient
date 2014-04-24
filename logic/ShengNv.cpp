@@ -95,7 +95,7 @@ void ShengNv::LianMin()
     state=LIAN_MIN;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动怜悯？"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     bool flag=true;
     int i;
     int n=handcards.size();
@@ -205,13 +205,9 @@ void ShengNv::cardAnalyse()
 void ShengNv::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
-    static QString command;
-    QString cardID;
-    QString sourceID;
-    QString targetID;
     QString text;
 
     selectedCards=handArea->getSelectedCards();
@@ -223,7 +219,7 @@ void ShengNv::onOkClicked()
     static int ShengLiao_count;
     static int ShengLiao_dst[3];
     static int ShengLiao_cross[3];
-
+    try{
     switch(state)
     {
 //额外行动询问
@@ -329,6 +325,10 @@ void ShengNv::onOkClicked()
         ShengLiao_count = 0;
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

@@ -35,7 +35,7 @@ void ShenGuan::normal()
 {
     Role::normal();
     Player* myself=dataInterface->getMyself();
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     int qiFu = 0;
     for(int i=0; i<handcards.size();i++)
     {
@@ -104,7 +104,7 @@ void ShenGuan::ShenShengQiYue1()
     state = SHEN_SHENG_QI_YUE_1;
     gui->reset();
     tipArea->setMsg(QStringLiteral("是否发动神圣契约"));
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     bool flag=true;
     if(handcards.size()==1 && handcards.at(0)->getType()=="light" && dataInterface->getMyself()->getEnergy()==1)
         flag=false;
@@ -162,7 +162,7 @@ void ShenGuan::ShenShengLingYu2()
 
     playerArea->setQuota(1);
 
-    QList<Card*> handcards=dataInterface->getHandCards();
+    SafeList<Card*> handcards=dataInterface->getHandCards();
     if(handcards.size()>1)
         handArea->setQuota(2);
     else if(handcards.size()==1)
@@ -206,15 +206,15 @@ void ShenGuan::cardAnalyse()
 void ShenGuan::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Card*>selectedCards;
-    QList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
+    SafeList<Player*>selectedPlayers;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
     case SHEN_SHENG_QI_FU:
@@ -266,6 +266,10 @@ void ShenGuan::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

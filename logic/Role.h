@@ -54,7 +54,7 @@ protected:
     bool isMyTurn;
     bool onceUsed;
     int actionFlag;
-    QList<Player*>playerList;
+    SafeList<Player*>playerList;
     HandArea*handArea;
     HandArea *coverArea;
     PlayerArea*playerArea;

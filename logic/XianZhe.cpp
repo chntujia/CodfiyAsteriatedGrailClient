@@ -87,8 +87,8 @@ void XianZhe::ShengJieFaDian()
 void XianZhe::cardAnalyse()
 {
     Role::cardAnalyse();
-    QList<Card*> selectedCards=handArea->getSelectedCards();
-
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
+    try{
     switch(state)
     {
     case FA_SHU_FAN_TAN:
@@ -151,12 +151,16 @@ void XianZhe::cardAnalyse()
         }
         break;
     }
+
+    }catch(int error){
+        logic->onError(error);
+    }
 }
 
 void XianZhe::playerAnalyse()
 {
     Role::playerAnalyse();
-    QList<Card*> selectedCards=handArea->getSelectedCards();
+    SafeList<Card*> selectedCards=handArea->getSelectedCards();
     switch(state)
     {
     case FA_SHU_FAN_TAN:
@@ -174,18 +178,15 @@ void XianZhe::playerAnalyse()
 void XianZhe::onOkClicked()
 {
     Role::onOkClicked();
-    QList<Player*>selectedPlayers;
-    QList<Card*>selectedCards;
-
-    QString targetID;
-    QString text;
+    SafeList<Player*>selectedPlayers;
+    SafeList<Card*> selectedCards;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
 
     network::Action* action;
     network::Respond* respond;
-
+    try{
     switch(state)
     {
     case FA_SHU_FAN_TAN:
@@ -217,6 +218,10 @@ void XianZhe::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
+    }
+
+    }catch(int error){
+        logic->onError(error);
     }
 }
 

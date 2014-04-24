@@ -45,7 +45,7 @@ void ShowArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 }
 
-void ShowArea::showCards(QList<Card *> cards)
+void ShowArea::showCards(SafeList<Card *> cards)
 {
     this->cards.clear();
     foreach(Card* ptr,cards)
