@@ -315,7 +315,7 @@ QString getCauseString(int cause)
     case HUO_ZHI_FENG_YIN:
         return QStringLiteral("火之封印");
     case DI_ZHI_FENG_YIN:
-        return QStringLiteral("地址封印");
+        return QStringLiteral("地之封印");
     case LEI_ZHI_FENG_YIN:
         return QStringLiteral("雷之封印");
     case FA_SHU_JI_DONG:

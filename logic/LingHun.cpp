@@ -81,13 +81,20 @@ void LingHun::LingHunJingXiang()
     decisionArea->enable(1);
     decisionArea->disable(0);
 
-    if(handArea->getHandCardItems().size()>3)
+    int howMany = handArea->getHandCardItems().size();
+    if(howMany > 3)
     {
         handArea->enableAll();
         handArea->setQuota(3);
     }
-    else
+    else if(howMany > 0)
+    {
+        handArea->enableAll();
+        handArea->setQuota(howMany);
+    }
+    else{
         playerArea->enableAll();
+    }
     playerArea->setQuota(1);
 }
 
