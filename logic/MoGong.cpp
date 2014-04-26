@@ -150,7 +150,7 @@ void MoGong::MoYan()
      gui->reset();
      tipArea->setMsg(QStringLiteral("【选择目标角色】弃1张牌或【不选择目标】你摸3张牌"));
      playerArea->enableAll();
-     playerArea->setQuota(1);
+     playerArea->setQuota(0,1);
      decisionArea->enable(0);
      decisionArea->enable(1);
 }
@@ -373,11 +373,25 @@ void MoGong::onCancelClicked()
           gui->reset();
         break;
     case CHONG_NENG_MO_YAN:
-    case CHONG_NENG:
-    case MO_YAN:
         respond = new network::Respond();
         respond->set_src_id(myID);
         respond->set_respond_id(CHONG_NENG_MO_YAN);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case CHONG_NENG:
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(CHONG_NENG);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case MO_YAN:
+        respond = new network::Respond();
+        respond->set_src_id(myID);
+        respond->set_respond_id(MO_YAN);
         respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
