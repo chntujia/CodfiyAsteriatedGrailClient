@@ -60,7 +60,9 @@ void LingHun::normal()
 void LingHun::LingHunZhaoHuan()
 {
     state= LING_HUN_ZHAO_HUAN;
-    gui->reset();
+    playerArea->reset();
+    handArea->reset();
+    tipArea->reset();
 
     handArea->enableMagic();
     handArea->setQuota(1,7);
@@ -72,25 +74,29 @@ void LingHun::LingHunZhaoHuan()
 void LingHun::LingHunJingXiang()
 {
     state=LING_HUN_JING_XIANG;
-    gui->reset();
+    playerArea->reset();
+    handArea->reset();
+    tipArea->reset();
 
     decisionArea->enable(1);
     decisionArea->disable(0);
 
     if(handArea->getHandCardItems().size()>3)
     {
+        handArea->enableAll();
         handArea->setQuota(3);
     }
     else
-        handArea->setQuota(1,7);
-    handArea->enableAll();
+        playerArea->enableAll();
     playerArea->setQuota(1);
 }
 
 void LingHun::LingHunZhenBao()
 {
     state=LING_HUN_ZHEN_BAO;
-    gui->reset();
+    playerArea->reset();
+    handArea->reset();
+    tipArea->reset();
 
     playerArea->setQuota(1);
 
@@ -105,7 +111,9 @@ void LingHun::LingHunZhenBao()
 void LingHun::LingHunCiYu()
 {
     state=LING_HUN_CI_YU;
-    gui->reset();
+    playerArea->reset();
+    handArea->reset();
+    tipArea->reset();
 
     playerArea->setQuota(1);
 
@@ -119,7 +127,6 @@ void LingHun::LingHunCiYu()
 void LingHun::LingHunZhuanHuan()
 {
     state=LING_HUN_ZHUAN_HUAN;
-    gui->reset();
     Player *myself=dataInterface->getMyself();
     tipArea->setMsg(QStringLiteral("请选择要转换的灵魂："));
     decisionArea->enable(0);
@@ -212,7 +219,7 @@ void LingHun::onOkClicked()
         emit sendCommand(network::MSG_ACTION, action);
         gui->reset();
         break;
-        
+
      case  LING_HUN_JING_XIANG:
         action = newAction(ACTION_MAGIC_SKILL,LING_HUN_JING_XIANG);
         foreach(Card*ptr,selectedCards){
@@ -256,7 +263,7 @@ void LingHun::onOkClicked()
             respond->set_src_id(myID);
             respond->add_dst_ids(selectedPlayers[0]->getID());
             respond->add_args(1);
-			start=true;
+            start=true;
             emit sendCommand(network::MSG_RESPOND, respond);
             gui->reset();
         break;
@@ -273,12 +280,11 @@ void LingHun::onOkClicked()
         respond->set_respond_id(LING_HUN_ZENG_FU);
         respond->set_src_id(myID);
         respond->add_args(1);
-		start=true;
+        start=true;
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
     }
-
     }catch(int error){
         logic->onError(error);
     }
@@ -336,6 +342,7 @@ void LingHun::onCancelClicked()
 
 void LingHun::askForSkill(network::Command* cmd)
 {
+     //灵魂链接稍后补上
     if(cmd->respond_id() == LING_HUN_ZHUAN_HUAN)
         LingHunZhuanHuan();
     else if(cmd->respond_id() == LING_HUN_ZENG_FU)
