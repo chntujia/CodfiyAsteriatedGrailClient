@@ -114,8 +114,8 @@ void HongLian::onOkClicked()
     SafeList<Card*> selectedCards;
     SafeList<Player*>selectedPlayers;
 
-    selectedCards=handArea->getSelectedCards();
-    selectedPlayers=playerArea->getSelectedPlayers();
+    selectedCards = handArea->getSelectedCards();
+    selectedPlayers = playerArea->getSelectedPlayers();
     Player* myself=dataInterface->getMyself();
 
     network::Action* action;
@@ -132,7 +132,9 @@ void HongLian::onOkClicked()
 		if(myself->getCrossNum()>cross[0] && 6 == playerList.size())
         {
             DaoYan_dst[0] = selectedPlayers[0]->getID();
+			dst[0] = DaoYan_dst[0];
             DaoYan_num[0] = tipArea->getBoxCurrentText().toInt();
+			cross[0] = DaoYan_num[0];
             DaoYan_count = 1;
             XueXingDaoYan2();
         }
@@ -146,6 +148,8 @@ void HongLian::onOkClicked()
 
             start = true;
             emit sendCommand(network::MSG_RESPOND, respond);
+			dst[0] = 0;
+			cross[0] = 0;
         }
         break;
     case XUE_XING_DAO_YAN_2:
@@ -157,7 +161,8 @@ void HongLian::onOkClicked()
         }
         start = true;
 
-        respond = new Respond();
+        respond = new network::Respond();
+		respond->set_src_id(myID);
 		respond->set_respond_id(XUE_XING_DAO_YAN);
         for (int i = 0; i < DaoYan_count; ++i)
         {
@@ -167,6 +172,8 @@ void HongLian::onOkClicked()
 
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
+		dst[0] = 0;
+		cross[0] = 0;
         break;
     case XING_HONG_SHI_ZI:
 		action = newAction(ACTION_MAGIC_SKILL, XING_HONG_SHI_ZI);
@@ -201,6 +208,8 @@ void HongLian::onCancelClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
     case XUE_XING_DAO_YAN_2:
+		dst[0] = 0;
+		cross[0] = 0;
         XueXingDaoYan1();
         break;
     case XING_HONG_SHI_ZI:
