@@ -14,6 +14,11 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     bool checkSelected(){return selected;}
+    int getID() { return id; }
+    void setSelected(bool selected) {
+        this->selected = selected;
+    }
+
 signals:
     void buttonSelected(int id);
     void buttonUnselected(int id);

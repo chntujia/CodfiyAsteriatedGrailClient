@@ -35,7 +35,7 @@ public:
     void setSelected(bool yes);
     bool isSelected();
     void adjustStatusItems();
-
+    void setReady(bool r) { ready = r; }
 public slots:
     void addBasicStatusItem(BasicStatus* status);
     void removeBasicStatusItem(BasicStatus *status);
@@ -57,9 +57,13 @@ private:
     QPixmap cardRemain;
     QPixmap healRemain;
     QPixmap energyRemain;
+    QPixmap redReadyFrame;
+    QPixmap blueReadyFrame;
+    QPixmap readyStatus;
     int width;
     int height;
     bool selected;
+    bool ready;
     SafeList<StatusItem*> statusItems;
 
 };

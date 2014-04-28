@@ -115,7 +115,7 @@ void StatusItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
      painter->drawPixmap(0, 0, Num[token->num]);
 }
 
-PlayerItem::PlayerItem(Player* player):selected(0)
+PlayerItem::PlayerItem(Player* player):selected(0), ready(false)
 {
     this->player=player;
     connect(player,SIGNAL(addBasicStatusSIG(BasicStatus*)),this,SLOT(addBasicStatusItem(BasicStatus*)));
@@ -123,10 +123,15 @@ PlayerItem::PlayerItem(Player* player):selected(0)
     connect(player,SIGNAL(addTokenSIG(Token*)),this,SLOT(addTokenItem(Token*)));
     connect(player,SIGNAL(addSpecialStatusSIG(int)),this,SLOT(addSpecialStatusItem(int)));
     connect(player,SIGNAL(removeSpecialStatusSIG(int)),this,SLOT(removeSpecialStatusItem(int)));
-    if(player->getColor())
-        frame=QPixmap("resource/playerFrameRed.png");
+    if(player->getColor() == 1)
+        frame = QPixmap("resource/playerFrameRed.png");
+    else if(player->getColor() == 0)
+        frame = QPixmap("resource/playerFrameBlue.png");
     else
-        frame=QPixmap("resource/playerFrameBlue.png");
+        frame = QPixmap("resource/playerFrameNone.png");
+    redReadyFrame = QPixmap("resource/playerReadyRed.png");
+    blueReadyFrame = QPixmap("resource/playerReadyBlue.png");
+    readyStatus = QPixmap("resource/playerReady.png");
     this->width=frame.width();
     this->height=frame.height();
     gem=QPixmap("resource/Egem.png");
@@ -145,6 +150,10 @@ QRectF PlayerItem::boundingRect() const
 void PlayerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawPixmap(0, 0, frame);
+    if(player->getColor() == 1)
+        painter->drawPixmap(0, 0, redReadyFrame);
+    else if(player->getColor() == 0)
+        painter->drawPixmap(0, 0, blueReadyFrame);
     painter->drawPixmap(2,6,player->getFaceSource());
 
     QFont font;
@@ -196,6 +205,8 @@ void PlayerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         painter->drawPixmap(0.265*width,0.4*height,QPixmap(player->getTapSource()));
     if(selected)
         painter->drawPixmap(-5,-4,QPixmap("resource/playerSelected.png"));
+    if(ready)
+        painter->drawPixmap(0, 0, readyStatus);
 }
 
 void PlayerItem::addBasicStatusItem(BasicStatus *status)

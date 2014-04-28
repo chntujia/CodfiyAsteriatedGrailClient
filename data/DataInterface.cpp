@@ -134,7 +134,7 @@ void DataInterface::initRoleSkillDB()
 
 void DataInterface::initDefaultPlayerList()
 {
-    int i, isRed, myPos;
+    int i, myPos;
     myPos = id == GUEST ? 0 : id;
     foreach(Player* p, playerList)
         delete p;
@@ -142,16 +142,14 @@ void DataInterface::initDefaultPlayerList()
     //设置座次，分队
     for(i = myPos; i < playerMax; i++)
     {
-        isRed = i % 2;
-        playerList << new Player(i, isRed, "");
+        playerList << new Player(i, -1, "");
     }
 
     firstPlayerID = 0;
 
     for(i = 0; i < myPos; i++)
     {
-        isRed = i % 2;
-        playerList << new Player(i, isRed, "");
+        playerList << new Player(i, -1, "");
 
     }
     myself = playerList[0];

@@ -156,12 +156,13 @@ void ButtonArea::init(bool playing)
         button = new Button(1, QStringLiteral("准备"));
         addButton(button);
 
+        button = new Button(2, QStringLiteral("选队"));
+        addButton(button);
+
         foreach(Button* b, buttons){
             connect(b, SIGNAL(buttonSelected(int)), logic, SLOT(onButtonClicked(int)));
             connect(b, SIGNAL(buttonUnselected(int)), logic, SLOT(onButtonUnclicked(int)));
         }
-        if(dataInterface->getID() != GUEST)
-            enable(1);
     } 
 }
 
@@ -199,6 +200,7 @@ void ButtonArea::addButton(Button* button)
     button->setParentItem(this);
     button->setPos(82*button->id,0);
     buttons<<button;
+
     connect(button,SIGNAL(buttonSelected(int)),this,SLOT(onButtonSelected(int)));
     connect(button,SIGNAL(buttonUnselected(int)),this,SLOT(onButtonUnselected(int)));
 }

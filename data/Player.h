@@ -34,6 +34,7 @@ class Player:public QObject
     Q_OBJECT
 public:
     Player(int id,int color,QString nickname);
+    void setTeam(int team) { color = team; }
     void setHandCardsMax(int howMany);
     void setCrossNum(int howMany);
     void setGem(int howMany);

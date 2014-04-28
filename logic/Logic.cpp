@@ -33,9 +33,9 @@
 #include "YingLingRenXing.h"
 #include <QSound>
 
-#define LOGINPERMIT 1
-#define LOBBY 2
-#define GAMESTART 3
+#define NORMAL 0
+#define READY 1
+#define JOIN_TEAM 2
 
 Logic* logic=NULL;
 Logic::Logic(QObject *parent) :
@@ -50,10 +50,12 @@ Logic::Logic(QObject *parent) :
 }
 
 void Logic::setupRoom(bool isStarted, GameInfo *gameInfo)
-{
+{    
     if(!init_before_start && !isStarted) {
+        connect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
         dataInterface->setupRoom(isStarted);
         gui->setupRoom(isStarted);
+        normal();
         init_before_start = true;
     }
     else if(!init_after_start && isStarted){
@@ -266,12 +268,16 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
             if(player_info->has_nickname()){
                 dataInterface->setNickName(targetID, QString::fromStdString(player_info->nickname()));
             }
+            if(player_info->has_team()){
+                dataInterface->getPlayerById(targetID)->setTeam(player_info->team());
+            }
+            gui->getPlayerArea()->getPlayerItem(targetID)->setReady(player_info->ready());
         }
 
         if(count==dataInterface->getPlayerMax())
         {
-            disconnect(getClient(),0,this,0);               
-
+            disconnect(getClient(),0,this,0);
+            disconnect(gui->getDecisionArea(), 0, this, 0);
             for(int i=0;i<dataInterface->getPlayerMax();i++){
                 dataInterface->getPlayerList().at(i)->setRole(roles[i]);
                 gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
@@ -318,8 +324,7 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
 
         tipArea=gui->getTipArea();
         decisionArea=gui->getDecisionArea();
-        tipArea->reset();
-        connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
+        tipArea->reset();        
         howMany=char_pick->role_ids_size();
         for(int i=0;i<howMany;i++){
             roleID=char_pick->role_ids(i);
@@ -398,28 +403,35 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
 void Logic::onOkClicked()
 {
     QMutexLocker locker(&mutex);
-    QStringList chosen;
-    TipArea *tipArea;
-    SafeList<int> roles;
-    BPArea* bpArea;
-    RoleItem* role;
 
-    network::PickBan* pick;
     switch(state)
     {
+    case JOIN_TEAM:
+    {
+        TipArea *tipArea = gui->getTipArea();
+        int chosen = tipArea->getBoxCurrentText().split(".")[0].toInt();
+        network::JoinTeamRequest *join = new network::JoinTeamRequest();
+        join->set_team((network::JoinTeamRequest_Team)(chosen - 1));
+        emit sendCommand(network::MSG_JOIN_TEAM_REQ, join);
+        normal();
+        break;
+    }
     case 46:
-        tipArea=gui->getTipArea();
-        chosen=tipArea->getBoxCurrentText().split(".");
+    {
+        network::PickBan* pick;
+        TipArea *tipArea = gui->getTipArea();
+        int chosen = tipArea->getBoxCurrentText().split(".")[0].toInt();
 
         pick = new network::PickBan();
-        pick->add_role_ids(chosen[0].toInt());
+        pick->add_role_ids(chosen);
         pick->set_strategy(network::ROLE_STRATEGY_31);
         pick->set_is_pick(true);
 
         emit sendCommand(network::MSG_PICK_BAN, pick);
-        disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));;
+        disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
         gui->reset();
         break;
+    }
     /*
     TODO:BP
     case 52:
@@ -446,6 +458,44 @@ void Logic::onOkClicked()
 
 }
 
+void Logic::normal()
+{
+    state = NORMAL;
+    gui->reset();
+    if(myID != GUEST){
+        ButtonArea* buttonArea = gui->getButtonArea();
+        buttonArea->enable(1);
+        buttonArea->enable(2);
+    }
+}
+
+void Logic::ready()
+{
+    state = READY;
+    gui->reset();
+    ButtonArea* buttonArea = gui->getButtonArea();
+    buttonArea->enable(1);
+    Button* button = buttonArea->getButtons().at(1);
+    button->setSelected(true);
+
+    network::ReadyForGameRequest* ready = new ReadyForGameRequest;
+    ready->set_type(ReadyForGameRequest_Type_START_READY);
+    emit sendCommand(network::MSG_READY_GAME_REQ, ready);
+}
+
+void Logic::joinTeam()
+{
+    state = JOIN_TEAM;
+    TipArea *tipArea = gui->getTipArea();
+    DecisionArea *decisionArea = gui->getDecisionArea();
+    tipArea->addBoxItem(QStringLiteral("1.蓝B"));
+    tipArea->addBoxItem(QStringLiteral("2.红A"));
+    tipArea->addBoxItem(QStringLiteral("3.随机"));
+    tipArea->showBox();
+    tipArea->setMsg(QStringLiteral("请选择"));
+    decisionArea->enable(0);
+}
+
 void Logic::onButtonClicked(int id)
 {
     switch(id)
@@ -454,10 +504,12 @@ void Logic::onButtonClicked(int id)
     case 0:
         break;
     //准备
-    case 1:
-        network::ReadyForGameRequest* ready = new ReadyForGameRequest;
-        ready->set_type(ReadyForGameRequest_Type_START_READY);
-        emit sendCommand(network::MSG_READY_GAME_REQ, ready);
+    case READY:
+        ready();
+        break;
+    //选队
+    case JOIN_TEAM:
+        joinTeam();
         break;
     }
 }
@@ -466,15 +518,17 @@ void Logic::onButtonUnclicked(int id)
 {
     switch(id)
     {
-    //点名
-    case 0:
-        break;
     //准备
-    case 1:
+    case READY:
+    {
+        normal();
         network::ReadyForGameRequest* ready = new ReadyForGameRequest;
         ready->set_type(ReadyForGameRequest_Type_CANCEL_START_REDAY);
         emit sendCommand(network::MSG_READY_GAME_REQ, ready);
         break;
+    }
+    default:
+        normal();
     }
 }
 
