@@ -211,6 +211,7 @@ void MoQiang::onOkClicked()
         respond->add_args(2);
         respond->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
+		start = true;
         gui->reset();
         break;
       case AN_ZHI_ZHANG_BI:
@@ -222,6 +223,7 @@ void MoQiang::onOkClicked()
 
         }
         emit sendCommand(network::MSG_RESPOND, respond);
+		start = true;
         gui->reset();
         break;
 
@@ -262,7 +264,6 @@ void MoQiang::onCancelClicked()
         respond->add_args(0);
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
-
         break;
 
     case HUAN_YING_XING_CHEN:
@@ -292,3 +293,8 @@ void MoQiang::onCancelClicked()
     }
 }
 
+void MoQiang::attacked(QString element, int hitRate)
+{
+    Role::attacked(element,hitRate);
+    handArea->disableMagic();
+}

@@ -9,6 +9,7 @@ public:
     void normal();
     void AnZhiJieFang();
     void HuanYingXingChen();
+	void attacked(QString element, int hitRate);
     void AnZhiBiZhang();
     void QiHeiZhiQiang();
     void turnBegin();
