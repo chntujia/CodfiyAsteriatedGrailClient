@@ -130,6 +130,16 @@ void HandArea::enableElement(QString element)
             ptr->setOpacity(1);
         }
 }
+void HandArea::enableTypeAndElement(QString type, QString element)
+{
+    foreach(CardItem *ptr,cardItems)
+        if(ptr->getCard()->getElement()==element && ptr->getCard()->getType()==type)
+        {
+            ptr->setEnabled(1);
+            ptr->setOpacity(1);
+        }
+}
+
 void HandArea::enableProperty(QString property)
 {
     foreach(CardItem *ptr,cardItems)

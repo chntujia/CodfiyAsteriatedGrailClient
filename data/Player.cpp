@@ -144,6 +144,11 @@ void Player::setRole(int roleID)
         roleName=QStringLiteral("[魔枪]");
         tapSource="resource/tap/HuanYing.png";
         break;
+    case 30:
+        roleName=QStringLiteral("[苍炎魔女]");
+        tapSource="resource/tap/LieYan.png";
+        addToken(0,new Token(QStringLiteral("重生"),4,0));
+        break;
     }
 }
 

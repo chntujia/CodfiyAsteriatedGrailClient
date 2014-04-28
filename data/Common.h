@@ -225,7 +225,16 @@ enum CAUSE{
     AN_ZHI_ZHANG_BI=2904,
     CHONG_YING=2905,
     CHONG_YING_DISCARD=29051,
-    QI_HEI_ZHI_QIANG=2906
+    QI_HEI_ZHI_QIANG=2906,
+    CANG_YAN_FA_DIAN=3001,
+    TIAN_HUO_DUAN_KONG=3002,
+    MO_NV_ZHI_NU=3003,
+    MO_NV_ZHI_NU_ATTACK=30031,
+    TI_SHEN_WAN_OU=3004,
+    YONG_SHENG_YIN_SHI_JI=3005,
+    TONG_KU_LIAN_JIE=3006,
+    TONG_KU_LIAN_JIE_CARD=30061,
+    MO_NENG_FAN_ZHUAN=3007
 };
 
 enum CHANGE{
@@ -623,13 +632,32 @@ QString getCauseString(int cause)
     case DUO_CHONG_SHE_JI:
         return QStringLiteral("多重射击");
     case CHONG_NENG:
-    case CHONG_NENG_GAI_PAI:
         return QStringLiteral("充能");
+    case CHONG_NENG_GAI_PAI:
+        return QStringLiteral("充能盖牌");
     case MO_YAN:
-    case MO_YAN_GAI_PAI:
         return QStringLiteral("魔眼");
+    case MO_YAN_GAI_PAI:
+        return QStringLiteral("魔眼盖牌");
     case CHONG_NENG_MO_YAN:
         return QStringLiteral("充能&魔眼");
+    case CANG_YAN_FA_DIAN:
+        return QStringLiteral("苍炎法典");
+    case TIAN_HUO_DUAN_KONG:
+        return QStringLiteral("天火断空");
+    case MO_NV_ZHI_NU:
+    case MO_NV_ZHI_NU_ATTACK:
+        return QStringLiteral("魔女之怒");
+    case TI_SHEN_WAN_OU:
+        return QStringLiteral("替身玩偶");
+    case YONG_SHENG_YIN_SHI_JI:
+        return QStringLiteral("永生银时计");
+    case TONG_KU_LIAN_JIE:
+        return QStringLiteral("痛苦链接");
+    case TONG_KU_LIAN_JIE_CARD:
+        return QStringLiteral("痛苦链接弃牌");
+    case MO_NENG_FAN_ZHUAN:
+        return QStringLiteral("魔能反转");
     default:
         return "CauseString undefined";
     }

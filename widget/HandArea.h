@@ -35,6 +35,7 @@ public:
     void setQuota(int howMany){least=most=howMany;}
     void setQuota(int least,int most){this->least=least;this->most=most;}
     SafeList<CardItem*> getHandCardItems(){return cardItems;}
+    void enableTypeAndElement(QString type, QString element);
 signals:
     void cardReady();
     void cardUnready();
