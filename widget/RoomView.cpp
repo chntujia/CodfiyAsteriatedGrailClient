@@ -8,7 +8,7 @@ RoomView::RoomView()
     scene = new RoomScene;
     setScene(scene);
     setSceneRect(0, 0, gWidth, gHeight);
-    move(QPoint(0,0));
+    move(QPoint(100,0));
     setCacheMode(CacheBackground);
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     setWindowTitle("Codify");
