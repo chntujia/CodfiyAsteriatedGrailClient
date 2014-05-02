@@ -206,7 +206,7 @@ void MoDao::onOkClicked()
         else{
             respond = newRespond(RESPOND_BULLET);
             respond->add_args(RA_ATTACK);
-            respond->add_args(selectedCards[0]->getID());
+            respond->add_card_ids(selectedCards[0]->getID());
             respond->add_dst_ids(selectedPlayers[0]->getID());
             emit sendCommand(network::MSG_RESPOND, respond);
         }

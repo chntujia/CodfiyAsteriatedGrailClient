@@ -397,6 +397,8 @@ void TianShi::onCancelClicked()
 //神之庇护
     case SHEN_ZHI_BI_HU:
         respond = newRespond(SHEN_ZHI_BI_HU);
+        respond->add_args(0);
+        respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
