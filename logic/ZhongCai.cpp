@@ -46,6 +46,15 @@ void ZhongCai::normal()
     unactionalCheck();
 }
 
+void ZhongCai::attackAction()
+{
+    Role::attackAction();
+    Player *myself=dataInterface->getMyself();
+    if(myself->getToken(0)==4){
+        handArea->disableAll();
+    }
+}
+
 void ZhongCai::YiShiZhongDuan()
 {
     state=YI_SHI_ZHONG_DUAN;

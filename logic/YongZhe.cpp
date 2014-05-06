@@ -74,7 +74,9 @@ void YongZhe::SiDou()
 
 void YongZhe::TiaoXin()
 {
-	gui->reset();
+    handArea->reset();
+    tipArea->reset();
+    playerArea->reset();
     state=TIAO_XIN;
 
     playerArea->enableEnemy();

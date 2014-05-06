@@ -7,6 +7,7 @@ class ZhongCai : public Role
 public:
     ZhongCai();
     void normal();
+    void attackAction();
     void YiShiZhongDuan();
     void ZhongCaiYiShi();
     void askForSkill(network::Command* cmd);
