@@ -61,9 +61,9 @@ void YingLingRenXing::ZhanWenSuiJi()
 	state = ZHAN_WEN_SUI_JI;
 	gui->reset();
 	Player* myself=dataInterface->getMyself();
-    tipArea->setMsg(QStringLiteral("弃同系牌发动【战火碎击】"));
+    tipArea->setMsg(QStringLiteral("弃同系牌发动【战纹碎击】"));
 	if(myself->getTap()) {
-        tipArea->setMsg(QStringLiteral("弃同系牌发动【战火碎击】，并选择额外翻转战纹数量"));
+        tipArea->setMsg(QStringLiteral("弃同系牌发动【战纹碎击】，并选择额外翻转战纹数量"));
 		for(int i =0; i < myself->getToken(0);i ++)
 			tipArea->addBoxItem(QString::number(i));
 		tipArea->showBox();
