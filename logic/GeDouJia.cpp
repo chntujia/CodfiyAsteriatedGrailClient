@@ -344,7 +344,7 @@ void GeDouJia::onOkClicked()
         gui->reset();
         break;
     case BAI_SHI_DOU_SHEN:
-        gui->reset();
+
         text = tipArea->getBoxCurrentText();
         if(text[0]=='1')
             BaiShiHuanLongQuan();
