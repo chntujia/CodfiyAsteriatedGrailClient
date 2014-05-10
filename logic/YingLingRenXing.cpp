@@ -207,6 +207,7 @@ void YingLingRenXing::onOkClicked()
         respond->add_args(1);
         respond->add_args(choice);
         emit sendCommand(network::MSG_RESPOND, respond);
+        start = true;
         gui->reset();
         break;
     case SHUANG_CHONG_HUI_XIANG:
