@@ -6,6 +6,7 @@ enum CAUSE{
     HEI_AN_SHU_FU=2903,
     AN_ZHI_ZHANG_BI=2904,
     CHONG_YING=2905,
+	CHONG_YING_DISCARD = 29051,
     QI_HEI_ZHI_QIANG=2906
 
 };
@@ -36,11 +37,33 @@ void MoQiang::normal()
 void MoQiang::AnZhiJieFang()
 {
     state=AN_ZHI_JIE_FANG;
-    gui->reset();
+	gui->reset();
+	SafeList<Card*> handcards=dataInterface->getHandCards();
+	bool flag=true;
+	int magicCount = 0;
+    int cardCount = handcards.size();
+	decisionArea->enable(1);
+	for(int i = 0;i < cardCount;i++)
+    {
+		if(handcards[i]->getType() == "magic")
+            {
+                magicCount++;
+            }
+	}
+	if(magicCount == cardCount)
+	{
+		flag = false;
+	}
     tipArea->setMsg(QStringLiteral("是否发动暗之解放？"));
-    decisionArea->enable(1);
-    decisionArea->enable(0);
 
+	if(flag)
+	{
+		decisionArea->enable(0);
+	}
+	else
+	{
+		decisionArea->disable(0);
+	}
 }
 
 
@@ -202,6 +225,7 @@ void MoQiang::onOkClicked()
         respond->set_respond_id(AN_ZHI_JIE_FANG);
         respond->add_args(1);
         jieFangFirst=true;
+		start = true;
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;

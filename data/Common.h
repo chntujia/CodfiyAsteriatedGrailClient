@@ -584,7 +584,7 @@ QString getCauseString(int cause)
 	case XING_HONG_SHI_ZI:
         return QStringLiteral("猩红十字");
     case CHONG_YING:
-        return QStringLiteral("额外攻击行动");
+        return QStringLiteral("充盈");
     case SHEN_SHENG_ZHUI_JI:
         return QStringLiteral("神圣追击");
     case ZHI_XU_ZHI_YIN:
@@ -641,6 +641,16 @@ QString getCauseString(int cause)
         return QStringLiteral("魔眼盖牌");
     case CHONG_NENG_MO_YAN:
         return QStringLiteral("充能&魔眼");
+	case AN_ZHI_JIE_FANG:
+        return QStringLiteral("暗之解放");
+	case HUAN_YING_XING_CHEN:
+        return QStringLiteral("幻影星辰");
+	case AN_ZHI_ZHANG_BI:
+        return QStringLiteral("暗之障壁");
+	case CHONG_YING_DISCARD:
+        return QStringLiteral("充盈");
+	case QI_HEI_ZHI_QIANG:
+        return QStringLiteral("漆黑之枪");
     case CANG_YAN_FA_DIAN:
         return QStringLiteral("苍炎法典");
     case TIAN_HUO_DUAN_KONG:
