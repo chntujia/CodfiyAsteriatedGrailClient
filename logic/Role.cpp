@@ -336,12 +336,12 @@ void Role::drop(int howMany, int cause)
         break;
     case CHONG_YING_DISCARD:
         handArea->enableAll();
-        tipArea->setMsg(QStringLiteral("弃一张牌，我方角色可选择不如此做【弃1张法术牌或雷系牌，增加1攻击伤害】"));
+        tipArea->setMsg(QStringLiteral("弃1张牌，魔枪方角色可不如此做【除魔枪外每弃1张雷系牌或法术牌，魔枪下次的攻击伤害+1】"));
         decisionArea->enable(1);
         break;
     case CHONG_YING:
         handArea->enableAll();
-        tipArea->setMsg(QStringLiteral("弃一张牌【弃1张法术牌或雷系牌，增加1攻击伤害】"));
+        tipArea->setMsg(QStringLiteral("弃1张牌，【每弃1张雷系牌或法术牌，魔枪下次的攻击伤害+1】"));
         break;
     default:
         handArea->enableAll();
