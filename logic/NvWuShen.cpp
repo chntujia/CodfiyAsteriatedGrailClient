@@ -65,7 +65,9 @@ void NvWuShen::JunShenWeiGuang2()
 void NvWuShen::ZhiXuZhiYin()
 {
     state = ZHI_XU_ZHI_YIN;
-    gui->reset();
+    handArea->reset();
+    playerArea->reset();
+    tipArea->reset();
 
     decisionArea->enable(0);
     decisionArea->enable(1);
