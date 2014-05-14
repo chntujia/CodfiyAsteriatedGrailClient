@@ -10,6 +10,7 @@ public:
     void AnZhiJieFang();
     void HuanYingXingChen();
 	void attacked(QString element, int hitRate);
+	void moDaned(int nextID,int sourceID, int howMany);
     void AnZhiBiZhang();
     void QiHeiZhiQiang();
     void turnBegin();

@@ -322,3 +322,9 @@ void MoQiang::attacked(QString element, int hitRate)
     Role::attacked(element,hitRate);
     handArea->disableMagic();
 }
+
+void MoQiang::moDaned(int nextID,int sourceID, int howMany)
+{
+    Role::moDaned(nextID,sourceID,howMany);
+	handArea->disableMagic();
+}
