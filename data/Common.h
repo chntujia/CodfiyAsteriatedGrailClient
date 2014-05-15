@@ -568,9 +568,9 @@ QString getCauseString(int cause)
 	case JING_PI_LI_JIE:
 		return QStringLiteral("精疲力竭");
 	case XING_HONG_SHENG_YUE:
-        return QStringLiteral("猩红圣约");
+        return QStringLiteral("腥红圣约");
 	case XING_HONG_XIN_YANG:
-        return QStringLiteral("猩红信仰");
+        return QStringLiteral("腥红信仰");
 	case XUE_XING_DAO_YAN:
         return QStringLiteral("血腥祷言");
 	case SHA_LU_SHENG_YAN:
