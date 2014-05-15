@@ -288,6 +288,7 @@ void MoNv::onOkClicked()
         respond->add_args(tipArea->getBoxCurrentText().toInt());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
+        start =true;
         break;
     case CANG_YAN_FA_DIAN:
         action = newAction(ACTION_MAGIC_SKILL, CANG_YAN_FA_DIAN);

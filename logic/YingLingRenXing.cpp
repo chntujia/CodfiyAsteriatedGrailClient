@@ -79,7 +79,7 @@ void YingLingRenXing::FuWenGaiZao()
 {
 	state = FU_WEN_GAI_ZAO;
 	gui->reset();
-    tipArea->setMsg(QStringLiteral("发动【符文改造】，并调整战纹数量"));
+    tipArea->setMsg(QStringLiteral("发动【符文改造】，并设定战纹数量"));
 	for(int i =0; i < 4;i ++)
 		tipArea->addBoxItem(QString::number(i));
 	tipArea->showBox();
