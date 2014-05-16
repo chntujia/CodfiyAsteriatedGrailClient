@@ -81,7 +81,7 @@ void MoQiang::HuanYingXingChen()
 void MoQiang::AnZhiBiZhang()
 {
     state=AN_ZHI_ZHANG_BI;
-    tipArea->setMsg(QStringLiteral("是否发动暗之壁障？"));
+    tipArea->setMsg(QStringLiteral("是否发动暗之障壁？"));
     handArea->setQuota(1,7);
 
     decisionArea->enable(1);
@@ -130,32 +130,29 @@ void MoQiang::cardAnalyse()
     switch(state)
     {
     case AN_ZHI_ZHANG_BI:
-      cardReady=false;
-      if(selectedCards.size()==0)
-          decisionArea->disable(0);
-      else
-      {
-          foreach(Card*ptr,selectedCards)
-              for(int i=0;i<selectedCards.size();i++)
-              {
-                  if(ptr->getElement()!=selectedCards[i]->getElement())
-                  {
-                      if(ptr->getType()!="magic")
-                      {
-                          playerArea->reset();
-                          decisionArea->disable(0);
-                          cardReady=true;
-                          break;
-                      }
-                  }
-               }
-          if(!cardReady)
-              decisionArea->enable(0);
+    {
+        bool thunder = true;
+        bool magic = true;
+        for(int i=0;i<selectedCards.size();i++)
+        {
+            if(selectedCards[i]->getElement()!= "thunder")
+            {
+                thunder = false;
+            }
+            if(selectedCards[i]->getType() != "magic")
+            {
+                magic = false;
+            }
+         }
+        if(thunder || magic){
+            decisionArea->enable(0);
         }
-
-
+        else{
+            playerArea->reset();
+            decisionArea->disable(0);
+        }
       break;
-
+    }
    case CHONG_YING:
         decisionArea->enable(0);
         break;

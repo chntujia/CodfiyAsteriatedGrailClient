@@ -25,7 +25,6 @@ public slots:
 private:
     bool jieFangUsed;     //for【充盈】button
     bool jieFangFirst;
-    bool cardReady;
 };
 
 #endif // MOQIANG_H

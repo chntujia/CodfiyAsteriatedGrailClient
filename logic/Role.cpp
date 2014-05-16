@@ -1327,7 +1327,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 QSound::play("sound/Win.wav");
             else
                 QSound::play("sound/Lose.wav");
-            logic->makeConnection();
         }
 
         // 更新战绩区
