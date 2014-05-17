@@ -287,8 +287,8 @@ void MoNv::onOkClicked()
         respond->add_args(1);// 1表示选择发动
         respond->add_args(tipArea->getBoxCurrentText().toInt());
         emit sendCommand(network::MSG_RESPOND, respond);
-        gui->reset();
         start =true;
+		gui->reset();
         break;
     case CANG_YAN_FA_DIAN:
         action = newAction(ACTION_MAGIC_SKILL, CANG_YAN_FA_DIAN);
