@@ -154,7 +154,7 @@ void MoNv::TongKuLianJie()
     playerArea->reset();
     tipArea->reset();
 
-    playerArea->enableAll();
+    playerArea->enableEnemy();
 
     playerArea->setQuota(1);
 
