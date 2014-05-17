@@ -15,6 +15,7 @@ public:
     void QiHeiZhiQiang();
     void turnBegin();
     void askForSkill(Command* cmd);
+	//void attackAction();
 
 public slots:
     void ChongYing();
@@ -25,6 +26,7 @@ public slots:
 private:
     bool jieFangUsed;     //for【充盈】button
     bool jieFangFirst;
+	bool usingChongYing;
 };
 
 #endif // MOQIANG_H

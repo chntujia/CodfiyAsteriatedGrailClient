@@ -178,6 +178,7 @@ void MoQiang::turnBegin()
 {
     Role::turnBegin();
     jieFangFirst=false;
+	usingChongYing = false;
 }
 
 void MoQiang::askForSkill(Command* cmd)
@@ -244,7 +245,6 @@ void MoQiang::onOkClicked()
 
         }
         emit sendCommand(network::MSG_RESPOND, respond);
-		start = true;
         gui->reset();
         break;
 
@@ -260,6 +260,7 @@ void MoQiang::onOkClicked()
         action = newAction(ACTION_MAGIC_SKILL,CHONG_YING);
         action->add_card_ids(selectedCards[0]->getID());
         emit sendCommand(network::MSG_ACTION, action);
+		usingChongYing = true;
         gui->reset();
         break;
     }
@@ -325,3 +326,4 @@ void MoQiang::moDaned(int nextID,int sourceID, int howMany)
     Role::moDaned(nextID,sourceID,howMany);
 	handArea->disableMagic();
 }
+
