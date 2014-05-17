@@ -234,7 +234,19 @@ enum CAUSE{
     YONG_SHENG_YIN_SHI_JI=3005,
     TONG_KU_LIAN_JIE=3006,
     TONG_KU_LIAN_JIE_CARD=30061,
-    MO_NENG_FAN_ZHUAN=3007
+    MO_NENG_FAN_ZHUAN=3007,
+    CHEN_LUN_XIE_ZOU_QU=3101,
+    BU_XIE_HE_XIAN=3102,
+    GE_YONG_TIAN_FU=3103,
+    BAO_FENG_QIAN_ZOU_QU=3104,
+    JI_ANG_KUANG_XIANG_QU=3105,
+    JI_ANG_KUANG_XIANG_QU_STONE=31051,
+    JI_ANG_KUANG_XIANG_QU_2=31052,
+    JI_ANG_KUANG_XIANG_QU_HARM=31053,
+    SHENG_LI_JIAO_XIANG_SHI=3106,
+    SHENG_LI_JIAO_XIANG_SHI_2=31061,
+    SHENG_LI_JIAO_XIANG_SHI_STONE=31062,
+    XI_WANG_FU_GE_QU=3107
 };
 
 enum CHANGE{
@@ -668,6 +680,23 @@ QString getCauseString(int cause)
         return QStringLiteral("痛苦链接弃牌");
     case MO_NENG_FAN_ZHUAN:
         return QStringLiteral("魔能反转");
+
+    case CHEN_LUN_XIE_ZOU_QU:
+        return QStringLiteral("沉沦协奏曲");
+    case BU_XIE_HE_XIAN:
+        return QStringLiteral("不谐和弦");
+    case GE_YONG_TIAN_FU:
+        return QStringLiteral("歌咏天赋");
+    case BAO_FENG_QIAN_ZOU_QU:
+        return QStringLiteral("暴风前奏曲");
+    case JI_ANG_KUANG_XIANG_QU:
+    case JI_ANG_KUANG_XIANG_QU_2:
+        return QStringLiteral("激昂狂想曲");
+    case SHENG_LI_JIAO_XIANG_SHI:
+    case SHENG_LI_JIAO_XIANG_SHI_2:
+        return QStringLiteral("胜利交响诗");
+    case XI_WANG_FU_GE_QU:
+        return QStringLiteral("希望赋格曲");
     default:
         return "CauseString undefined";
     }

@@ -70,6 +70,10 @@ StatusItem::StatusItem(int specialStatusID)
         pic=QPixmap("resource/status/TongSheng.png");
         setToolTip(QStringLiteral("同生共死"));
         break;
+    case 4:
+        pic=QPixmap("resource/status/YueZhang.png");
+        setToolTip(QStringLiteral("永恒乐章"));
+        break;
     }
 }
 

@@ -525,11 +525,118 @@ void Role::additionalAction(network::Command* cmd){
 
 void Role::askForSkill(Command *cmd)
 {
+    int choices;
+    switch (cmd->respond_id()) {
+    case JI_ANG_KUANG_XIANG_QU:
+        gui->reset();
+        state = JI_ANG_KUANG_XIANG_QU;
+        choices = cmd->args(0);
+        if((choices&1)==1)
+        {
+            tipArea->addBoxItem(QStringLiteral("1.移除己方【战绩区】的2星石"));
+        }
+        if((choices&2)==2)
+        {
+            tipArea->addBoxItem(QStringLiteral("2.将【永恒乐章】转移给吟游诗人"));
+        }
+        tipArea->setMsg(QStringLiteral("选择【激昂狂想曲】发动条件"));
+        tipArea->showBox();
+        decisionArea->enable(0);
+        decisionArea->enable(1);
+        break;
+    case JI_ANG_KUANG_XIANG_QU_2:
+        gui->reset();
+        state = JI_ANG_KUANG_XIANG_QU_2;
+        tipArea->addBoxItem(QStringLiteral("1.对两名目标对手造成1点法术伤害③"));
+        tipArea->addBoxItem(QStringLiteral("2.弃2张牌"));
+        tipArea->setMsg(QStringLiteral("选择【激昂狂想曲】发动效果"));
+        tipArea->showBox();
+        decisionArea->enable(0);
+        break;
+    case SHENG_LI_JIAO_XIANG_SHI:
+        gui->reset();
+        state = SHENG_LI_JIAO_XIANG_SHI;
+        choices = cmd->args(0);
+        if((choices&1)==1)
+        {
+            tipArea->addBoxItem(QStringLiteral("1.对吟游诗人造成3点法术伤害③"));
+        }
+        if((choices&2)==2)
+        {
+            tipArea->addBoxItem(QStringLiteral("2.将【永恒乐章】转移给吟游诗人"));
+        }
+        tipArea->setMsg(QStringLiteral("选择【激昂狂想曲】发动条件或取消"));
+        tipArea->showBox();
+        decisionArea->enable(0);
+        decisionArea->enable(1);
+        break;
+    case SHENG_LI_JIAO_XIANG_SHI_2:
+        gui->reset();
+        state = SHENG_LI_JIAO_XIANG_SHI_2;
+        tipArea->addBoxItem(QStringLiteral("1.将己方【战绩区】的1星石提炼成为你的能量"));
+        tipArea->addBoxItem(QStringLiteral("2.己方【战绩区】+1【宝石】，你+1【治疗】"));
+        tipArea->setMsg(QStringLiteral("选择【胜利交响诗】发动效果"));
+        tipArea->showBox();
+        decisionArea->enable(0);
+        break;
+    default:
+        gui->reset();
+        state=36;
+        tipArea->setMsg(QStringLiteral("是否发动") + getCauseString(cmd->respond_id()) + "?");
+        decisionArea->enable(0);
+        decisionArea->enable(1);
+        break;
+    }
+
+}
+
+void Role::JiAngStone()
+{
+    state = JI_ANG_KUANG_XIANG_QU_STONE;
     gui->reset();
-    state=36;
-    tipArea->setMsg(QStringLiteral("是否发动") + getCauseString(cmd->respond_id()) + "?");
+    Team* myTeam = dataInterface->getMyTeam();
+    int gem, crystal;
+    gem = myTeam->getGem();
+    crystal = myTeam->getCrystal();
+    tipArea->setMsg(QStringLiteral("请选择要移除的星石"));
+    if(crystal>=2)
+        tipArea->addBoxItem(QStringLiteral("1.两个水晶"));
+    if(gem>=1&&crystal>=1)
+        tipArea->addBoxItem(QStringLiteral("2.一个宝石和一个水晶"));
+    if(gem>=2)
+        tipArea->addBoxItem(QStringLiteral("3.两个宝石"));
+    tipArea->showBox();
+
     decisionArea->enable(0);
+}
+
+void Role::JiAngHarm()
+{
+    gui->reset();
+    state = JI_ANG_KUANG_XIANG_QU_HARM;
+
+    playerArea->enableEnemy();
+    playerArea->setQuota(2);
+
     decisionArea->enable(1);
+}
+
+void Role::ShengLiStone()
+{
+    state = SHENG_LI_JIAO_XIANG_SHI_STONE;
+    gui->reset();
+    Team* myTeam = dataInterface->getMyTeam();
+    int gem, crystal;
+    gem = myTeam->getGem();
+    crystal = myTeam->getCrystal();
+    tipArea->setMsg(QStringLiteral("请选择要提炼的星石"));
+    if(crystal>=1)
+        tipArea->addBoxItem(QStringLiteral("1.一个水晶"));
+    if(gem>=1)
+        tipArea->addBoxItem(QStringLiteral("2.一个宝石"));
+    tipArea->showBox();
+
+    decisionArea->enable(0);
 }
 
 void Role::onCancelClicked()
@@ -596,6 +703,19 @@ void Role::onCancelClicked()
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
         break;
+
+    case JI_ANG_KUANG_XIANG_QU:
+        respond = newRespond(JI_ANG_KUANG_XIANG_QU);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case SHENG_LI_JIAO_XIANG_SHI:
+        respond = newRespond(SHENG_LI_JIAO_XIANG_SHI);
+        respond->add_args(0);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
     }
 }
 
@@ -606,8 +726,10 @@ void Role::onOkClicked()
     SafeList<Card*>selectedCards;
     SafeList<Player*>selectedPlayers;
 
+    int i,boxCurrentIndex,choice;
+    int gem, crystal;
+
     QString text;
-    int i,boxCurrentIndex;
 
     selectedCards=handArea->getSelectedCards();
     selectedPlayers=playerArea->getSelectedPlayers();
@@ -830,6 +952,88 @@ void Role::onOkClicked()
         }
         gui->reset();
         emit sendCommand(network::MSG_RESPOND, respond);
+        break;
+
+    case JI_ANG_KUANG_XIANG_QU:
+        if(tipArea->getBoxCurrentText()[0].digitValue()==2)
+        {
+            respond = newRespond(JI_ANG_KUANG_XIANG_QU);
+            respond->add_args(2);
+            emit sendCommand(network::MSG_RESPOND, respond);
+            gui->reset();
+        }
+        else
+        {
+            JiAngStone();
+        }
+        break;
+    case JI_ANG_KUANG_XIANG_QU_STONE:
+        respond = newRespond(JI_ANG_KUANG_XIANG_QU);
+        respond->add_args(1);
+        choice = tipArea->getBoxCurrentText()[0].digitValue();
+        if(choice == 1) {
+            crystal = 2;
+            gem = 0;
+        } else
+        if(choice == 2) {
+            crystal = 1;
+            gem = 1;
+        } else
+        if(choice == 3) {
+            crystal = 0;
+            gem = 2;
+        }
+        respond->add_args(gem);
+        respond->add_args(crystal);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case JI_ANG_KUANG_XIANG_QU_2:
+        if(tipArea->getBoxCurrentText()[0].digitValue()==1)
+        {
+            JiAngHarm();
+        }
+        else
+        {
+            respond = newRespond(JI_ANG_KUANG_XIANG_QU_2);
+            respond->add_args(2);
+            emit sendCommand(network::MSG_RESPOND, respond);
+            gui->reset();
+        }
+        break;
+    case JI_ANG_KUANG_XIANG_QU_HARM:
+        respond = newRespond(JI_ANG_KUANG_XIANG_QU_2);
+        respond->add_args(1);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
+        respond->add_dst_ids(selectedPlayers[1]->getID());
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case SHENG_LI_JIAO_XIANG_SHI:
+        respond = newRespond(SHENG_LI_JIAO_XIANG_SHI);
+        respond->add_args(tipArea->getBoxCurrentText()[0].digitValue());
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
+        break;
+    case SHENG_LI_JIAO_XIANG_SHI_2:
+        if(tipArea->getBoxCurrentText()[0].digitValue()==1)
+        {
+            ShengLiStone();
+        }
+        else
+        {
+            respond = newRespond(SHENG_LI_JIAO_XIANG_SHI_2);
+            respond->add_args(2);
+            emit sendCommand(network::MSG_RESPOND, respond);
+            gui->reset();
+        }
+        break;
+    case SHENG_LI_JIAO_XIANG_SHI_STONE:
+        respond = newRespond(SHENG_LI_JIAO_XIANG_SHI_2);
+        respond->add_args(1);
+        respond->add_args(tipArea->getBoxCurrentText()[0].digitValue());
+        emit sendCommand(network::MSG_RESPOND, respond);
+        gui->reset();
         break;
     }
     }catch(int error){

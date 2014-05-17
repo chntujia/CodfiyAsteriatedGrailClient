@@ -113,6 +113,7 @@ void DataInterface::initRoleList()
     roleList<<QStringLiteral("[红莲骑士]");
     roleList<<QStringLiteral("[魔枪]");
     roleList<<QStringLiteral("[苍炎魔女]");
+    roleList<<QStringLiteral("[吟游诗人]");
 }
 
 void DataInterface::initRoleSkillDB()

@@ -72,7 +72,8 @@ HEADERS += client/Client.h \
     logic/NvWuShen.h \
     logic/YingLingRenXing.h \
     data/SafeList.h \
-    logic/MoNv.h
+    logic/MoNv.h \
+    logic/ShiRen.h
 
 FORMS += client/ClientUI.ui client/Lobby.ui
 SOURCES += main.cpp \
@@ -134,4 +135,5 @@ SOURCES += main.cpp \
     logic/LingFu.cpp \
     logic/NvWuShen.cpp \
     logic/YingLingRenXing.cpp \
-    logic/MoNv.cpp
+    logic/MoNv.cpp \
+    logic/ShiRen.cpp

@@ -29,6 +29,11 @@ public:
     network::Action* newAction(uint32_t action_type);
     network::Action* newAction(uint32_t action_type, uint32_t action_id);
     network::Respond* newRespond(uint32_t respond_id);
+
+    void JiAngStone();
+    void JiAngHarm();
+
+    void ShengLiStone();
 signals:
     void sendCommand(uint16_t proto_type, google::protobuf::Message* proto);
 
@@ -70,6 +75,8 @@ protected:
 	//FIXME: 暂时只保存了额外行动跟响应类技能时的CMD
     network::Command skillCmd;
     QMutex mutex;
+
+    int ShiRenChoice;
 };
 
 

@@ -149,6 +149,10 @@ void Player::setRole(int roleID)
         tapSource="resource/tap/LieYan.png";
         addToken(0,new Token(QStringLiteral("重生"),4,0));
         break;
+    case 31:
+        roleName=QStringLiteral("[吟游诗人]");
+        addToken(0, new Token(QStringLiteral("灵感"),4,0));
+        break;
     }
 }
 

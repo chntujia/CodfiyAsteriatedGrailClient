@@ -32,6 +32,7 @@
 #include "NvWuShen.h"
 #include "YingLingRenXing.h"
 #include "MoNv.h"
+#include "ShiRen.h"
 #include <QSound>
 
 #define NORMAL 0
@@ -222,6 +223,10 @@ void Logic::setMyRole(int roleID)
         break;
     case 30:
         myRole = new MoNv;
+        hasSetRole = true;
+        break;
+    case 31:
+        myRole = new ShiRen;
         hasSetRole = true;
         break;
     }
