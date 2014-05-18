@@ -170,6 +170,20 @@ void MoGong::ChongNengGaiPai()
     decisionArea->enable(0);
 }
 
+void MoGong::MoYanGaiPai()
+{
+    state=MO_YAN_GAI_PAI;
+    handArea->reset();
+    playerArea->reset();
+    tipArea->reset();
+
+    tipArea->setMsg(QStringLiteral("请选择1张手牌盖做充能"));
+    tipArea->setMsg(QStringLiteral("选择手牌盖做充能"));
+      handArea->enableAll();
+      handArea->setQuota(1);
+    decisionArea->enable(0);
+}
+
 void MoGong::cardAnalyse()
 {
     Role::cardAnalyse();
@@ -179,7 +193,7 @@ void MoGong::cardAnalyse()
             decisionArea->enable(0);
         break;
     case CHONG_NENG_GAI_PAI:
-        if(gui->getHandArea()->getSelectedCards().size()<gui->getHandArea()->getHandCardItems().size()) //???
+        if(gui->getHandArea()->getSelectedCards().size()<gui->getHandArea()->getHandCardItems().size())
             decisionArea->enable(0);
         else
             decisionArea->disable(0);
@@ -201,11 +215,9 @@ void MoGong::coverCardAnalyse()
         if(selectedCoverCards[0]->getElement()=="fire")
             decisionArea->enable(0);
         break;
-  //  case 2602:
       case MO_GUAN_CHONG_JI_HIT:
         decisionArea->enable(0);
         break;
-  //  case 2603:
      case LEI_GUANG_SAN_SHE:
         if(selectedCoverCards.size()==1)
         {
@@ -220,7 +232,6 @@ void MoGong::coverCardAnalyse()
             playerArea->setQuota(1);
         }
         break;
-  // case 2605:
      case DUO_CHONG_SHE_JI:
         setAttackTarget();
         playerArea->disablePlayerItem(lastTarget);
@@ -286,7 +297,7 @@ void MoGong::onOkClicked()
         lastTarget = selectedPlayers[0]->getID();
         DuoChongSheJiUsed = true;
         emit sendCommand(network::MSG_ACTION, action);
-         gui->reset();
+        gui->reset();
         break;
       case CHONG_NENG_MO_YAN:
         respond = new network::Respond();
@@ -331,15 +342,23 @@ void MoGong::onOkClicked()
 
       case CHONG_NENG_GAI_PAI:
         respond = newRespond(CHONG_NENG_GAI_PAI);
-        respond->add_args(1);                       //参数1:1
-        respond->add_args(selectedCards.size());
+        respond->add_args(1);
        foreach(Card*ptr,selectedCards){
             respond->add_card_ids(ptr->getID());
         }
- //       respond->add_args(tipArea->getBoxCurrentText()[0].digitValue());  //参数2：摸牌的张数
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+
+    case MO_YAN_GAI_PAI:
+      respond = newRespond(MO_YAN_GAI_PAI);
+      respond->add_args(1);
+      foreach(Card*ptr,selectedCards){
+          respond->add_card_ids(ptr->getID());
+      }
+      emit sendCommand(network::MSG_RESPOND, respond);
+      gui->reset();
+      break;
 
     }
     }catch(int error){
@@ -369,7 +388,7 @@ void MoGong::onCancelClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-      case  DUO_CHONG_SHE_JI:
+      case DUO_CHONG_SHE_JI:
           gui->reset();
         break;
     case CHONG_NENG_MO_YAN:
@@ -402,14 +421,19 @@ void MoGong::onCancelClicked()
       emit sendCommand(network::MSG_RESPOND, respond);
       gui->reset();
       break;
+    case MO_YAN_GAI_PAI:
+      respond = newRespond(MO_YAN_GAI_PAI);
+      respond->add_args(0);
+      emit sendCommand(network::MSG_RESPOND, respond);
+      gui->reset();
+      break;
     }
 }
 
 void MoGong::attackAction()
 {
-    //若是连续技的额外行动，则只能用风系
     if(DUO_CHONG_SHE_JI == chosenAction){
-          DuoChongSheJi();
+        DuoChongSheJi();
     }
     else{
         Role::attackAction();
@@ -438,6 +462,8 @@ void MoGong::askForSkill(network::Command* cmd)
          MoGuanChongJiHit();
     else if(cmd->respond_id() == CHONG_NENG_GAI_PAI)
          ChongNengGaiPai();
+    else if(cmd->respond_id() == MO_YAN_GAI_PAI)
+         MoYanGaiPai();
     else if(cmd->respond_id() == MO_GUAN_CHONG_JI)
         MoGuanChongJi();
     else
