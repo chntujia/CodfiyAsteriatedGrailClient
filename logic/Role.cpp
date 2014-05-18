@@ -573,8 +573,15 @@ void Role::askForSkill(Command *cmd)
     case SHENG_LI_JIAO_XIANG_SHI_2:
         gui->reset();
         state = SHENG_LI_JIAO_XIANG_SHI_2;
-        tipArea->addBoxItem(QStringLiteral("1.将己方【战绩区】的1星石提炼成为你的能量"));
-        tipArea->addBoxItem(QStringLiteral("2.己方【战绩区】+1【宝石】，你+1【治疗】"));
+        choices = cmd->args(0);
+        if((choices&1)==1)
+        {
+            tipArea->addBoxItem(QStringLiteral("1.将己方【战绩区】的1星石提炼成为你的能量"));
+        }
+        if((choices&2)==2)
+        {
+            tipArea->addBoxItem(QStringLiteral("2.己方【战绩区】+1【宝石】，你+1【治疗】"));
+        }
         tipArea->setMsg(QStringLiteral("选择【胜利交响诗】发动效果"));
         tipArea->showBox();
         decisionArea->enable(0);
