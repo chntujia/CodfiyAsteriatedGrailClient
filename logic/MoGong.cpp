@@ -385,6 +385,7 @@ void MoGong::onCancelClicked()
         break;
       case MO_GUAN_CHONG_JI_HIT:
         respond = newRespond(MO_GUAN_CHONG_JI_HIT);
+		respond->add_args(0);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
