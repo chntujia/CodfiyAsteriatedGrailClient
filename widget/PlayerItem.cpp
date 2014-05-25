@@ -116,7 +116,16 @@ void StatusItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
      painter->drawPixmap(0, 0, pic);
      if(type!=2)
          return;
-     painter->drawPixmap(0, 0, Num[token->num]);
+     int howMany = token->num;
+     if(howMany < 10 && howMany >= 0){
+         painter->drawPixmap(0, 0, Num[howMany]);
+     }
+     else if(howMany > 9 && howMany < 100){
+         int uints = howMany % 10;
+         int tens = howMany / 10;
+         painter->drawPixmap(0, 0, Num[tens]);
+         painter->drawPixmap(7, 0, Num[uints]);
+     }
 }
 
 PlayerItem::PlayerItem(Player* player):selected(0), ready(false)
@@ -188,7 +197,7 @@ void PlayerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
             painter->drawPixmap(width*0.62+card.width()*i,height*0.27, heal);
         else
             painter->drawPixmap(width*0.62+card.width()*i,height*0.27, healRemain);
-    for(i=0;i<num-max;i++)
+    for(;i<num-max;i++)
         painter->drawPixmap(width*0.62+card.width()*i,height*0.27, heal);
 
     if(player->getEnergyMax()==4)

@@ -71,7 +71,7 @@ void Lobby::onCreateRoom()
     int playerNum = 6;
     newWindow(playerNum);
     network::CreateRoomRequest* create = new network::CreateRoomRequest();
-    create->set_role_strategy(ROLE_STRATEGY_ANY);
+    create->set_role_strategy(ROLE_STRATEGY_31);
     create->set_max_player(playerNum);
     logic->getClient()->sendMessage(network::MSG_CREATE_ROOM_REQ, create);
 }

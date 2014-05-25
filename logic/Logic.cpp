@@ -258,6 +258,8 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         if(game_info->has_player_id()){
             myID = game_info->player_id();
             dataInterface->setID(myID);
+            if(myID == GUEST)
+                gui->logAppend(QStringLiteral("<font color=\'green\'>房间已满，进入观战模式"));
             cleanRoom();
         }
         if(game_info->has_room_id()){
@@ -319,10 +321,10 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         {
         //GE_DISCONNECTED
         case 25:
-            gui->logAppend(QStringLiteral("玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线</font>"));
             break;
         default:
-            gui->logAppend(QStringLiteral("错误代码") + QString::number(error->id()));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");
             break;
         }
         break;

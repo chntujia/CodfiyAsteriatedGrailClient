@@ -74,6 +74,28 @@
     <string>刷新</string>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>80</y>
+     <width>54</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>若创建房间后，在游戏界面里没有人物框，则没连上服务器</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

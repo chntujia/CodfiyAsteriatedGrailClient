@@ -184,7 +184,7 @@ void Role::setAttackTarget()
 
 void Role::exchangeCards()
 {
-    network::Action* action = newAction(30);
+    network::Action* action = newAction(ACTION_UNACTIONAL);
     emit sendCommand(network::MSG_ACTION, action);
 }
 
@@ -1393,7 +1393,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 msg += QStringLiteral("执行提炼");
             gui->logAppend(msg);
             break;
-        case network::ACTION_NONE:
+        case network::ACTION_UNACTIONAL:
             targetID=action->src_id();
             msg=playerList[targetID]->getRoleName()+QStringLiteral("宣告无法行动");
             gui->logAppend(msg);
@@ -1755,10 +1755,10 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         switch(error->id())
         {
         case GE_DISCONNECTED:
-            gui->logAppend(QStringLiteral("玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线</font>"));
             break;
         default:
-            gui->logAppend(QStringLiteral("错误代码") + QString::number(error->id()));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");
             break;
         }
         break;

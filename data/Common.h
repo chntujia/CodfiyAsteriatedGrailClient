@@ -712,7 +712,7 @@ QString getCommandString(network::Command *cmd){
         int cause = cmd->args(0);
         int howMany = cmd->args(1);
         if(cause != CAUSE_OVERLOAD){
-            msg = QStringLiteral("等待") + dataInterface->getPlayerById(targetID)->getRoleName() + getCauseString(cause) + QStringLiteral("(手牌）响应");
+            msg = QStringLiteral("等待") + dataInterface->getPlayerById(targetID)->getRoleName() + getCauseString(cause) + QStringLiteral("(弃手牌）响应");
         }
         else{
             msg = dataInterface->getPlayerById(targetID)->getRoleName()+QStringLiteral("需要弃")+QString::number(howMany)+QStringLiteral("张牌");
