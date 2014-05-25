@@ -257,10 +257,10 @@ void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
         network::GameInfo* game_info = (network::GameInfo*) proto;
         if(game_info->has_player_id()){
             myID = game_info->player_id();
-            dataInterface->setID(myID);
-            if(myID == GUEST)
-                gui->logAppend(QStringLiteral("<font color=\'green\'>房间已满，进入观战模式"));
+            dataInterface->setID(myID);            
             cleanRoom();
+            if(myID == GUEST)
+                gui->logAppend(QStringLiteral("<font color=\'pink\'>房间已满，进入观战模式</font>"));
         }
         if(game_info->has_room_id()){
             gui->getTeamArea()->setRoomID(game_info->room_id());
