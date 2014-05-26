@@ -5,6 +5,8 @@
 #include <QTableWidget>
 #include <QMessageBox>
 #include "protocol/base.pb.h"
+#include "RoomSet.h"
+
 #define ROOM_ID    0
 #define ROOM_NAME  1
 #define ROLE_MODE  2
@@ -28,11 +30,15 @@ public slots:
     void onCreateRoom();
     void onRefreshList();
     void onWindowClose();
+    void onOpenRoom();
+    void onBackToLobby();
 private:
+    RoomSet *roomSet;
     void newWindow(int playerNum);
     network::RoomListResponse roomList;
     Ui::Lobby *ui;
     QMessageBox* prop;
+
 };
 
 #endif // LOBBY_H

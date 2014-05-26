@@ -9,6 +9,7 @@ Lobby::Lobby(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Lobby)
 {
+    roomSet = NULL;
     ui->setupUi(this);
     logic->setLobby(this);
     connect(ui->tableWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
@@ -35,6 +36,26 @@ void Lobby::fill(RoomListResponse* list)
         ui->tableWidget->setItem(i, ROOM_ID, newItem);
         newItem = new QTableWidgetItem(QString::fromStdString(game.room_name()));
         ui->tableWidget->setItem(i, ROOM_NAME, newItem);
+        ROLE_STRATEGY rs = game.role_strategy();
+        switch(rs){
+        case ROLE_STRATEGY_RANDOM:
+            newItem = new QTableWidgetItem(QStringLiteral("随机"));
+            break;
+        case ROLE_STRATEGY_31:
+            newItem = new QTableWidgetItem(QStringLiteral("3选1"));
+            break;
+        case ROLE_STRATEGY_BP:
+            newItem = new QTableWidgetItem(QStringLiteral("BAN-PICK"));
+            break;
+        default:
+            newItem = new QTableWidgetItem(QStringLiteral("Error"));
+            break;
+        }
+
+
+        ui->tableWidget->setItem(i, ROLE_MODE, newItem);
+        newItem = new QTableWidgetItem(QString::number(game.seat_mode()));
+        ui->tableWidget->setItem(i, SEAT_MODE, newItem);
         newItem = new QTableWidgetItem(QString::number(game.now_player()) + "/" + QString::number(game.max_player()));
         ui->tableWidget->setItem(i, PLAYER_NUM, newItem);
     }
@@ -68,12 +89,38 @@ void Lobby::onItemClicked(QModelIndex index)
 void Lobby::onCreateRoom()
 {
     //FIXME: popup
-    int playerNum = 6;
-    newWindow(playerNum);
+    //打开房间设置面板
+    if(roomSet!= NULL){roomSet->close();}
+    roomSet = new RoomSet();
+    roomSet->show();
+    connect(roomSet, SIGNAL(createRoom()), this, SLOT(onOpenRoom()));
+    connect(roomSet, SIGNAL(backToLobby()), this, SLOT(onBackToLobby()));
+    this->setEnable(false); //禁用大厅
+
+}
+void Lobby::onBackToLobby(){
+    setEnable(true);
+}
+
+void Lobby::onOpenRoom(){
+    int playerNum = roomSet->getPlayerNum();
+    int seatOrder = roomSet->getSeatOrder();
+    int roleSelectionStrategy = roomSet->getRoleSelection();
+    int roleRange = roomSet->getRoleRange();
+    std::string roomName = roomSet->getRoomName().toStdString();
+
+
+    // TODO 座次、选将范围的通信协议和实现机制还没有敲定。同一客户端多次游戏的情况需要测试
     network::CreateRoomRequest* create = new network::CreateRoomRequest();
-    create->set_role_strategy(ROLE_STRATEGY_31);
+    create->set_role_strategy((network::ROLE_STRATEGY)roleSelectionStrategy);
     create->set_max_player(playerNum);
+    create->set_seat_mode(seatOrder);
+    create->set_role_range(roleRange);
+    create->set_room_name(roomName);
+
     logic->getClient()->sendMessage(network::MSG_CREATE_ROOM_REQ, create);
+    roomSet->close();//注意此时调用onBackToLobby()
+    newWindow(playerNum);//打开游戏界面
 }
 
 void Lobby::onRefreshList()
