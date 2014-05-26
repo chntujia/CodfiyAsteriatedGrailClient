@@ -73,9 +73,11 @@ HEADERS += client/Client.h \
     logic/YingLingRenXing.h \
     data/SafeList.h \
     logic/MoNv.h \
-    logic/ShiRen.h
+    logic/ShiRen.h \
+    client/RoomSet.h
 
-FORMS += client/ClientUI.ui client/Lobby.ui
+FORMS += client/ClientUI.ui client/Lobby.ui \
+    client/RoomSet.ui
 SOURCES += main.cpp \
            client/Client.cpp \
            client/ClientUI.cpp \
@@ -136,4 +138,8 @@ SOURCES += main.cpp \
     logic/NvWuShen.cpp \
     logic/YingLingRenXing.cpp \
     logic/MoNv.cpp \
-    logic/ShiRen.cpp
+    logic/ShiRen.cpp \
+    client/RoomSet.cpp
+
+RESOURCES += \
+    res.qrc

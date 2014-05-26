@@ -6,6 +6,7 @@ enum CAUSE{
 	ZHAN_WEN_SUI_JI = 2703,
 	MO_WEN_RONG_HE = 2704,
 	FU_WEN_GAI_ZAO = 2705,
+    FU_WEN_GAI_ZAO_TOKEN = 27051,
 	SHUANG_CHONG_HUI_XIANG =2706
 };
 
@@ -79,12 +80,21 @@ void YingLingRenXing::FuWenGaiZao()
 {
 	state = FU_WEN_GAI_ZAO;
 	gui->reset();
-    tipArea->setMsg(QStringLiteral("发动【符文改造】，并设定战纹数量"));
-	for(int i =0; i < 4;i ++)
-		tipArea->addBoxItem(QString::number(i));
-	tipArea->showBox();
+    tipArea->setMsg(QStringLiteral("是否发动【符文改造】"));
 	decisionArea->enable(0);
 	decisionArea->enable(1);
+}
+
+void YingLingRenXing::FuWenGaiZaoToken()
+{
+    state = FU_WEN_GAI_ZAO_TOKEN;
+    gui->reset();
+    tipArea->setMsg(QStringLiteral("设定战纹数量"));
+    for(int i =0; i < 4;i ++)
+        tipArea->addBoxItem(QString::number(i));
+    tipArea->showBox();
+    decisionArea->enable(0);
+    decisionArea->disable(1);
 }
 
 void YingLingRenXing::ShuangChongHuiXiang(int previous)
@@ -203,6 +213,13 @@ void YingLingRenXing::onOkClicked()
         break;
     case FU_WEN_GAI_ZAO:
         respond = newRespond(FU_WEN_GAI_ZAO);
+        respond->add_args(1);
+        emit sendCommand(network::MSG_RESPOND, respond);
+        start = true;
+        gui->reset();
+        break;
+    case FU_WEN_GAI_ZAO_TOKEN:
+        respond = newRespond(FU_WEN_GAI_ZAO_TOKEN);
         choice = tipArea->getBoxCurrentText()[0].digitValue();
         respond->add_args(1);
         respond->add_args(choice);
@@ -256,6 +273,9 @@ void YingLingRenXing::askForSkill(network::Command* cmd)
 	case FU_WEN_GAI_ZAO:
 		FuWenGaiZao();
 		break;
+    case FU_WEN_GAI_ZAO_TOKEN:
+        FuWenGaiZaoToken();
+        break;
 	case SHUANG_CHONG_HUI_XIANG:
         ShuangChongHuiXiang(cmd->args(0));
 		break;

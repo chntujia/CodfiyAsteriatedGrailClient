@@ -13,6 +13,7 @@ public:
     void MoWenRongHe();
     void ZhanWenSuiJi();
     void FuWenGaiZao();
+    void FuWenGaiZaoToken();
     void ShuangChongHuiXiang(int previous);
 public slots:
 	void onOkClicked();

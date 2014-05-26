@@ -208,6 +208,7 @@ enum CAUSE{
     ZHAN_WEN_SUI_JI = 2703,
     MO_WEN_RONG_HE = 2704,
     FU_WEN_GAI_ZAO = 2705,
+    FU_WEN_GAI_ZAO_TOKEN = 27051,
     SHUANG_CHONG_HUI_XIANG =2706,
 	XING_HONG_SHENG_YUE = 2801,
     XING_HONG_XIN_YANG = 2802,
@@ -632,6 +633,7 @@ QString getCauseString(int cause)
     case ZHAN_WEN_SUI_JI:
         return QStringLiteral("战纹碎击");
     case FU_WEN_GAI_ZAO:
+    case FU_WEN_GAI_ZAO_TOKEN:
         return QStringLiteral("符文改造");
     case SHUANG_CHONG_HUI_XIANG:
         return QStringLiteral("双重回响");

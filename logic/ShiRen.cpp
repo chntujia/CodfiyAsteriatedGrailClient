@@ -16,6 +16,7 @@ enum CAUSE{
 };
 ShiRen::ShiRen()
 {
+    YueZhangDst = dataInterface->getMyself()->getID();
     makeConnection();
     setMyRole(this);
     Button *buXieHeXian;
@@ -96,7 +97,8 @@ void ShiRen::XiWangFuGeQu()
 
     tipArea->setMsg(QStringLiteral("选择【希望赋格曲】目标或取消"));
 
-    playerArea->enableMate(false);
+    playerArea->enableMate(true);
+    playerArea->disablePlayerItem(YueZhangDst);
     playerArea->setQuota(1);
 
     decisionArea->enable(1);
@@ -129,7 +131,8 @@ void ShiRen::onOkClicked()
     case XI_WANG_FU_GE_QU:
         respond = newRespond(XI_WANG_FU_GE_QU);
         respond->add_args(1);
-        respond->add_dst_ids(selectedPlayers[0]->getID());
+        YueZhangDst = selectedPlayers[0]->getID();
+        respond->add_dst_ids(YueZhangDst);
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         start = true;

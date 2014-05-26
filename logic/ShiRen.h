@@ -18,5 +18,6 @@ public slots:
     void BuXieHeXian();
 private:
     int chenLunNum;
+    int YueZhangDst;
 };
 #endif // SHIREN_H
