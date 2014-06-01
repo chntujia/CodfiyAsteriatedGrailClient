@@ -16,7 +16,6 @@ enum CAUSE{
 };
 ShiRen::ShiRen()
 {
-    YueZhangDst = dataInterface->getMyself()->getID();
     makeConnection();
     setMyRole(this);
     Button *buXieHeXian;
