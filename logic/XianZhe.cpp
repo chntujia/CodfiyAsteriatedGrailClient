@@ -49,6 +49,8 @@ void XianZhe::FaShuFanTan()
 
     handArea->enableAll();
     handArea->setQuota(2,7);
+    playerArea->setQuota(1);
+
     decisionArea->enable(1);
     decisionArea->disable(0);
 }
@@ -63,6 +65,7 @@ void XianZhe::MoDaoFaDian()
 
     handArea->enableAll();
     handArea->setQuota(2,7);
+    playerArea->setQuota(1);
 
     decisionArea->enable(1);
     decisionArea->disable(0);
@@ -75,7 +78,7 @@ void XianZhe::ShengJieFaDian()
     playerArea->reset();
     handArea->reset();
     tipArea->reset();
-    tipArea->setMsg(QStringLiteral("只仔细确认选取的目标！！！"));
+    tipArea->setMsg(QStringLiteral("请仔细确认选取的目标！！！"));
 
     handArea->enableAll();
     handArea->setQuota(3,7);

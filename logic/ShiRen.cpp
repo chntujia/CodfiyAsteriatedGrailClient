@@ -89,7 +89,7 @@ void ShiRen::ChenLunXieZouQu()
     decisionArea->disable(0);
 }
 
-void ShiRen::XiWangFuGeQu()
+void ShiRen::XiWangFuGeQu(int id)
 {
     state = XI_WANG_FU_GE_QU;
 
@@ -98,7 +98,7 @@ void ShiRen::XiWangFuGeQu()
     tipArea->setMsg(QStringLiteral("选择【希望赋格曲】目标或取消"));
 
     playerArea->enableMate(true);
-    playerArea->disablePlayerItem(YueZhangDst);
+    playerArea->disablePlayerItem(id);
     playerArea->setQuota(1);
 
     decisionArea->enable(1);
@@ -131,8 +131,7 @@ void ShiRen::onOkClicked()
     case XI_WANG_FU_GE_QU:
         respond = newRespond(XI_WANG_FU_GE_QU);
         respond->add_args(1);
-        YueZhangDst = selectedPlayers[0]->getID();
-        respond->add_dst_ids(YueZhangDst);
+        respond->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         start = true;
@@ -192,7 +191,7 @@ void ShiRen::askForSkill(network::Command* cmd)
         ChenLunXieZouQu();
         break;
     case XI_WANG_FU_GE_QU:
-        XiWangFuGeQu();
+        XiWangFuGeQu(cmd->args(0));
         break;
     default:
         Role::askForSkill(cmd);

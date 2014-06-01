@@ -9,7 +9,7 @@ public:
     void normal();
     void askForSkill(network::Command* cmd);
     void ChenLunXieZouQu();
-    void XiWangFuGeQu();
+    void XiWangFuGeQu(int id);
     void BuXieHeXianTarget();
 public slots:
     void onOkClicked();
@@ -18,6 +18,5 @@ public slots:
     void BuXieHeXian();
 private:
     int chenLunNum;
-    int YueZhangDst;
 };
 #endif // SHIREN_H
