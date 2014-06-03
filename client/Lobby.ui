@@ -22,6 +22,9 @@
      <height>351</height>
     </rect>
    </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
+   </property>
    <column>
     <property name="text">
      <string>房号</string>

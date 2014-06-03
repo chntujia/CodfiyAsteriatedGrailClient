@@ -142,4 +142,3 @@ SOURCES += main.cpp \
     client/RoomSet.cpp
 
 RESOURCES += \
-    res.qrc

@@ -58,7 +58,7 @@ void RoomSet::InitializeSet(){
 
     QTime time = QTime::currentTime();
     int rid = time.second()%4;
-    QString* roomNames = new QString[4];
+    QString roomNames[4];
     roomNames[0] = "·Asteriated··Grail··Loading·";
     roomNames[1] = "初心者召唤中";
     roomNames[2] = "一起体验星杯传说的魅力吧！";
