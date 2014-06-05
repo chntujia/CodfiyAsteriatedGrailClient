@@ -1,7 +1,7 @@
-﻿/********************************************************************************
+/********************************************************************************
 ** Form generated from reading UI file 'ClientUI.ui'
 **
-** Created by: Qt User Interface Compiler version 5.0.1
+** Created by: Qt User Interface Compiler version 5.1.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
@@ -21,7 +20,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -30,15 +28,6 @@ QT_BEGIN_NAMESPACE
 class Ui_ClientUI
 {
 public:
-    QFrame *frameLobby;
-    QPushButton *cancelButton;
-    QLabel *label_2;
-    QLabel *label;
-    QPushButton *startButton;
-    QTextBrowser *board;
-    QLineEdit *nickname;
-    QComboBox *comboBox;
-    QPushButton *connectButton;
     QFrame *frameLogin;
     QWidget *layoutWidget_3;
     QHBoxLayout *horizontalLayout_3;
@@ -87,36 +76,6 @@ public:
         if (ClientUI->objectName().isEmpty())
             ClientUI->setObjectName(QStringLiteral("ClientUI"));
         ClientUI->resize(259, 317);
-        frameLobby = new QFrame(ClientUI);
-        frameLobby->setObjectName(QStringLiteral("frameLobby"));
-        frameLobby->setGeometry(QRect(10, 3, 241, 301));
-        frameLobby->setFrameShape(QFrame::StyledPanel);
-        frameLobby->setFrameShadow(QFrame::Raised);
-        cancelButton = new QPushButton(frameLobby);
-        cancelButton->setObjectName(QStringLiteral("cancelButton"));
-        cancelButton->setGeometry(QRect(162, 270, 75, 23));
-        label_2 = new QLabel(frameLobby);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(0, 19, 30, 16));
-        label = new QLabel(frameLobby);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(0, 47, 108, 16));
-        startButton = new QPushButton(frameLobby);
-        startButton->setObjectName(QStringLiteral("startButton"));
-        startButton->setEnabled(false);
-        startButton->setGeometry(QRect(81, 270, 75, 23));
-        board = new QTextBrowser(frameLobby);
-        board->setObjectName(QStringLiteral("board"));
-        board->setGeometry(QRect(-1, 74, 239, 189));
-        nickname = new QLineEdit(frameLobby);
-        nickname->setObjectName(QStringLiteral("nickname"));
-        nickname->setGeometry(QRect(36, 19, 133, 20));
-        comboBox = new QComboBox(frameLobby);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
-        comboBox->setGeometry(QRect(114, 47, 69, 20));
-        connectButton = new QPushButton(frameLobby);
-        connectButton->setObjectName(QStringLiteral("connectButton"));
-        connectButton->setGeometry(QRect(0, 270, 75, 23));
         frameLogin = new QFrame(ClientUI);
         frameLogin->setObjectName(QStringLiteral("frameLogin"));
         frameLogin->setEnabled(true);
@@ -189,7 +148,7 @@ public:
         frameRegist->setFrameShadow(QFrame::Raised);
         layoutWidget1 = new QWidget(frameRegist);
         layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(0, 0, 241, 301));
+        layoutWidget1->setGeometry(QRect(0, 0, 242, 301));
         verticalLayout = new QVBoxLayout(layoutWidget1);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -344,9 +303,9 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_11);
 
+        frameRegist->raise();
+        frameLogin->raise();
 #ifndef QT_NO_SHORTCUT
-        label_2->setBuddy(nickname);
-        label->setBuddy(comboBox);
         label_14->setBuddy(regLoginName);
         label_5->setBuddy(regNickname);
         label_10->setBuddy(regPassword);
@@ -363,11 +322,6 @@ public:
     void retranslateUi(QDialog *ClientUI)
     {
         ClientUI->setWindowTitle(QApplication::translate("ClientUI", "ClientUI", 0));
-        cancelButton->setText(QApplication::translate("ClientUI", "Cancel", 0));
-        label_2->setText(QApplication::translate("ClientUI", "\346\230\265\347\247\260:", 0));
-        label->setText(QApplication::translate("ClientUI", "\346\212\242\351\230\237\357\274\210\344\270\215\344\270\200\345\256\232\346\210\220\345\212\237\357\274\211", 0));
-        startButton->setText(QApplication::translate("ClientUI", "Start", 0));
-        connectButton->setText(QApplication::translate("ClientUI", "Connect", 0));
         btnLogin->setText(QApplication::translate("ClientUI", "\347\231\273\345\205\245", 0));
         btnRegist->setText(QApplication::translate("ClientUI", "\346\263\250\345\206\214", 0));
         label_3->setText(QApplication::translate("ClientUI", "\347\224\250\346\210\267\345\220\215\357\274\232", 0));

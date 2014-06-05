@@ -13,126 +13,6 @@
   <property name="windowTitle">
    <string>ClientUI</string>
   </property>
-  <widget class="QFrame" name="frameLobby">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>3</y>
-     <width>241</width>
-     <height>301</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <widget class="QPushButton" name="cancelButton">
-    <property name="geometry">
-     <rect>
-      <x>162</x>
-      <y>270</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Cancel</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>19</y>
-      <width>30</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>昵称:</string>
-    </property>
-    <property name="buddy">
-     <cstring>nickname</cstring>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>47</y>
-      <width>108</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>抢队（不一定成功）</string>
-    </property>
-    <property name="buddy">
-     <cstring>comboBox</cstring>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="startButton">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>81</x>
-      <y>270</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Start</string>
-    </property>
-   </widget>
-   <widget class="QTextBrowser" name="board">
-    <property name="geometry">
-     <rect>
-      <x>-1</x>
-      <y>74</y>
-      <width>239</width>
-      <height>189</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="nickname">
-    <property name="geometry">
-     <rect>
-      <x>36</x>
-      <y>19</y>
-      <width>133</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>114</x>
-      <y>47</y>
-      <width>69</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="connectButton">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>270</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Connect</string>
-    </property>
-   </widget>
-  </widget>
   <widget class="QFrame" name="frameLogin">
    <property name="enabled">
     <bool>true</bool>
@@ -263,7 +143,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>241</width>
+      <width>242</width>
       <height>301</height>
      </rect>
     </property>
@@ -475,6 +355,8 @@
     </layout>
    </widget>
   </widget>
+  <zorder>frameRegist</zorder>
+  <zorder>frameLogin</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

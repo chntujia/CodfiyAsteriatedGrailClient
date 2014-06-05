@@ -31,7 +31,6 @@ ClientUI::ClientUI(QWidget *parent) :
         fp->close();
     }
     tcpSocket=new Client;
-    //tcpSocket->link("127.0.0.1",port);
     tcpSocket->link(ip, port);
     QRegExp rx1("^[A-Za-z][A-Za-z0-9_]{6,12}");
     ui->regLoginName->setValidator(new QRegExpValidator(rx1, this));
@@ -43,11 +42,7 @@ ClientUI::ClientUI(QWidget *parent) :
     ui->regPasswordAgain->setValidator(new QRegExpValidator(rx3, this));
     ui->editPassword->setValidator(new QRegExpValidator(rx3, this));
 
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(link()));
-    connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(ui->startButton, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
-             this,SLOT(displayError(QAbstractSocket::SocketError)));
+    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)), this,SLOT(displayError(QAbstractSocket::SocketError)));
     connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(showMessage(uint16_t, google::protobuf::Message*)));
     connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(getCommand(uint16_t, google::protobuf::Message*)));
     //merged
@@ -56,34 +51,19 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(ui->btnRegistCommit, SIGNAL(clicked()), this, SLOT(UserRegist()));
     connect(ui->btnBackLogin, SIGNAL(clicked()), this, SLOT(UserBackLogin()));
 
-    ui->frameLobby->show();
     ui->frameRegist->hide();
-    ui->frameLogin->hide();
-//    ui->frameLobby->hide();
-//    ui->frameRegist->hide();
-//    ui->frameLogin->show();
+    ui->frameLogin->show();
+
     ui->editPassword->setEchoMode(QLineEdit::Password);
     ui->regPassword->setEchoMode(QLineEdit::Password);
     ui->regPasswordAgain->setEchoMode(QLineEdit::Password);
-
-    //ui->addr->setText("192.168.56.1");
-
-    //ui->addr->setText("2001:5C0:1000:B::7C63");
-    //ui->port->setText("50000");
-    ui->board->setText(QStringLiteral("请连接服务器。若要抢队，请先选择队伍再连接"));
-    ui->comboBox->addItem(QStringLiteral("随机"));    
-    ui->comboBox->addItem(QStringLiteral("蓝队"));
-    ui->comboBox->addItem(QStringLiteral("红队"));
-   // tcpSocket->sendMessage("60");
-
-    //FIXME: AUTO CONNECT FOR DEBUG
-    //ui->connectButton->click();
 }
 
 ClientUI::~ClientUI()
 {
     delete ui;
 }
+
 void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto)
 {
     network::LoginResponse* login_rep;
@@ -94,26 +74,24 @@ void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto
         login_rep = (network::LoginResponse*)proto;
 
         // TODO: 登陆失败
-//        int result = login_rep->state();
-//        switch (result)
-//        {
-//        case 0: // 成功
-//            ui->LabError->setText("登入成功");
-//            ui->frameLogin->hide();
-//            ui->frameRegist->hide();
-//            ui->frameLobby->show();
-//            ui->nickname->setText(QString::fromStdString(login_rep->nickname()));
-//            ui->nickname->setEnabled(0);
-//            break;
-//        case 1: // 帐号错误
-//            ui->LabError->setText("用户名或密码错误");
-//            break;
-//        case 2: // 帐号被封停
-//            ui->LabError->setText("您的帐号已被封停，请联系客服");
-//            break;
-//        default:// 其它错误
-//            ui->LabError->setText("未知错误");
-//        }
+        int result = login_rep->state();
+        switch (result)
+        {
+        case 0: // 成功
+            ui->LabError->setText("登入成功");
+            ui->frameLogin->hide();
+            ui->frameRegist->hide();
+            accept();
+            break;
+        case 1: // 帐号错误
+            ui->LabError->setText("用户名或密码错误");
+            break;
+        case 2: // 帐号被封停
+            ui->LabError->setText("您的帐号已被封停，请联系客服");
+            break;
+        default:// 其它错误
+            ui->LabError->setText("未知错误");
+        }
         break;
     }
     /*
@@ -147,38 +125,13 @@ void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto
         break;
     }
     */
-  //  default:
-//        ui->board->append(QString::fromStdString(((network::Gossip*)proto)->txt()));
     }
-}
-
-void ClientUI::link()
-{
-    //tcpSocket->link("192.168.56.1",50000);
-    //tcpSocket->link("211.152.34.94",60000);
-    ui->connectButton->setEnabled(0);
-    tcpSocket->nickname=ui->nickname->text();
-    tcpSocket->isRed=ui->comboBox->currentIndex()-1;
-
-//    network::EnterRoom *enter= new network::EnterRoom();
-//    enter->set_room_id(0);
-//    tcpSocket->sendMessage(network::MSG_ENTER_ROOM, enter);
-//    QFile *fp=new QFile("account");
-//    QTextStream account(fp);
-//    fp->open(QIODevice::WriteOnly);
-//    account<<ui->editLoginName->text()<<endl;
-//    account<<ui->editPassword->text()<<endl;
-//    fp->close();
-
 }
 
 void ClientUI::displayError(QAbstractSocket::SocketError)
 {
-    network::Gossip* error_msg = new network::Gossip();
-    error_msg->set_type(network::GOSSIP_NOTICE);
-    QString txt = tcpSocket->errorString();
-    error_msg->set_txt(txt.toStdString());
-    showMessage(0, error_msg); //输出错误信息
+    ui->LabError->setText(tcpSocket->errorString());
+    ui->LabError->setStyleSheet("color:red");
 }
 
 void ClientUI::UserLogin()
@@ -187,34 +140,34 @@ void ClientUI::UserLogin()
     QString password = ui->editPassword->text().trimmed();
     if(username.trimmed() == "")
     {
-        ui->LabError->setText("用户名不能为空");
+        ui->LabError->setText(QStringLiteral("用户名不能为空"));
         ui->LabError->setStyleSheet("color:red");
         return;
     }
 
     if(username.length() < 5)
     {
-        ui->LabError->setText("用户名太短，请检查");
+        ui->LabError->setText(QStringLiteral("用户名太短，请检查"));
         ui->LabError->setStyleSheet("color:red");
         return;
     }
 
     if(password.trimmed() == "")
     {
-        ui->LabError->setText("密码不能为空");
+        ui->LabError->setText(QStringLiteral("密码不能为空"));
         ui->LabError->setStyleSheet("color:red");
         return;
     }
 
     if(password.length() < 6)
     {
-        ui->LabError->setText("密码太短，请检查");
+        ui->LabError->setText(QStringLiteral("密码太短，请检查"));
         ui->LabError->setStyleSheet("color:red");
         return;
     }
 
     // 发送数据包
-    ui->LabError->setText("正在验证，请稍后......");
+    ui->LabError->setText(QStringLiteral("正在验证，请稍后......"));
 
     network::LoginRequest* login_req = new network::LoginRequest();
     login_req->set_user_id(username.toStdString());
@@ -224,7 +177,6 @@ void ClientUI::UserLogin()
 
 void ClientUI::UserRegistShow()
 {
-    ui->frameLobby->hide();
     ui->frameLogin->hide();
     ui->frameRegist->show();
 }
@@ -282,7 +234,6 @@ void ClientUI::UserRegist()
 
 void ClientUI::UserBackLogin()
 {
-    ui->frameLobby->hide();
     ui->frameRegist->hide();
     ui->frameLogin->show();
     ui->editLoginName->setText("");

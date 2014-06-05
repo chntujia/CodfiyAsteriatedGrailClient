@@ -1,4 +1,4 @@
-﻿#define LOBBY
+﻿//#define LOBBY
 #include <QtGui>
 #include <QApplication>
 #include "widget/Animation.h"
@@ -25,20 +25,13 @@ int main(int argc, char *argv[])
     l.show();
     return a.exec();
 #else
-    c.link();
     if(c.exec() == QDialog::Accepted)
     {
-        RoomView view;
-        gui->setWindow(view.window());
-        animation->setRoomScene(view.getScene());
-        view.show();
-//GUI初始化完成
-        /**/
-        logic->readyToStart();
-        gui->logAppend(QStringLiteral("请相信这不是卡，这是在等那个还没点Start的二货╮(╯▽╰)╭"));
+        c.disconnect(&c);
+        Lobby l;
+        l.show();
         return a.exec();
     }
-    else
-        return 0;
+    return 0;
 #endif
 }

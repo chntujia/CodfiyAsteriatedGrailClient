@@ -19,7 +19,6 @@ public:
 
 
 public slots:
-    void link();
     void showMessage(uint16_t proto_type, google::protobuf::Message* proto);
     void displayError(QAbstractSocket::SocketError);
 
