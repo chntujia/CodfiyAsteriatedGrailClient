@@ -14,6 +14,7 @@ class DataInterface : public QObject
 {
     Q_OBJECT
 public:
+    QString nickName;
     explicit DataInterface(QObject *parent = 0);    
     void initCardDB();
     void initDefaultPlayerList();
@@ -55,7 +56,7 @@ public:
     Team* getBlueTeam();
     network::GameInfo* getGameInfo(){return gameInfo;}
     QString getRoleName(int roleID){return roleList[roleID];}
-    QString getButtonInfo(QString skill){return buttonDB[skill];}
+    QString getButtonInfo(QString skill){return buttonDB.contains(skill) ? buttonDB[skill] : skill;}
     QString getRoleSkillInfo(int roleID){return roleSkillDB[roleID];}
 private:
     SafeList<Card*> cardDB;
@@ -68,6 +69,7 @@ private:
     Team *red,*blue,*otherTeam,*myTeam;
     QStringList roleList;
     QString nickNameList[8];
+
     int id;
     int playerMax;
     int firstPlayerID;

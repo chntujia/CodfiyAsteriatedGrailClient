@@ -7,19 +7,20 @@
 
 TipArea::TipArea():selectedCard(NULL)
 {
-    background=QPixmap("resource/tip.png");
-    height=background.height();
-    width=background.width();
+    background = QPixmap("resource/tip.png");
+    height = background.height();
+    width = background.width();
     setVisible(0);
-    box=new QComboBox;
+
+    box = new QComboBox;
     box->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     box->setMinimumContentsLength(37);
-    boxItem=new QGraphicsProxyWidget;
+    boxItem = new QGraphicsProxyWidget;
     boxItem->setWidget(box);
     boxItem->setParentItem(this);
     boxItem->setPos(0.1*width,0.6*height);
-    boxItem->setVisible(0);
-    winflag=false;
+    boxItem->setVisible(false);
+    winflag = false;
 }
 QRectF TipArea::boundingRect() const
 {

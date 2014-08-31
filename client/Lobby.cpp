@@ -11,6 +11,7 @@ Lobby::Lobby(QWidget *parent) :
 {
     roomSet = NULL;
     ui->setupUi(this);
+    setWindowTitle("Welcome back, " + dataInterface->nickName);
     logic->setLobby(this);
     connect(ui->tableWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
     connect(ui->createButton, SIGNAL(clicked()), this, SLOT(onCreateRoom()));

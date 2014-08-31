@@ -12,6 +12,7 @@
 #include "LogArea.h"
 #include "BPArea.h"
 #include "Animation.h"
+#include "Timelinebar.h"
 
 class GUI : public QObject
 {
@@ -35,6 +36,7 @@ public:
     void setBPArea(BPArea* bpArea){this->bpArea = bpArea;}
     void setChatArea(ChatArea*chat){this->chatArea=chat;}
     void setChatLine(ChatLine*chat){this->chatLine=chat;}
+    void setTimelineBar(TimelineBar* bar) { this->timelineBar = bar; }
     void reset();
     void alert(){QApplication::alert(window);}
     QWidget* getWindow(){return window;}
@@ -50,6 +52,7 @@ public:
     HandArea* getCoverArea(){return coverArea;}
     BPArea* getBPArea(){return bpArea;}
     ChatLine*getChatLine(){return chatLine;}
+    TimelineBar* getTimelineBar() { return this->timelineBar; }
 public slots:
     void showCoverArea(bool show);
     void showCoverArea();
@@ -68,6 +71,7 @@ private:
     ChatLine* chatLine;
     HandArea* coverArea;
     BPArea* bpArea;
+    TimelineBar *timelineBar;
 };
 extern GUI* gui;
 

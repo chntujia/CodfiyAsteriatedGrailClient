@@ -2,6 +2,7 @@
 #define ROOMSCENE_H
 
 #include <QGraphicsScene>
+#include <QGraphicsProxyWidget>
 #include "HandArea.h"
 #include "PlayerArea.h"
 #include "TeamArea.h"
@@ -10,7 +11,8 @@
 #include "ButtonArea.h"
 #include "LogArea.h"
 #include "BPArea.h"
-#include <QGraphicsProxyWidget>
+#include "Timelinebar.h"
+
 class RoomScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -32,8 +34,8 @@ private:
     QGraphicsProxyWidget* chatAreaProxy;
     ChatLine* chatLine;
     QGraphicsProxyWidget* chatLineProxy;
-
     HandArea *coverArea;
     BPArea* bpArea;
+    TimelineBar* timelineBar;
 };
 #endif // ROOMSCENE_H

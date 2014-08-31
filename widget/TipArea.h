@@ -24,6 +24,8 @@ public:
     QString getBoxCurrentText(){return box->currentText();}
     int getSelectedCardID(){return selectedCard->getID();}
     void win(int team);
+    int getWidth() { return width; }
+    int getHeight() { return height; }
 
 public slots:
     void onCardSelected(int id);

@@ -29,10 +29,6 @@ class Ui_ClientUI
 {
 public:
     QFrame *frameLogin;
-    QWidget *layoutWidget_3;
-    QHBoxLayout *horizontalLayout_3;
-    QPushButton *btnLogin;
-    QPushButton *btnRegist;
     QWidget *layoutWidget;
     QHBoxLayout *horizontalLayout;
     QLabel *label_3;
@@ -42,8 +38,13 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_4;
     QLineEdit *editPassword;
-    QFrame *frameRegist;
     QWidget *layoutWidget1;
+    QHBoxLayout *horizontalLayout_3;
+    QPushButton *btnLogin;
+    QPushButton *btnGuest;
+    QPushButton *btnRegist;
+    QFrame *frameRegist;
+    QWidget *layoutWidget2;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_15;
     QLabel *label_14;
@@ -82,24 +83,6 @@ public:
         frameLogin->setGeometry(QRect(2, 3, 251, 301));
         frameLogin->setFrameShape(QFrame::StyledPanel);
         frameLogin->setFrameShadow(QFrame::Raised);
-        layoutWidget_3 = new QWidget(frameLogin);
-        layoutWidget_3->setObjectName(QStringLiteral("layoutWidget_3"));
-        layoutWidget_3->setGeometry(QRect(30, 180, 191, 25));
-        horizontalLayout_3 = new QHBoxLayout(layoutWidget_3);
-        horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
-        btnLogin = new QPushButton(layoutWidget_3);
-        btnLogin->setObjectName(QStringLiteral("btnLogin"));
-
-        horizontalLayout_3->addWidget(btnLogin);
-
-        btnRegist = new QPushButton(layoutWidget_3);
-        btnRegist->setObjectName(QStringLiteral("btnRegist"));
-
-        horizontalLayout_3->addWidget(btnRegist);
-
         layoutWidget = new QWidget(frameLogin);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
         layoutWidget->setGeometry(QRect(30, 60, 189, 22));
@@ -141,15 +124,39 @@ public:
 
         horizontalLayout_2->addWidget(editPassword);
 
+        layoutWidget1 = new QWidget(frameLogin);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(10, 180, 239, 25));
+        horizontalLayout_3 = new QHBoxLayout(layoutWidget1);
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
+        btnLogin = new QPushButton(layoutWidget1);
+        btnLogin->setObjectName(QStringLiteral("btnLogin"));
+
+        horizontalLayout_3->addWidget(btnLogin);
+
+        btnGuest = new QPushButton(layoutWidget1);
+        btnGuest->setObjectName(QStringLiteral("btnGuest"));
+
+        horizontalLayout_3->addWidget(btnGuest);
+
+        btnRegist = new QPushButton(layoutWidget1);
+        btnRegist->setObjectName(QStringLiteral("btnRegist"));
+        btnRegist->setEnabled(false);
+
+        horizontalLayout_3->addWidget(btnRegist);
+
         frameRegist = new QFrame(ClientUI);
         frameRegist->setObjectName(QStringLiteral("frameRegist"));
         frameRegist->setGeometry(QRect(9, 9, 241, 301));
         frameRegist->setFrameShape(QFrame::StyledPanel);
         frameRegist->setFrameShadow(QFrame::Raised);
-        layoutWidget1 = new QWidget(frameRegist);
-        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(0, 0, 242, 301));
-        verticalLayout = new QVBoxLayout(layoutWidget1);
+        layoutWidget2 = new QWidget(frameRegist);
+        layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
+        layoutWidget2->setGeometry(QRect(0, 0, 242, 301));
+        verticalLayout = new QVBoxLayout(layoutWidget2);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -157,12 +164,12 @@ public:
         horizontalLayout_15 = new QHBoxLayout();
         horizontalLayout_15->setSpacing(6);
         horizontalLayout_15->setObjectName(QStringLiteral("horizontalLayout_15"));
-        label_14 = new QLabel(layoutWidget1);
+        label_14 = new QLabel(layoutWidget2);
         label_14->setObjectName(QStringLiteral("label_14"));
 
         horizontalLayout_15->addWidget(label_14);
 
-        regLoginName = new QLineEdit(layoutWidget1);
+        regLoginName = new QLineEdit(layoutWidget2);
         regLoginName->setObjectName(QStringLiteral("regLoginName"));
         regLoginName->setMaxLength(12);
 
@@ -174,12 +181,12 @@ public:
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        label_5 = new QLabel(layoutWidget1);
+        label_5 = new QLabel(layoutWidget2);
         label_5->setObjectName(QStringLiteral("label_5"));
 
         horizontalLayout_4->addWidget(label_5);
 
-        regNickname = new QLineEdit(layoutWidget1);
+        regNickname = new QLineEdit(layoutWidget2);
         regNickname->setObjectName(QStringLiteral("regNickname"));
 
         horizontalLayout_4->addWidget(regNickname);
@@ -190,12 +197,12 @@ public:
         horizontalLayout_10 = new QHBoxLayout();
         horizontalLayout_10->setSpacing(6);
         horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
-        label_10 = new QLabel(layoutWidget1);
+        label_10 = new QLabel(layoutWidget2);
         label_10->setObjectName(QStringLiteral("label_10"));
 
         horizontalLayout_10->addWidget(label_10);
 
-        regPassword = new QLineEdit(layoutWidget1);
+        regPassword = new QLineEdit(layoutWidget2);
         regPassword->setObjectName(QStringLiteral("regPassword"));
         regPassword->setMaxLength(20);
         regPassword->setEchoMode(QLineEdit::Password);
@@ -208,12 +215,12 @@ public:
         horizontalLayout_12 = new QHBoxLayout();
         horizontalLayout_12->setSpacing(6);
         horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
-        label_11 = new QLabel(layoutWidget1);
+        label_11 = new QLabel(layoutWidget2);
         label_11->setObjectName(QStringLiteral("label_11"));
 
         horizontalLayout_12->addWidget(label_11);
 
-        regPasswordAgain = new QLineEdit(layoutWidget1);
+        regPasswordAgain = new QLineEdit(layoutWidget2);
         regPasswordAgain->setObjectName(QStringLiteral("regPasswordAgain"));
         regPasswordAgain->setMaxLength(20);
         regPasswordAgain->setEchoMode(QLineEdit::Password);
@@ -226,12 +233,12 @@ public:
         horizontalLayout_14 = new QHBoxLayout();
         horizontalLayout_14->setSpacing(6);
         horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
-        label_13 = new QLabel(layoutWidget1);
+        label_13 = new QLabel(layoutWidget2);
         label_13->setObjectName(QStringLiteral("label_13"));
 
         horizontalLayout_14->addWidget(label_13);
 
-        regMobile = new QLineEdit(layoutWidget1);
+        regMobile = new QLineEdit(layoutWidget2);
         regMobile->setObjectName(QStringLiteral("regMobile"));
         regMobile->setInputMethodHints(Qt::ImhDigitsOnly);
         regMobile->setMaxLength(12);
@@ -244,12 +251,12 @@ public:
         horizontalLayout_13 = new QHBoxLayout();
         horizontalLayout_13->setSpacing(6);
         horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
-        label_12 = new QLabel(layoutWidget1);
+        label_12 = new QLabel(layoutWidget2);
         label_12->setObjectName(QStringLiteral("label_12"));
 
         horizontalLayout_13->addWidget(label_12);
 
-        regEmail = new QLineEdit(layoutWidget1);
+        regEmail = new QLineEdit(layoutWidget2);
         regEmail->setObjectName(QStringLiteral("regEmail"));
         regEmail->setMaxLength(50);
 
@@ -258,12 +265,12 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_13);
 
-        LabErrorReg = new QLabel(layoutWidget1);
+        LabErrorReg = new QLabel(layoutWidget2);
         LabErrorReg->setObjectName(QStringLiteral("LabErrorReg"));
 
         verticalLayout->addWidget(LabErrorReg);
 
-        label_6 = new QLabel(layoutWidget1);
+        label_6 = new QLabel(layoutWidget2);
         label_6->setObjectName(QStringLiteral("label_6"));
         QFont font;
         font.setFamily(QStringLiteral("Aharoni"));
@@ -275,13 +282,13 @@ public:
 
         verticalLayout->addWidget(label_6);
 
-        label_8 = new QLabel(layoutWidget1);
+        label_8 = new QLabel(layoutWidget2);
         label_8->setObjectName(QStringLiteral("label_8"));
         label_8->setFont(font);
 
         verticalLayout->addWidget(label_8);
 
-        label_7 = new QLabel(layoutWidget1);
+        label_7 = new QLabel(layoutWidget2);
         label_7->setObjectName(QStringLiteral("label_7"));
         label_7->setFont(font);
 
@@ -290,12 +297,12 @@ public:
         horizontalLayout_11 = new QHBoxLayout();
         horizontalLayout_11->setSpacing(6);
         horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
-        btnRegistCommit = new QPushButton(layoutWidget1);
+        btnRegistCommit = new QPushButton(layoutWidget2);
         btnRegistCommit->setObjectName(QStringLiteral("btnRegistCommit"));
 
         horizontalLayout_11->addWidget(btnRegistCommit);
 
-        btnBackLogin = new QPushButton(layoutWidget1);
+        btnBackLogin = new QPushButton(layoutWidget2);
         btnBackLogin->setObjectName(QStringLiteral("btnBackLogin"));
 
         horizontalLayout_11->addWidget(btnBackLogin);
@@ -322,11 +329,12 @@ public:
     void retranslateUi(QDialog *ClientUI)
     {
         ClientUI->setWindowTitle(QApplication::translate("ClientUI", "ClientUI", 0));
-        btnLogin->setText(QApplication::translate("ClientUI", "\347\231\273\345\205\245", 0));
-        btnRegist->setText(QApplication::translate("ClientUI", "\346\263\250\345\206\214", 0));
         label_3->setText(QApplication::translate("ClientUI", "\347\224\250\346\210\267\345\220\215\357\274\232", 0));
         LabError->setText(QString());
         label_4->setText(QApplication::translate("ClientUI", "\345\257\206  \347\240\201\357\274\232", 0));
+        btnLogin->setText(QApplication::translate("ClientUI", "\347\231\273\345\205\245", 0));
+        btnGuest->setText(QApplication::translate("ClientUI", "\346\270\270\345\256\242", 0));
+        btnRegist->setText(QApplication::translate("ClientUI", "\346\263\250\345\206\214", 0));
         label_14->setText(QApplication::translate("ClientUI", "\347\224\250\346\210\267\345\220\215\357\274\232", 0));
         label_5->setText(QApplication::translate("ClientUI", "\346\230\265  \347\247\260\357\274\232", 0));
         label_10->setText(QApplication::translate("ClientUI", "\345\257\206  \347\240\201\357\274\232", 0));

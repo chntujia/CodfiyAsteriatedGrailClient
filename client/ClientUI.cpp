@@ -47,6 +47,7 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(getCommand(uint16_t, google::protobuf::Message*)));
     //merged
     connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(UserLogin()));
+    connect(ui->btnGuest, SIGNAL(clicked()), this, SLOT(GuestLogin()));
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
     connect(ui->btnRegistCommit, SIGNAL(clicked()), this, SLOT(UserRegist()));
     connect(ui->btnBackLogin, SIGNAL(clicked()), this, SLOT(UserBackLogin()));
@@ -81,6 +82,7 @@ void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto
             ui->LabError->setText("登入成功");
             ui->frameLogin->hide();
             ui->frameRegist->hide();
+            dataInterface->nickName = QString::fromStdString(login_rep->nickname());
             accept();
             break;
         case 1: // 帐号错误
@@ -170,8 +172,16 @@ void ClientUI::UserLogin()
     ui->LabError->setText(QStringLiteral("正在验证，请稍后......"));
 
     network::LoginRequest* login_req = new network::LoginRequest();
+    login_req->set_asguest(false);
     login_req->set_user_id(username.toStdString());
     login_req->set_user_password(password.toStdString());
+    tcpSocket->sendMessage(network::MSG_LOGIN_REQ, login_req);
+}
+
+void ClientUI::GuestLogin()
+{
+    network::LoginRequest* login_req = new network::LoginRequest();
+    login_req->set_asguest(true);
     tcpSocket->sendMessage(network::MSG_LOGIN_REQ, login_req);
 }
 

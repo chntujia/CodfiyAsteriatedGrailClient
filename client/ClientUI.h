@@ -21,7 +21,7 @@ public:
 public slots:
     void showMessage(uint16_t proto_type, google::protobuf::Message* proto);
     void displayError(QAbstractSocket::SocketError);
-
+    void GuestLogin();
     void UserLogin();
     void UserRegist();
     void UserRegistShow();

@@ -28,21 +28,22 @@ Role::Role(QObject *parent) :
         do
         {
             i++;
-            if(i==playerMax)
+            if(i == playerMax)
                 i=0;
-            ptr=gameInfo->player_infos(i).id();
+            ptr = gameInfo->player_infos(i).id();
 
-        }while(playerList[ptr]->getColor()==myColor);
-        nextCounterClockwise=ptr;
+        }while(playerList[ptr]->getColor() == myColor);
+        nextCounterClockwise = ptr;
     }
-    handArea=gui->getHandArea();
-    playerArea=gui->getPlayerArea();
-    buttonArea=gui->getButtonArea();
-    decisionArea=gui->getDecisionArea();
-    tipArea=gui->getTipArea();
-    teamArea=gui->getTeamArea();
+    handArea = gui->getHandArea();
+    playerArea = gui->getPlayerArea();
+    buttonArea = gui->getButtonArea();
+    decisionArea = gui->getDecisionArea();
+    tipArea = gui->getTipArea();
+    teamArea = gui->getTeamArea();
     coverArea = gui->getCoverArea();    
-    showArea=gui->getShowArea();
+    showArea = gui->getShowArea();
+    timelineBar = gui->getTimelineBar();
 
 }
 void Role::makeConnection()
@@ -1336,6 +1337,12 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     gui->setEnable(0);
                 }
                 break;
+            }
+            if(targetID == myID){
+                timelineBar->startCounting(58);
+            }
+            else{
+                timelineBar->stopCounting();
             }
         }
         break;

@@ -68,6 +68,7 @@ protected:
     TipArea*tipArea;
     TeamArea*teamArea;
     ShowArea* showArea;
+    TimelineBar* timelineBar;
     bool usedAttack,usedMagic,usedSpecial,start;
     Role* myRole;
     Team*blue,*red;

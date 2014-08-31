@@ -45,6 +45,10 @@ RoomScene::RoomScene()
     tipArea->setPos(TipAreaPos);
     gui->setTipArea(tipArea);
 
+    timelineBar = new TimelineBar(this, tipArea->getWidth());
+    timelineBar->setPos(tipArea->x(), tipArea->y() + tipArea->getHeight() * 1.2);
+    gui->setTimelineBar(timelineBar);
+
     decisionArea=new DecisionArea;
     addItem(decisionArea);
     decisionArea->setPos(DecisionAreaPos);
