@@ -1339,7 +1339,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 break;
             }
             if(targetID == myID){
-                timelineBar->startCounting(58);
+                timelineBar->startCounting(59);
             }
             else{
                 timelineBar->stopCounting();

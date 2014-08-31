@@ -5,7 +5,6 @@
 
 Client::Client()
 {
-    forwarded=false;
     connect(this,SIGNAL(readyRead()),this,SLOT(readMessage()));
     connect(logic,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),this,SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
     connect(this,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
@@ -14,10 +13,8 @@ Client::Client()
 
 void Client::onDisconnected()
 {
-    if(forwarded){
-        QMessageBox*prop=new QMessageBox(QMessageBox::Critical,"Warning","你已断线，请退出后重新登录");
-        prop->exec();
-    }
+    QMessageBox*prop=new QMessageBox(QMessageBox::Critical,"Warning",QStringLiteral("你已断线，请退出后重新登录"));
+    prop->exec();
 }
 
 void Client::link(QString addr,int port)

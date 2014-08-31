@@ -24,7 +24,6 @@ private:
     QString m_addr;
     QString nickname;
     int isRed;
-    bool forwarded;
 };
 
 #endif // CLIENT_H

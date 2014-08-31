@@ -79,20 +79,20 @@ void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto
         switch (result)
         {
         case 0: // 成功
-            ui->LabError->setText("登入成功");
+            ui->LabError->setText(QStringLiteral("登入成功"));
             ui->frameLogin->hide();
             ui->frameRegist->hide();
             dataInterface->nickName = QString::fromStdString(login_rep->nickname());
             accept();
             break;
         case 1: // 帐号错误
-            ui->LabError->setText("用户名或密码错误");
+            ui->LabError->setText(QStringLiteral("用户名或密码错误"));
             break;
         case 2: // 帐号被封停
-            ui->LabError->setText("您的帐号已被封停，请联系客服");
+            ui->LabError->setText(QStringLiteral("您的帐号已被封停，请联系客服"));
             break;
         default:// 其它错误
-            ui->LabError->setText("未知错误");
+            ui->LabError->setText(QStringLiteral("未知错误：") + result);
         }
         break;
     }
