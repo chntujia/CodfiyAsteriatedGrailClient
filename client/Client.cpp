@@ -5,8 +5,9 @@
 
 Client::Client()
 {
+    nextBlockSize = -1;
     connect(this,SIGNAL(readyRead()),this,SLOT(readMessage()));
-    connect(logic,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),this,SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
+    connect(logic,SIGNAL(sendCommand(unsigned short, google::protobuf::Message*)),this,SLOT(sendMessage(unsigned short, google::protobuf::Message*)));
     connect(this,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     logic->setClient(this);
 }
@@ -25,13 +26,13 @@ void Client::link(QString addr,int port)
 }
 void Client::readMessage()
 {
-    quint32 nextBlockSize;
-
-    while(1){
-        if(bytesAvailable() < sizeof(quint32)){
-            return;
+    while(bytesAvailable() > 0){
+        if(nextBlockSize == -1){
+            if(bytesAvailable() < sizeof(quint32)){
+                return;
+            }
+            read((char*)&nextBlockSize,sizeof(quint32));
         }
-        read((char*)&nextBlockSize,sizeof(quint32));
         //如果没有得到全部的数据，则返回，继续接收数据
         if(bytesAvailable() < nextBlockSize){
             return;
@@ -40,15 +41,16 @@ void Client::readMessage()
 
         char *msg = message.data();
 
-        uint16_t proto_type;
+        unsigned short proto_type;
         google::protobuf::Message* proto;
         proto = (google::protobuf::Message*)proto_decoder(msg, proto_type);
+        nextBlockSize = -1;
         //将接收到的数据存放到变量中
         emit getMessage(proto_type, proto);
     }
 }
 
-void Client::sendMessage(uint16_t proto_type, google::protobuf::Message* proto)
+void Client::sendMessage(unsigned short proto_type, google::protobuf::Message* proto)
 {
     string message;
     proto_encoder(proto_type, proto, message);

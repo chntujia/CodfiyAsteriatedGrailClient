@@ -26,19 +26,19 @@ public:
     virtual void drop(int howMany, int cause);
     virtual void dropCover(int howMany, int cause);
     void unactionalCheck();
-    network::Action* newAction(uint32_t action_type);
-    network::Action* newAction(uint32_t action_type, uint32_t action_id);
-    network::Respond* newRespond(uint32_t respond_id);
+    network::Action* newAction(unsigned int action_type);
+    network::Action* newAction(unsigned int action_type, unsigned int action_id);
+    network::Respond* newRespond(unsigned int respond_id);
 
     void JiAngStone();
     void JiAngHarm();
 
     void ShengLiStone();
 signals:
-    void sendCommand(uint16_t proto_type, google::protobuf::Message* proto);
+    void sendCommand(unsigned short proto_type, google::protobuf::Message* proto);
 
 public slots:
-    virtual void decipher(uint16_t, google::protobuf::Message*);
+    virtual void decipher(unsigned short, google::protobuf::Message*);
     virtual void onOkClicked();
     virtual void onCancelClicked();
     virtual void cardAnalyse();
@@ -75,7 +75,6 @@ protected:
     int chosenAction;
 	//FIXME: 暂时只保存了额外行动跟响应类技能时的CMD
     network::Command skillCmd;
-    QMutex mutex;
 
     int ShiRenChoice;
 };

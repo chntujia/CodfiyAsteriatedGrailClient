@@ -14,7 +14,10 @@ public:
     void cleanRoom();
     void destroyRoom();
     void makeConnection();
-    void setClient(Client* socket){this->socket=socket;}
+    void setClient(Client* socket){
+        this->socket = socket;
+        makeConnection();
+    }
     void setLobby(Lobby* l) { lobby = l; }
     void setMyRole(int roleID=0);
     void onError(int error);
@@ -23,10 +26,10 @@ public:
     void joinTeam();
     Client* getClient(){return socket;}
 signals:
-    void sendCommand(uint16_t proto_type, google::protobuf::Message* proto);  
+    void sendCommand(unsigned short proto_type, google::protobuf::Message* proto);
 public slots:
     void onOkClicked();
-    void getCommand(uint16_t proto_type, google::protobuf::Message* proto);
+    void getCommand(unsigned short proto_type, google::protobuf::Message* proto);
     void roleAnalyse();
     void onButtonClicked(int id);
     void onButtonUnclicked(int id);

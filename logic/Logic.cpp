@@ -96,7 +96,9 @@ void Logic::destroyRoom(){
 
 void Logic::makeConnection()
 {
-    connect(socket, SIGNAL(getMessage(uint16_t, google::protobuf::Message*)), logic, SLOT(getCommand(uint16_t, google::protobuf::Message*)));
+    connect(socket, SIGNAL(getMessage(unsigned short, google::protobuf::Message*)),
+            logic, SLOT(getCommand(unsigned short, google::protobuf::Message*)),
+            Qt::QueuedConnection);
 }
 
 void Logic::setMyRole(int roleID)
@@ -233,7 +235,7 @@ void Logic::setMyRole(int roleID)
 
 }
 
-void Logic::getCommand(uint16_t proto_type, google::protobuf::Message* proto)
+void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* proto)
 {
     QMutexLocker locker(&mutex);
     TipArea *tipArea;

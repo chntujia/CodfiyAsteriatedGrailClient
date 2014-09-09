@@ -1,4 +1,5 @@
 ﻿//#define LOBBY
+#include <QMetaType>
 #include <QtGui>
 #include <QApplication>
 #include "widget/Animation.h"

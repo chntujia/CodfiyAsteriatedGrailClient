@@ -48,9 +48,11 @@ Role::Role(QObject *parent) :
 }
 void Role::makeConnection()
 {
-    connect(logic->getClient(),SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(decipher(uint16_t, google::protobuf::Message*)));
+    connect(logic->getClient(),SIGNAL(getMessage(unsigned short, google::protobuf::Message*)),
+            this,SLOT(decipher(unsigned short, google::protobuf::Message*)),
+            Qt::QueuedConnection);
 
-    connect(this,SIGNAL(sendCommand(uint16_t, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
+    connect(this,SIGNAL(sendCommand(unsigned short, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(unsigned short, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
     connect(decisionArea,SIGNAL(cancelClicked()),this,SLOT(onCancelClicked()));
     connect(decisionArea,SIGNAL(exchangeClicked()),this,SLOT(exchangeCards()));
@@ -649,8 +651,6 @@ void Role::ShengLiStone()
 
 void Role::onCancelClicked()
 {
-    QMutexLocker locker(&mutex);
-
     network::Respond* respond;
     switch(state)
     {
@@ -729,8 +729,6 @@ void Role::onCancelClicked()
 
 void Role::onOkClicked()
 {
-    QMutexLocker locker(&mutex);
-
     SafeList<Card*>selectedCards;
     SafeList<Player*>selectedPlayers;
 
@@ -1049,7 +1047,7 @@ void Role::onOkClicked()
     }
 }
 
-network::Action* Role::newAction(uint32_t action_type)
+network::Action* Role::newAction(unsigned int action_type)
 {
     network::Action* action = new network::Action();
     action->set_src_id(myID);
@@ -1057,7 +1055,7 @@ network::Action* Role::newAction(uint32_t action_type)
     return action;
 }
 
-network::Action* Role::newAction(uint32_t action_type, uint32_t action_id)
+network::Action* Role::newAction(unsigned int action_type, unsigned int action_id)
 {
     network::Action* action = new network::Action();
     action->set_src_id(myID);
@@ -1066,7 +1064,7 @@ network::Action* Role::newAction(uint32_t action_type, uint32_t action_id)
     return action;
 }
 
-network::Respond* Role::newRespond(uint32_t respond_id)
+network::Respond* Role::newRespond(unsigned int respond_id)
 {
     network::Respond* respond = new network::Respond();
     respond->set_src_id(myID);
@@ -1076,8 +1074,6 @@ network::Respond* Role::newRespond(uint32_t respond_id)
 
 void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 {
-    QMutexLocker locker(&mutex);
-
     int targetID;
     int cardID;
     int hitRate;

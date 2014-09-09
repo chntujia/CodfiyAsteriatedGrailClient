@@ -26,7 +26,7 @@ public slots:
     void onReturnPressed();
     void onTextChanged(QString);
 signals:
-    void toChat(uint16_t proto_type, google::protobuf::Message*);
+    void toChat(unsigned short proto_type, google::protobuf::Message*);
 };
 
 #endif // LOGAREA_H

@@ -1,7 +1,7 @@
 ﻿#include "codec.h"
 #include <QDebug>
 
-bool proto_encoder(uint16_t type, google::protobuf::Message *body, string& msg)
+bool proto_encoder(unsigned short type, google::protobuf::Message *body, string& msg)
 {
 	MsgHeader header;
 
@@ -25,7 +25,7 @@ type：信息类型（返回值）
 
 return：反串化后的协议指针（请记得删除）
 */
-void* proto_decoder(const char* msg, uint16_t& type)
+void* proto_decoder(const char* msg, unsigned short &type)
 {
 	MsgHeader* header_ptr = (MsgHeader*)msg;
     google::protobuf::Message *proto = NULL;
@@ -103,12 +103,11 @@ void* proto_decoder(const char* msg, uint16_t& type)
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
 	default:
-		type = 0;
-        qDebug("codec.cpp:: Cannot find matched type");
+        qDebug("codec.cpp:: Cannot find matched type: %d", header_ptr->type);
 		return NULL;
 		break;
 	}
-    qDebug( "Recieve: size:%d, type:%d \n%s", header_ptr->len, header_ptr->type, proto->DebugString().c_str());
+    qDebug( "Recieve: size: %d, type: %d \n%s", header_ptr->len, header_ptr->type, proto->DebugString().c_str());
 
     return proto;
 }

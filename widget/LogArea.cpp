@@ -37,7 +37,7 @@ ChatLine::ChatLine(QWidget *parent):
                   "background-color:transparent");
     setFixedSize(259,25);
     connect(this,SIGNAL(returnPressed()),this,SLOT(onReturnPressed()));
-    connect(this,SIGNAL(toChat(uint16_t, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(uint16_t, google::protobuf::Message*)));
+    connect(this,SIGNAL(toChat(unsigned short, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(unsigned short, google::protobuf::Message*)));
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(onTextChanged(QString)));
 }
 void ChatLine::onReturnPressed()

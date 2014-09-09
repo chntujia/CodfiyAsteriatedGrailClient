@@ -15,15 +15,16 @@ public:
     void link(QString addr,int port);
     QString GetAddr() { return m_addr; }
 signals:
-    void getMessage(uint16_t proto_type, google::protobuf::Message* proto);
+    void getMessage(unsigned short proto_type, google::protobuf::Message* proto);
 public slots:
     void readMessage();
-    void sendMessage(uint16_t proto_type, google::protobuf::Message* proto);
+    void sendMessage(unsigned short proto_type, google::protobuf::Message* proto);
     void onDisconnected();
 private:
     QString m_addr;
     QString nickname;
     int isRed;
+    quint32 nextBlockSize;
 };
 
 #endif // CLIENT_H

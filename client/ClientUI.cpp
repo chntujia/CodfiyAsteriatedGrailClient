@@ -43,9 +43,9 @@ ClientUI::ClientUI(QWidget *parent) :
     ui->editPassword->setValidator(new QRegExpValidator(rx3, this));
 
     connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)), this,SLOT(displayError(QAbstractSocket::SocketError)));
-    connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),this,SLOT(showMessage(uint16_t, google::protobuf::Message*)));
-    connect(tcpSocket,SIGNAL(getMessage(uint16_t, google::protobuf::Message*)),logic,SLOT(getCommand(uint16_t, google::protobuf::Message*)));
-    //merged
+    connect(tcpSocket,SIGNAL(getMessage(unsigned short, google::protobuf::Message*)),
+            this,SLOT(showMessage(unsigned short, google::protobuf::Message*)));
+
     connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(UserLogin()));
     connect(ui->btnGuest, SIGNAL(clicked()), this, SLOT(GuestLogin()));
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
@@ -65,7 +65,7 @@ ClientUI::~ClientUI()
     delete ui;
 }
 
-void ClientUI::showMessage(uint16_t proto_type, google::protobuf::Message* proto)
+void ClientUI::showMessage(unsigned short proto_type, google::protobuf::Message* proto)
 {
     network::LoginResponse* login_rep;
     switch (proto_type)
