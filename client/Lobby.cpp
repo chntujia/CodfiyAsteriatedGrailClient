@@ -1,4 +1,5 @@
-﻿#include "Lobby.h"
+﻿#include <QInputDialog>
+#include "Lobby.h"
 #include "ui_Lobby.h"
 #include "data/DataInterface.h"
 #include "logic/Logic.h"
@@ -59,6 +60,10 @@ void Lobby::fill(RoomListResponse* list)
         ui->tableWidget->setItem(i, SEAT_MODE, newItem);
         newItem = new QTableWidgetItem(QString::number(game.now_player()) + "/" + QString::number(game.max_player()));
         ui->tableWidget->setItem(i, PLAYER_NUM, newItem);
+        newItem = new QTableWidgetItem(game.allow_guest() ? "N" : "Y");
+        ui->tableWidget->setItem(i, WELCOME_GUEST, newItem);
+        newItem = new QTableWidgetItem(game.has_password() ? "Y" : "N");
+        ui->tableWidget->setItem(i, HAS_PASSWORD, newItem);
     }
 }
 
@@ -78,11 +83,19 @@ void Lobby::setEnable(bool enable)
 
 void Lobby::onItemClicked(QModelIndex index)
 {
-    ui->tableWidget->setEnabled(false);
     int row = index.row();
     RoomListResponse_RoomInfo room = roomList.rooms(row);
-    newWindow(room.max_player());
     network::EnterRoomRequest *enter= new network::EnterRoomRequest();
+    if(room.has_password()){
+        QString pwd = QInputDialog::getText(this, QStringLiteral("进击的小黑屋："),
+                                    QStringLiteral("请输入暗语:"), QLineEdit::Normal);
+        if(!pwd.isEmpty())
+            enter->set_password(pwd.toStdString());
+    }
+    ui->tableWidget->setEnabled(false);
+
+    newWindow(room.max_player());
+
     enter->set_room_id(room.room_id());
     logic->getClient()->sendMessage(network::MSG_ENTER_ROOM_REQ, enter);
 }
@@ -108,6 +121,8 @@ void Lobby::onOpenRoom(){
     int seatOrder = roomSet->getSeatOrder();
     int roleSelectionStrategy = roomSet->getRoleSelection();
     int roleRange = roomSet->getRoleRange();
+    bool allowGuest = roomSet->getAllowGuest();
+    std::string password = roomSet->getPassword().toStdString();
     std::string roomName = roomSet->getRoomName().toStdString();
 
 
@@ -117,6 +132,8 @@ void Lobby::onOpenRoom(){
     create->set_max_player(playerNum);
     create->set_seat_mode(seatOrder);
     create->set_role_range(roleRange);
+    create->set_allow_guest(allowGuest);
+    create->set_password(password);
     create->set_room_name(roomName);
 
     logic->getClient()->sendMessage(network::MSG_CREATE_ROOM_REQ, create);

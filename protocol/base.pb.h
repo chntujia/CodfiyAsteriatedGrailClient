@@ -937,6 +937,20 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 role_range() const;
   inline void set_role_range(::google::protobuf::int32 value);
 
+  // optional bool allow_guest = 8;
+  inline bool has_allow_guest() const;
+  inline void clear_allow_guest();
+  static const int kAllowGuestFieldNumber = 8;
+  inline bool allow_guest() const;
+  inline void set_allow_guest(bool value);
+
+  // optional bool has_password = 9;
+  inline bool has_has_password() const;
+  inline void clear_has_password();
+  static const int kHasPasswordFieldNumber = 9;
+  inline bool has_password() const;
+  inline void set_has_password(bool value);
+
   // @@protoc_insertion_point(class_scope:network.RoomListResponse.RoomInfo)
  private:
   inline void set_has_room_id();
@@ -953,6 +967,10 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline void clear_has_seat_mode();
   inline void set_has_role_range();
   inline void clear_has_role_range();
+  inline void set_has_allow_guest();
+  inline void clear_has_allow_guest();
+  inline void set_has_has_password();
+  inline void clear_has_has_password();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -963,9 +981,11 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   int role_strategy_;
   ::google::protobuf::int32 seat_mode_;
   ::google::protobuf::int32 role_range_;
+  bool allow_guest_;
+  bool has_password_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -1157,6 +1177,25 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline ::std::string* release_room_name();
   inline void set_allocated_room_name(::std::string* room_name);
 
+  // optional bool allow_guest = 6 [default = true];
+  inline bool has_allow_guest() const;
+  inline void clear_allow_guest();
+  static const int kAllowGuestFieldNumber = 6;
+  inline bool allow_guest() const;
+  inline void set_allow_guest(bool value);
+
+  // optional string password = 7 [default = ""];
+  inline bool has_password() const;
+  inline void clear_password();
+  static const int kPasswordFieldNumber = 7;
+  inline const ::std::string& password() const;
+  inline void set_password(const ::std::string& value);
+  inline void set_password(const char* value);
+  inline void set_password(const char* value, size_t size);
+  inline ::std::string* mutable_password();
+  inline ::std::string* release_password();
+  inline void set_allocated_password(::std::string* password);
+
   // @@protoc_insertion_point(class_scope:network.CreateRoomRequest)
  private:
   inline void set_has_role_strategy();
@@ -1169,6 +1208,10 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline void clear_has_role_range();
   inline void set_has_room_name();
   inline void clear_has_room_name();
+  inline void set_has_allow_guest();
+  inline void clear_has_allow_guest();
+  inline void set_has_password();
+  inline void clear_has_password();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1177,9 +1220,11 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   ::google::protobuf::int32 seat_mode_;
   ::google::protobuf::int32 role_range_;
   ::std::string* room_name_;
+  ::std::string* password_;
+  bool allow_guest_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -3283,6 +3328,50 @@ inline void RoomListResponse_RoomInfo::set_role_range(::google::protobuf::int32 
   role_range_ = value;
 }
 
+// optional bool allow_guest = 8;
+inline bool RoomListResponse_RoomInfo::has_allow_guest() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_allow_guest() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_allow_guest() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void RoomListResponse_RoomInfo::clear_allow_guest() {
+  allow_guest_ = false;
+  clear_has_allow_guest();
+}
+inline bool RoomListResponse_RoomInfo::allow_guest() const {
+  return allow_guest_;
+}
+inline void RoomListResponse_RoomInfo::set_allow_guest(bool value) {
+  set_has_allow_guest();
+  allow_guest_ = value;
+}
+
+// optional bool has_password = 9;
+inline bool RoomListResponse_RoomInfo::has_has_password() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_has_password() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_has_password() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_password() {
+  has_password_ = false;
+  clear_has_has_password();
+}
+inline bool RoomListResponse_RoomInfo::has_password() const {
+  return has_password_;
+}
+inline void RoomListResponse_RoomInfo::set_has_password(bool value) {
+  set_has_has_password();
+  has_password_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // RoomListResponse
@@ -3472,6 +3561,98 @@ inline void CreateRoomRequest::set_allocated_room_name(::std::string* room_name)
   } else {
     clear_has_room_name();
     room_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional bool allow_guest = 6 [default = true];
+inline bool CreateRoomRequest::has_allow_guest() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void CreateRoomRequest::set_has_allow_guest() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void CreateRoomRequest::clear_has_allow_guest() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void CreateRoomRequest::clear_allow_guest() {
+  allow_guest_ = true;
+  clear_has_allow_guest();
+}
+inline bool CreateRoomRequest::allow_guest() const {
+  return allow_guest_;
+}
+inline void CreateRoomRequest::set_allow_guest(bool value) {
+  set_has_allow_guest();
+  allow_guest_ = value;
+}
+
+// optional string password = 7 [default = ""];
+inline bool CreateRoomRequest::has_password() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void CreateRoomRequest::set_has_password() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void CreateRoomRequest::clear_has_password() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void CreateRoomRequest::clear_password() {
+  if (password_ != &::google::protobuf::internal::kEmptyString) {
+    password_->clear();
+  }
+  clear_has_password();
+}
+inline const ::std::string& CreateRoomRequest::password() const {
+  return *password_;
+}
+inline void CreateRoomRequest::set_password(const ::std::string& value) {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  password_->assign(value);
+}
+inline void CreateRoomRequest::set_password(const char* value) {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  password_->assign(value);
+}
+inline void CreateRoomRequest::set_password(const char* value, size_t size) {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  password_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* CreateRoomRequest::mutable_password() {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  return password_;
+}
+inline ::std::string* CreateRoomRequest::release_password() {
+  clear_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = password_;
+    password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void CreateRoomRequest::set_allocated_password(::std::string* password) {
+  if (password_ != &::google::protobuf::internal::kEmptyString) {
+    delete password_;
+  }
+  if (password) {
+    set_has_password();
+    password_ = password;
+  } else {
+    clear_has_password();
+    password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 

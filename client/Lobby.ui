@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
+    <width>835</width>
     <height>372</height>
    </rect>
   </property>
@@ -18,9 +18,15 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>521</width>
+     <width>711</width>
      <height>351</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>521</width>
+     <height>351</height>
+    </size>
    </property>
    <property name="sortingEnabled">
     <bool>true</bool>
@@ -42,19 +48,29 @@
    </column>
    <column>
     <property name="text">
-     <string>座次</string>
+     <string>人数</string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>人数</string>
+     <string>实名</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>暗语</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>座次</string>
     </property>
    </column>
   </widget>
   <widget class="QPushButton" name="createButton">
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>740</x>
      <y>10</y>
      <width>75</width>
      <height>23</height>
@@ -67,7 +83,7 @@
   <widget class="QPushButton" name="refreshButton">
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>740</x>
      <y>40</y>
      <width>75</width>
      <height>23</height>
@@ -80,7 +96,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>550</x>
+     <x>750</x>
      <y>80</y>
      <width>54</width>
      <height>191</height>

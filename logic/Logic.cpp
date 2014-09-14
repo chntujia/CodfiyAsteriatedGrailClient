@@ -34,7 +34,7 @@
 #include "MoNv.h"
 #include "ShiRen.h"
 #include <QSound>
-
+#include "Common.h"
 #define NORMAL 0
 #define READY 1
 #define JOIN_TEAM 2
@@ -322,8 +322,14 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         switch(error->id())
         {
         //GE_DISCONNECTED
-        case 25:
+        case GE_DISCONNECTED:
             gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线</font>"));
+            break;
+        case GE_NOT_WELCOME:
+            gui->logAppend(QStringLiteral("<font color=\'red\'>啊咧？您不受待见呢。。</font>"));
+            break;
+        case GE_WRONG_PASSWORD:
+            gui->logAppend(QStringLiteral("<font color=\'red\'>暗语不对呢。。</font>"));
             break;
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");

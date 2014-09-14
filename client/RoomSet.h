@@ -19,9 +19,10 @@ public:
     int getSeatOrder();
     int getRoleSelection();
     int getRoleRange();
+    bool getAllowGuest();
+    QString getPassword();
     QString getRoomName();
 public slots:
-    void onCreateRoom();
     void onCancelRoom();
 
 protected:

@@ -6,8 +6,9 @@ RoomSet::RoomSet(QWidget *parent) :
     ui(new Ui::RoomSet)
 {
     ui->setupUi(this);
-    connect(ui->okButton, SIGNAL(clicked()), this, SLOT(onCreateRoom()));
+    connect(ui->okButton, SIGNAL(clicked()), this, SIGNAL(createRoom()));
     connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelRoom()));
+    connect(ui->allowPassword, SIGNAL(clicked(bool)), ui->password, SLOT(setEnabled(bool)));
     InitializeSet();
 }
 
@@ -90,13 +91,23 @@ int RoomSet::getRoleRange(){
     return res;
 }
 
-QString RoomSet::getRoomName(){
-    return ui->lineEditRoomName->text();
+bool RoomSet::getAllowGuest()
+{
+    return ui->allowGuest->isChecked();
 }
 
-void RoomSet::onCreateRoom(){
-    emit createRoom();
+QString RoomSet::getPassword()
+{
+    if(ui->allowPassword->isChecked()){
+        return ui->password->text();
+    }
+    else{
+        return "";
+    }
+}
 
+QString RoomSet::getRoomName(){
+    return ui->lineEditRoomName->text();
 }
 
 void RoomSet::onCancelRoom(){

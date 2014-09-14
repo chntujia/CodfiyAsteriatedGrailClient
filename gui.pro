@@ -177,4 +177,5 @@ SOURCES += main.cpp \
            widget/ShowArea.cpp \
            widget/TeamArea.cpp \
            widget/TipArea.cpp \
-    widget/Timelinebar.cpp
+    widget/Timelinebar.cpp \
+    data/Common.cpp
