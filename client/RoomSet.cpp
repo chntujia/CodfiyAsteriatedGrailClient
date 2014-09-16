@@ -1,6 +1,8 @@
 #include "RoomSet.h"
 #include "ui_RoomSet.h"
 #include "QTime"
+#include "protocol/action_respond.pb.h"
+
 RoomSet::RoomSet(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RoomSet)
@@ -9,6 +11,7 @@ RoomSet::RoomSet(QWidget *parent) :
     connect(ui->okButton, SIGNAL(clicked()), this, SIGNAL(createRoom()));
     connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelRoom()));
     connect(ui->allowPassword, SIGNAL(clicked(bool)), ui->password, SLOT(setEnabled(bool)));
+    connect(ui->radioButtonPlayer6, SIGNAL(toggled(bool)), ui->radioButtonSeatOrderSanLian, SLOT(setEnabled(bool)));
     InitializeSet();
 }
 
@@ -39,23 +42,19 @@ void RoomSet::InitializeSet(){
     groupPlayerNum->setId(ui->radioButtonPlayer6,6);
     groupPlayerNum->setId(ui->radioButtonPlayer4,4);
 
-    groupSeatOrder->setId(ui->radioButtonSeatOrderSuiji,0);
-    groupSeatOrder->setId(ui->radioButtonSeatOrderSanLian,1);
-    groupSeatOrder->setId(ui->radioButtonSeatOrderErLian,2);
-    groupSeatOrder->setId(ui->radioButtonSeatOrderJianGe,3);
+    groupSeatOrder->setId(ui->radioButtonSeatOrderSuiji, network::SEAT_MODE_RANDOM);
+    groupSeatOrder->setId(ui->radioButtonSeatOrderSanLian, network::SEAT_MODE_3COMBO);
+    groupSeatOrder->setId(ui->radioButtonSeatOrderErLian, network::SEAT_MODE_2COMBO);
+    groupSeatOrder->setId(ui->radioButtonSeatOrderJianGe, network::SEAT_MODE_INTERLACE);
 
-    groupRoleSelection->setId(ui->radioButtonRoleSelectionSanXuanYi,2);
-    groupRoleSelection->setId(ui->radioButtonRoleSelectionSuiJi,1);
-    groupRoleSelection->setId(ui->radioButtonRoleSelectionBanPick,3);
+    groupRoleSelection->setId(ui->radioButtonRoleSelectionSanXuanYi, network::ROLE_STRATEGY_31);
+    groupRoleSelection->setId(ui->radioButtonRoleSelectionSuiJi, network::ROLE_STRATEGY_RANDOM);
+    groupRoleSelection->setId(ui->radioButtonRoleSelectionBanPick, network::ROLE_STRATEGY_BP);
 
     //默认选项
     ui->radioButtonPlayer6->setChecked(true);
     ui->radioButtonSeatOrderSuiji->setChecked(true);
     ui->radioButtonRoleSelectionSanXuanYi->setChecked(true);
-
-    ui->checkBoxRoleRangeBiaozhun->setEnabled(false);
-    ui->checkBoxRoleRangeBiaozhun->setChecked(true);
-
 
     QTime time = QTime::currentTime();
     int rid = time.second()%4;
@@ -66,6 +65,8 @@ void RoomSet::InitializeSet(){
     roomNames[3] = "水叔是好人！";
     ui->lineEditRoomName->setText(roomNames[rid]);
 
+    QRegExp rx("[A-Za-z0-9_]{1,10}");
+    ui->password->setValidator(new QRegExpValidator(rx, this));
 }
 
 int RoomSet::getPlayerNum(){
@@ -80,16 +81,9 @@ int RoomSet::getRoleSelection(){
     return groupRoleSelection->checkedId();
 }
 
-int RoomSet::getRoleRange(){
-    int res = 0;
-    if(ui->checkBoxRoleRangeYiKuo->isChecked()){
-        res += 1;
-    }
-    if(ui->checkBoxRoleRangeSanBan->isChecked()){
-        res += 2;
-    }
-    return res;
-}
+bool RoomSet::getFirstExtension() { return ui->checkBoxRoleRangeYiKuo->isChecked(); }
+
+bool RoomSet::getSecondExtension() { return ui->checkBoxRoleRangeSanBan->isChecked(); }
 
 bool RoomSet::getAllowGuest()
 {

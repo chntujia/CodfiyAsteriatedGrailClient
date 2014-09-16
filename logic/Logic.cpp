@@ -329,7 +329,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             gui->logAppend(QStringLiteral("<font color=\'red\'>啊咧？您不受待见呢。。</font>"));
             break;
         case GE_WRONG_PASSWORD:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>暗语不对呢。。</font>"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>被识破了呢。。</font>"));
             break;
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");

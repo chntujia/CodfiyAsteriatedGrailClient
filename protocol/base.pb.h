@@ -951,6 +951,20 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline bool has_password() const;
   inline void set_has_password(bool value);
 
+  // optional bool first_extension = 10;
+  inline bool has_first_extension() const;
+  inline void clear_first_extension();
+  static const int kFirstExtensionFieldNumber = 10;
+  inline bool first_extension() const;
+  inline void set_first_extension(bool value);
+
+  // optional bool second_extension = 11;
+  inline bool has_second_extension() const;
+  inline void clear_second_extension();
+  static const int kSecondExtensionFieldNumber = 11;
+  inline bool second_extension() const;
+  inline void set_second_extension(bool value);
+
   // @@protoc_insertion_point(class_scope:network.RoomListResponse.RoomInfo)
  private:
   inline void set_has_room_id();
@@ -971,6 +985,10 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline void clear_has_allow_guest();
   inline void set_has_has_password();
   inline void clear_has_has_password();
+  inline void set_has_first_extension();
+  inline void clear_has_first_extension();
+  inline void set_has_second_extension();
+  inline void clear_has_second_extension();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -983,9 +1001,11 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   ::google::protobuf::int32 role_range_;
   bool allow_guest_;
   bool has_password_;
+  bool first_extension_;
+  bool second_extension_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(11 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -1137,38 +1157,10 @@ class CreateRoomRequest : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .network.ROLE_STRATEGY role_strategy = 1;
-  inline bool has_role_strategy() const;
-  inline void clear_role_strategy();
-  static const int kRoleStrategyFieldNumber = 1;
-  inline ::network::ROLE_STRATEGY role_strategy() const;
-  inline void set_role_strategy(::network::ROLE_STRATEGY value);
-
-  // required int32 max_player = 2;
-  inline bool has_max_player() const;
-  inline void clear_max_player();
-  static const int kMaxPlayerFieldNumber = 2;
-  inline ::google::protobuf::int32 max_player() const;
-  inline void set_max_player(::google::protobuf::int32 value);
-
-  // required int32 seat_mode = 3;
-  inline bool has_seat_mode() const;
-  inline void clear_seat_mode();
-  static const int kSeatModeFieldNumber = 3;
-  inline ::google::protobuf::int32 seat_mode() const;
-  inline void set_seat_mode(::google::protobuf::int32 value);
-
-  // required int32 role_range = 4;
-  inline bool has_role_range() const;
-  inline void clear_role_range();
-  static const int kRoleRangeFieldNumber = 4;
-  inline ::google::protobuf::int32 role_range() const;
-  inline void set_role_range(::google::protobuf::int32 value);
-
-  // optional string room_name = 5;
+  // optional string room_name = 1;
   inline bool has_room_name() const;
   inline void clear_room_name();
-  static const int kRoomNameFieldNumber = 5;
+  static const int kRoomNameFieldNumber = 1;
   inline const ::std::string& room_name() const;
   inline void set_room_name(const ::std::string& value);
   inline void set_room_name(const char* value);
@@ -1177,17 +1169,52 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline ::std::string* release_room_name();
   inline void set_allocated_room_name(::std::string* room_name);
 
-  // optional bool allow_guest = 6 [default = true];
+  // optional int32 max_player = 2;
+  inline bool has_max_player() const;
+  inline void clear_max_player();
+  static const int kMaxPlayerFieldNumber = 2;
+  inline ::google::protobuf::int32 max_player() const;
+  inline void set_max_player(::google::protobuf::int32 value);
+
+  // optional .network.ROLE_STRATEGY role_strategy = 3;
+  inline bool has_role_strategy() const;
+  inline void clear_role_strategy();
+  static const int kRoleStrategyFieldNumber = 3;
+  inline ::network::ROLE_STRATEGY role_strategy() const;
+  inline void set_role_strategy(::network::ROLE_STRATEGY value);
+
+  // optional bool first_extension = 4;
+  inline bool has_first_extension() const;
+  inline void clear_first_extension();
+  static const int kFirstExtensionFieldNumber = 4;
+  inline bool first_extension() const;
+  inline void set_first_extension(bool value);
+
+  // optional bool second_extension = 5;
+  inline bool has_second_extension() const;
+  inline void clear_second_extension();
+  static const int kSecondExtensionFieldNumber = 5;
+  inline bool second_extension() const;
+  inline void set_second_extension(bool value);
+
+  // optional int32 seat_mode = 6;
+  inline bool has_seat_mode() const;
+  inline void clear_seat_mode();
+  static const int kSeatModeFieldNumber = 6;
+  inline ::google::protobuf::int32 seat_mode() const;
+  inline void set_seat_mode(::google::protobuf::int32 value);
+
+  // optional bool allow_guest = 7 [default = true];
   inline bool has_allow_guest() const;
   inline void clear_allow_guest();
-  static const int kAllowGuestFieldNumber = 6;
+  static const int kAllowGuestFieldNumber = 7;
   inline bool allow_guest() const;
   inline void set_allow_guest(bool value);
 
-  // optional string password = 7 [default = ""];
+  // optional string password = 8 [default = ""];
   inline bool has_password() const;
   inline void clear_password();
-  static const int kPasswordFieldNumber = 7;
+  static const int kPasswordFieldNumber = 8;
   inline const ::std::string& password() const;
   inline void set_password(const ::std::string& value);
   inline void set_password(const char* value);
@@ -1198,16 +1225,18 @@ class CreateRoomRequest : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:network.CreateRoomRequest)
  private:
-  inline void set_has_role_strategy();
-  inline void clear_has_role_strategy();
-  inline void set_has_max_player();
-  inline void clear_has_max_player();
-  inline void set_has_seat_mode();
-  inline void clear_has_seat_mode();
-  inline void set_has_role_range();
-  inline void clear_has_role_range();
   inline void set_has_room_name();
   inline void clear_has_room_name();
+  inline void set_has_max_player();
+  inline void clear_has_max_player();
+  inline void set_has_role_strategy();
+  inline void clear_has_role_strategy();
+  inline void set_has_first_extension();
+  inline void clear_has_first_extension();
+  inline void set_has_second_extension();
+  inline void clear_has_second_extension();
+  inline void set_has_seat_mode();
+  inline void clear_has_seat_mode();
   inline void set_has_allow_guest();
   inline void clear_has_allow_guest();
   inline void set_has_password();
@@ -1215,16 +1244,17 @@ class CreateRoomRequest : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  int role_strategy_;
-  ::google::protobuf::int32 max_player_;
-  ::google::protobuf::int32 seat_mode_;
-  ::google::protobuf::int32 role_range_;
   ::std::string* room_name_;
-  ::std::string* password_;
+  ::google::protobuf::int32 max_player_;
+  int role_strategy_;
+  bool first_extension_;
+  bool second_extension_;
   bool allow_guest_;
+  ::google::protobuf::int32 seat_mode_;
+  ::std::string* password_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -3372,6 +3402,50 @@ inline void RoomListResponse_RoomInfo::set_has_password(bool value) {
   has_password_ = value;
 }
 
+// optional bool first_extension = 10;
+inline bool RoomListResponse_RoomInfo::has_first_extension() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_first_extension() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_first_extension() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void RoomListResponse_RoomInfo::clear_first_extension() {
+  first_extension_ = false;
+  clear_has_first_extension();
+}
+inline bool RoomListResponse_RoomInfo::first_extension() const {
+  return first_extension_;
+}
+inline void RoomListResponse_RoomInfo::set_first_extension(bool value) {
+  set_has_first_extension();
+  first_extension_ = value;
+}
+
+// optional bool second_extension = 11;
+inline bool RoomListResponse_RoomInfo::has_second_extension() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_second_extension() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_second_extension() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void RoomListResponse_RoomInfo::clear_second_extension() {
+  second_extension_ = false;
+  clear_has_second_extension();
+}
+inline bool RoomListResponse_RoomInfo::second_extension() const {
+  return second_extension_;
+}
+inline void RoomListResponse_RoomInfo::set_second_extension(bool value) {
+  set_has_second_extension();
+  second_extension_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // RoomListResponse
@@ -3405,104 +3479,15 @@ RoomListResponse::mutable_rooms() {
 
 // CreateRoomRequest
 
-// required .network.ROLE_STRATEGY role_strategy = 1;
-inline bool CreateRoomRequest::has_role_strategy() const {
+// optional string room_name = 1;
+inline bool CreateRoomRequest::has_room_name() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void CreateRoomRequest::set_has_role_strategy() {
+inline void CreateRoomRequest::set_has_room_name() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void CreateRoomRequest::clear_has_role_strategy() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void CreateRoomRequest::clear_role_strategy() {
-  role_strategy_ = 1;
-  clear_has_role_strategy();
-}
-inline ::network::ROLE_STRATEGY CreateRoomRequest::role_strategy() const {
-  return static_cast< ::network::ROLE_STRATEGY >(role_strategy_);
-}
-inline void CreateRoomRequest::set_role_strategy(::network::ROLE_STRATEGY value) {
-  assert(::network::ROLE_STRATEGY_IsValid(value));
-  set_has_role_strategy();
-  role_strategy_ = value;
-}
-
-// required int32 max_player = 2;
-inline bool CreateRoomRequest::has_max_player() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void CreateRoomRequest::set_has_max_player() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void CreateRoomRequest::clear_has_max_player() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void CreateRoomRequest::clear_max_player() {
-  max_player_ = 0;
-  clear_has_max_player();
-}
-inline ::google::protobuf::int32 CreateRoomRequest::max_player() const {
-  return max_player_;
-}
-inline void CreateRoomRequest::set_max_player(::google::protobuf::int32 value) {
-  set_has_max_player();
-  max_player_ = value;
-}
-
-// required int32 seat_mode = 3;
-inline bool CreateRoomRequest::has_seat_mode() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void CreateRoomRequest::set_has_seat_mode() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void CreateRoomRequest::clear_has_seat_mode() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void CreateRoomRequest::clear_seat_mode() {
-  seat_mode_ = 0;
-  clear_has_seat_mode();
-}
-inline ::google::protobuf::int32 CreateRoomRequest::seat_mode() const {
-  return seat_mode_;
-}
-inline void CreateRoomRequest::set_seat_mode(::google::protobuf::int32 value) {
-  set_has_seat_mode();
-  seat_mode_ = value;
-}
-
-// required int32 role_range = 4;
-inline bool CreateRoomRequest::has_role_range() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void CreateRoomRequest::set_has_role_range() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void CreateRoomRequest::clear_has_role_range() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void CreateRoomRequest::clear_role_range() {
-  role_range_ = 0;
-  clear_has_role_range();
-}
-inline ::google::protobuf::int32 CreateRoomRequest::role_range() const {
-  return role_range_;
-}
-inline void CreateRoomRequest::set_role_range(::google::protobuf::int32 value) {
-  set_has_role_range();
-  role_range_ = value;
-}
-
-// optional string room_name = 5;
-inline bool CreateRoomRequest::has_room_name() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void CreateRoomRequest::set_has_room_name() {
-  _has_bits_[0] |= 0x00000010u;
-}
 inline void CreateRoomRequest::clear_has_room_name() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline void CreateRoomRequest::clear_room_name() {
   if (room_name_ != &::google::protobuf::internal::kEmptyString) {
@@ -3564,15 +3549,126 @@ inline void CreateRoomRequest::set_allocated_room_name(::std::string* room_name)
   }
 }
 
-// optional bool allow_guest = 6 [default = true];
-inline bool CreateRoomRequest::has_allow_guest() const {
+// optional int32 max_player = 2;
+inline bool CreateRoomRequest::has_max_player() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CreateRoomRequest::set_has_max_player() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CreateRoomRequest::clear_has_max_player() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CreateRoomRequest::clear_max_player() {
+  max_player_ = 0;
+  clear_has_max_player();
+}
+inline ::google::protobuf::int32 CreateRoomRequest::max_player() const {
+  return max_player_;
+}
+inline void CreateRoomRequest::set_max_player(::google::protobuf::int32 value) {
+  set_has_max_player();
+  max_player_ = value;
+}
+
+// optional .network.ROLE_STRATEGY role_strategy = 3;
+inline bool CreateRoomRequest::has_role_strategy() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void CreateRoomRequest::set_has_role_strategy() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void CreateRoomRequest::clear_has_role_strategy() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void CreateRoomRequest::clear_role_strategy() {
+  role_strategy_ = 1;
+  clear_has_role_strategy();
+}
+inline ::network::ROLE_STRATEGY CreateRoomRequest::role_strategy() const {
+  return static_cast< ::network::ROLE_STRATEGY >(role_strategy_);
+}
+inline void CreateRoomRequest::set_role_strategy(::network::ROLE_STRATEGY value) {
+  assert(::network::ROLE_STRATEGY_IsValid(value));
+  set_has_role_strategy();
+  role_strategy_ = value;
+}
+
+// optional bool first_extension = 4;
+inline bool CreateRoomRequest::has_first_extension() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void CreateRoomRequest::set_has_first_extension() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void CreateRoomRequest::clear_has_first_extension() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void CreateRoomRequest::clear_first_extension() {
+  first_extension_ = false;
+  clear_has_first_extension();
+}
+inline bool CreateRoomRequest::first_extension() const {
+  return first_extension_;
+}
+inline void CreateRoomRequest::set_first_extension(bool value) {
+  set_has_first_extension();
+  first_extension_ = value;
+}
+
+// optional bool second_extension = 5;
+inline bool CreateRoomRequest::has_second_extension() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void CreateRoomRequest::set_has_second_extension() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void CreateRoomRequest::clear_has_second_extension() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void CreateRoomRequest::clear_second_extension() {
+  second_extension_ = false;
+  clear_has_second_extension();
+}
+inline bool CreateRoomRequest::second_extension() const {
+  return second_extension_;
+}
+inline void CreateRoomRequest::set_second_extension(bool value) {
+  set_has_second_extension();
+  second_extension_ = value;
+}
+
+// optional int32 seat_mode = 6;
+inline bool CreateRoomRequest::has_seat_mode() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
-inline void CreateRoomRequest::set_has_allow_guest() {
+inline void CreateRoomRequest::set_has_seat_mode() {
   _has_bits_[0] |= 0x00000020u;
 }
-inline void CreateRoomRequest::clear_has_allow_guest() {
+inline void CreateRoomRequest::clear_has_seat_mode() {
   _has_bits_[0] &= ~0x00000020u;
+}
+inline void CreateRoomRequest::clear_seat_mode() {
+  seat_mode_ = 0;
+  clear_has_seat_mode();
+}
+inline ::google::protobuf::int32 CreateRoomRequest::seat_mode() const {
+  return seat_mode_;
+}
+inline void CreateRoomRequest::set_seat_mode(::google::protobuf::int32 value) {
+  set_has_seat_mode();
+  seat_mode_ = value;
+}
+
+// optional bool allow_guest = 7 [default = true];
+inline bool CreateRoomRequest::has_allow_guest() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void CreateRoomRequest::set_has_allow_guest() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void CreateRoomRequest::clear_has_allow_guest() {
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void CreateRoomRequest::clear_allow_guest() {
   allow_guest_ = true;
@@ -3586,15 +3682,15 @@ inline void CreateRoomRequest::set_allow_guest(bool value) {
   allow_guest_ = value;
 }
 
-// optional string password = 7 [default = ""];
+// optional string password = 8 [default = ""];
 inline bool CreateRoomRequest::has_password() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void CreateRoomRequest::set_has_password() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void CreateRoomRequest::clear_has_password() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void CreateRoomRequest::clear_password() {
   if (password_ != &::google::protobuf::internal::kEmptyString) {

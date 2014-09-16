@@ -34,12 +34,22 @@ void Lobby::fill(RoomListResponse* list)
         ui->tableWidget->insertRow(i);
         RoomListResponse_RoomInfo game = list->rooms(i);
         QTableWidgetItem *newItem;
+
         newItem = new QTableWidgetItem(QString::number(game.room_id()));
         ui->tableWidget->setItem(i, ROOM_ID, newItem);
+
         newItem = new QTableWidgetItem(QString::fromStdString(game.room_name()));
         ui->tableWidget->setItem(i, ROOM_NAME, newItem);
-        ROLE_STRATEGY rs = game.role_strategy();
-        switch(rs){
+
+        QString roleNum = QStringLiteral("标准");
+        if(game.first_extension())
+            roleNum += QStringLiteral(",一扩");
+        if(game.second_extension())
+            roleNum += QStringLiteral(",三版");
+        newItem = new QTableWidgetItem(roleNum);
+        ui->tableWidget->setItem(i, ROLE_NUM, newItem);
+
+        switch(game.role_strategy()){
         case ROLE_STRATEGY_RANDOM:
             newItem = new QTableWidgetItem(QStringLiteral("随机"));
             break;
@@ -53,11 +63,27 @@ void Lobby::fill(RoomListResponse* list)
             newItem = new QTableWidgetItem(QStringLiteral("Error"));
             break;
         }
-
-
         ui->tableWidget->setItem(i, ROLE_MODE, newItem);
-        newItem = new QTableWidgetItem(QString::number(game.seat_mode()));
+
+        switch(game.seat_mode()){
+        case SEAT_MODE_RANDOM:
+            newItem = new QTableWidgetItem(QStringLiteral("随机"));
+            break;
+        case SEAT_MODE_2COMBO:
+            newItem = new QTableWidgetItem(QStringLiteral("二连"));
+            break;
+        case SEAT_MODE_3COMBO:
+            newItem = new QTableWidgetItem(QStringLiteral("三连"));
+            break;
+        case SEAT_MODE_INTERLACE:
+            newItem = new QTableWidgetItem(QStringLiteral("间隔"));
+            break;
+        default:
+            newItem = new QTableWidgetItem(QStringLiteral("Error"));
+            break;
+        }
         ui->tableWidget->setItem(i, SEAT_MODE, newItem);
+
         newItem = new QTableWidgetItem(QString::number(game.now_player()) + "/" + QString::number(game.max_player()));
         ui->tableWidget->setItem(i, PLAYER_NUM, newItem);
         newItem = new QTableWidgetItem(game.allow_guest() ? "N" : "Y");
@@ -87,7 +113,7 @@ void Lobby::onItemClicked(QModelIndex index)
     RoomListResponse_RoomInfo room = roomList.rooms(row);
     network::EnterRoomRequest *enter= new network::EnterRoomRequest();
     if(room.has_password()){
-        QString pwd = QInputDialog::getText(this, QStringLiteral("进击的小黑屋："),
+        QString pwd = QInputDialog::getText(this, QStringLiteral("切，结界么？"),
                                     QStringLiteral("请输入暗语:"), QLineEdit::Normal);
         if(!pwd.isEmpty())
             enter->set_password(pwd.toStdString());
@@ -120,18 +146,18 @@ void Lobby::onOpenRoom(){
     int playerNum = roomSet->getPlayerNum();
     int seatOrder = roomSet->getSeatOrder();
     int roleSelectionStrategy = roomSet->getRoleSelection();
-    int roleRange = roomSet->getRoleRange();
+    bool firstExtension = roomSet->getFirstExtension();
+    bool secondExtension = roomSet->getSecondExtension();
     bool allowGuest = roomSet->getAllowGuest();
     std::string password = roomSet->getPassword().toStdString();
     std::string roomName = roomSet->getRoomName().toStdString();
 
-
-    // TODO 座次、选将范围的通信协议和实现机制还没有敲定。同一客户端多次游戏的情况需要测试
     network::CreateRoomRequest* create = new network::CreateRoomRequest();
     create->set_role_strategy((network::ROLE_STRATEGY)roleSelectionStrategy);
     create->set_max_player(playerNum);
     create->set_seat_mode(seatOrder);
-    create->set_role_range(roleRange);
+    create->set_first_extension(firstExtension);
+    create->set_second_extension(secondExtension);
     create->set_allow_guest(allowGuest);
     create->set_password(password);
     create->set_room_name(roomName);

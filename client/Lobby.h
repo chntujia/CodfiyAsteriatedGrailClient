@@ -9,11 +9,12 @@
 
 #define ROOM_ID    0
 #define ROOM_NAME  1
-#define ROLE_MODE  2
-#define PLAYER_NUM 3
-#define WELCOME_GUEST 4
-#define HAS_PASSWORD 5
-#define SEAT_MODE  6
+#define ROLE_NUM   2
+#define ROLE_MODE  3
+#define PLAYER_NUM 4
+#define WELCOME_GUEST 5
+#define HAS_PASSWORD 6
+#define SEAT_MODE  7
 
 namespace Ui {
 class Lobby;

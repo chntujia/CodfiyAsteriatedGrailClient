@@ -1,6 +1,7 @@
 ﻿#ifndef COMMON_H
 #define COMMON_H
 #include <QString>
+#include "protocol/action_respond.pb.h"
 
 enum GrailError{
     GE_SUCCESS,

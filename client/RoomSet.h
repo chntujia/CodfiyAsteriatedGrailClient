@@ -18,8 +18,9 @@ public:
     int getPlayerNum();
     int getSeatOrder();
     int getRoleSelection();
-    int getRoleRange();
     bool getAllowGuest();
+    bool getFirstExtension();
+    bool getSecondExtension();
     QString getPassword();
     QString getRoomName();
 public slots:

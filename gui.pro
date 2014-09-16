@@ -125,6 +125,7 @@ SOURCES += main.cpp \
            data/DataInterface.cpp \
            data/Player.cpp \
            data/Team.cpp \
+           data/Common.cpp \
            logic/AnSha.cpp \
            logic/DieWu.cpp \
            logic/FengYin.cpp \
@@ -177,5 +178,5 @@ SOURCES += main.cpp \
            widget/ShowArea.cpp \
            widget/TeamArea.cpp \
            widget/TipArea.cpp \
-    widget/Timelinebar.cpp \
-    data/Common.cpp
+           widget/Timelinebar.cpp \
+

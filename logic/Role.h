@@ -34,6 +34,8 @@ public:
     void JiAngHarm();
 
     void ShengLiStone();
+    void setMyRole(Role* role){myRole=role;}
+
 signals:
     void sendCommand(unsigned short proto_type, google::protobuf::Message* proto);
 
@@ -49,7 +51,7 @@ public slots:
     void buy();
     void synthetize();
     void extract();
-    void setMyRole(Role* role){myRole=role;}
+
 protected:
     int myID;
     int state;

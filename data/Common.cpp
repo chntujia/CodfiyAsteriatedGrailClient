@@ -1,3 +1,5 @@
+﻿#include "data/Common.h"
+#include "data/DataInterface.h"
 QString getCauseString(int cause)
 {
     switch(cause)
