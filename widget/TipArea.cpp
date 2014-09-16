@@ -4,7 +4,7 @@
 #include "data/DataInterface.h"
 #include "widget/GUI.h"
 #include <QGraphicsGridLayout>
-
+#define scaleFactor 0.8
 TipArea::TipArea():selectedCard(NULL)
 {
     background = QPixmap("resource/tip.png");
@@ -36,7 +36,7 @@ void TipArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     if(!winflag)
         painter->drawPixmap(0, 0, background);
     else
-        painter->drawPixmap(35,10,winpix);
+        painter->drawPixmap(-50, -15, winpix);
     painter->drawText(QRectF(0.05*width, 0, 0.9*width, height*0.85),Qt::AlignCenter | Qt::TextWordWrap,msg);
 }
 
@@ -62,7 +62,7 @@ void TipArea::showBox()
 
 void TipArea::setMsg(QString msg)
 {
-    this->msg=msg;
+    this->msg = msg;
     setVisible(1);
     update();
 }
@@ -79,20 +79,21 @@ void TipArea::clearStatus()
 
 void TipArea::showStatus(int id)
 {
-    Player* player=dataInterface->getPlayerList().at(id);
-    SafeList<BasicStatus*> status=player->getBasicStatus();
+    Player* player = dataInterface->getPlayerList().at(id);
+    SafeList<BasicStatus*> status = player->getBasicStatus();
     Card* card;
     int i;
     reset();
     msg="";
-    for(i=0;i<status.size();i++)
+    for(i=0; i<status.size(); i++)
     {
-        card=status[i]->getCard();
-        CardItem* cardItem=new CardItem(card);
+        card = status[i]->getCard();
+        CardItem* cardItem = new CardItem(card);
+        cardItem->setScale(scaleFactor);
         cardItem->setParentItem(this);
-        connect(cardItem,SIGNAL(cardSelected(int)),this,SLOT(onCardSelected(int)));
-        connect(cardItem,SIGNAL(cardUnselected(int)),this,SLOT(onCardUnselected(int)));
-        cardItems<< cardItem;
+        connect(cardItem, SIGNAL(cardSelected(int)), this, SLOT(onCardSelected(int)));
+        connect(cardItem, SIGNAL(cardUnselected(int)), this, SLOT(onCardUnselected(int)));
+        cardItems << cardItem;
     }
     adjustCards();
     setVisible(1);
@@ -101,23 +102,23 @@ void TipArea::showStatus(int id)
 
 void TipArea::onCardSelected(int id)
 {
-    if(selectedCard!=NULL)
-        foreach(CardItem *ptr,cardItems)
-            if (ptr->getCard()==selectedCard)
+    if(selectedCard != NULL)
+        foreach(CardItem *ptr, cardItems)
+            if (ptr->getCard() == selectedCard)
             {
-                ptr->setSelected(0);
-                ptr->setY(40);
+                ptr->reset();
                 break;
             }
-    selectedCard=dataInterface->getCard(id);
+    selectedCard = dataInterface->getCard(id);
     gui->getDecisionArea()->enable(0);
 }
 
 void TipArea::onCardUnselected(int id)
 {
-    selectedCard=NULL;
+    selectedCard = NULL;
     gui->getDecisionArea()->disable(0);
 }
+
 void TipArea::adjustCards()
 {
     if(cardItems.isEmpty())
@@ -125,20 +126,23 @@ void TipArea::adjustCards()
     int n = cardItems.size();
     int card_skip;
     int offset;
+    int card_width = 100 * scaleFactor;
 
-    if(n > 4)
-        card_skip = 380/(n-1);
+    if(n * card_width > width)
+    {
+        card_skip = (width - card_width) / (n - 1);
+        offset = 0;
+    }
     else
     {
-        card_skip = 100;
-        offset=240-n*0.5*100;
+        card_skip = card_width;
+        offset = width * 0.5 - n * 0.5 * card_width;
     }
 
-    int i;
-    for(i=0; i<n; i++)
+    for(int i = 0; i<n; i++)
     {
-        cardItems[i]->setZValue(0.1 * i);
-        cardItems[i]->setPos(QPointF(offset+i*card_skip, 40));
+        cardItems[i]->setZValue(i);
+        cardItems[i]->setPos(QPointF(offset + i * card_skip, 25));
     }
 }
 

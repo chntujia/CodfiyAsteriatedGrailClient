@@ -10,13 +10,12 @@ class CardItem : public QGraphicsObject
 public:
     CardItem(int id);
     CardItem(Card* card);
-    ~CardItem();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     Card* getCard();
     bool isSelected();
-    void setSelected(bool);
+    void reset();
 
 private:
     Card *card;

@@ -41,8 +41,7 @@ void HandArea::onCardSelected(int id)
         {
             if (ptr->getCard()->getID()==firstCardID)
             {
-                ptr->setSelected(0);
-                ptr->setY(0);
+                ptr->reset();
                 break;
             }
         }
@@ -70,8 +69,7 @@ void HandArea::reset()
     disableAll();
     foreach(CardItem* ptr, cardItems)
     {
-        ptr->setY(0);
-        ptr->setSelected(0);
+        ptr->reset();
     }
     selectedCards.clear();
 }

@@ -149,6 +149,8 @@ void FengYin::playerAnalyse()
     {
     case FENG_YIN_PO_SUI:
         //展示基本状态区，一般用不到
+        decisionArea->disable(0);
+        decisionArea->enable(1);
         tipArea->showStatus(playerArea->getSelectedPlayers().at(0)->getID());
         break;
     default:

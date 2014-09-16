@@ -193,6 +193,8 @@ void TianShi::playerAnalyse()
     {
     case FENG_ZHI_JIE_JING:
     case TIAN_SHI_ZHI_GE_2:
+        decisionArea->disable(0);
+        decisionArea->enable(1);
         tipArea->showStatus(playerArea->getSelectedPlayers().at(0)->getID());
         break;
     default:
