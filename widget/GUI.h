@@ -38,7 +38,7 @@ public:
     void setChatLine(ChatLine*chat){this->chatLine=chat;}
     void setTimelineBar(TimelineBar* bar) { this->timelineBar = bar; }
     void reset();
-    void alert(){QApplication::alert(window);}
+    void alert();
     QWidget* getWindow(){return window;}
     HandArea* getHandArea();
     PlayerArea* getPlayerArea();

@@ -263,6 +263,8 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             cleanRoom();
             if(myID == GUEST)
                 gui->logAppend(QStringLiteral("<font color=\'pink\'>房间已满，进入观战模式</font>"));
+            else
+                gui->logAppend(QStringLiteral("<font color=\'pink\'>请准备</font>"));
         }
         if(game_info->has_room_id()){
             gui->getTeamArea()->setRoomID(game_info->room_id());
@@ -354,7 +356,6 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         tipArea->showBox();
         decisionArea->enable(0);
         gui->alert();
-        QSound::play("sound/Warning.wav");
         break;
     case 51:
         // TODO:BP模式，暂不可用

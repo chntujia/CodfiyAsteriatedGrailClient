@@ -323,7 +323,6 @@ void Role::attacked(QString element,int hitRate)
     handArea->disableMagic();
     handArea->enableElement("light");
     gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 //add 充盈弃牌提示
 void Role::drop(int howMany, int cause)
@@ -351,7 +350,6 @@ void Role::drop(int howMany, int cause)
         tipArea->setMsg(QStringLiteral("你需要弃")+QString::number(howMany)+QStringLiteral("张牌"));
     }
     gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void Role::dropCover(int howMany, int cause)
@@ -366,7 +364,6 @@ void Role::dropCover(int howMany, int cause)
         tipArea->setMsg(QStringLiteral("你需要弃")+QString::number(howMany)+QStringLiteral("张盖牌"));
     }
     gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void Role::buy()
@@ -477,7 +474,6 @@ void Role::moDaned(int nextID,int sourceID,int howMany)
     decisionArea->enable(1);
     moDanNextID=nextID;
     gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void Role::cure(int cross,int harmPoint, int type, int crossAvailable)
@@ -499,7 +495,6 @@ void Role::cure(int cross,int harmPoint, int type, int crossAvailable)
         tipArea->addBoxItem(QString::number(min));
     tipArea->showBox();
     gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void Role::turnBegin()
@@ -509,7 +504,6 @@ void Role::turnBegin()
     start=false;
     usedAttack=usedMagic=usedSpecial=false;
     gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void Role::additionalAction(network::Command* cmd){
@@ -523,7 +517,6 @@ void Role::additionalAction(network::Command* cmd){
     decisionArea->enable(0);
     decisionArea->enable(3);
     gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void Role::askForSkill(Command *cmd)
@@ -1109,7 +1102,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         else
         {
             myRole->turnBegin();
-            QSound::play("sound/It's your turn.wav");
         }
 
         break;
@@ -1325,7 +1317,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 {
                     gui->setEnable(1);
                     gui->alert();
-                    QSound::play("sound/Warning.wav");
+
                     skillCmd.CopyFrom(*cmd);
                     myRole->askForSkill(cmd);
                 }
@@ -1493,6 +1485,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     // board更新
     {
         network::GameInfo* game_info = (network::GameInfo*)proto;
+        qDebug( "Role Recieve: \n%s", proto->DebugString().c_str());
 
         int winner = -1;
 
@@ -1585,7 +1578,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             for (int i = 0; i < game_info->player_infos_size(); ++i)
             {
                 player_info = (network::SinglePlayerInfo*)&(game_info->player_infos(i));
-                // TODO:
                 targetID = player_info->id();
 
                 player = playerList[targetID];
@@ -1670,23 +1662,22 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     player->cleanBasicStatus();
                     for (int j = 0; j < player_info->basic_cards_size(); ++j)
                     {
-                        cardID=player_info->basic_cards(j);
-                        card=dataInterface->getCard(cardID);
-                        cardName=card->getName();
-                        if(cardName==QStringLiteral("中毒"))
-                            player->addBasicStatus(0,card);
-                        if(cardName==QStringLiteral("虚弱"))
-                            player->addBasicStatus(1,card);
-                        if(cardName==QStringLiteral("圣盾")||card->getSpecialityList().contains(QStringLiteral("天使之墙")))
-                            player->addBasicStatus(2,card);
-                        if(card->getType()=="attack"&&card->getProperty()==QStringLiteral("幻"))
-                            player->addBasicStatus(3,card);
-                        if(card->getSpecialityList().contains(QStringLiteral("威力赐福")))
-                            player->addBasicStatus(4,card);
-                        if(card->getSpecialityList().contains(QStringLiteral("迅捷赐福")))
-                            player->addBasicStatus(5,card);
+                        cardID = player_info->basic_cards(j);
+                        card = dataInterface->getCard(cardID);
+                        cardName = card->getName();
+                        if(cardName == QStringLiteral("中毒"))
+                            player->addBasicStatus(0, card);
+                        else if(cardName == QStringLiteral("虚弱"))
+                            player->addBasicStatus(1, card);
+                        else if(cardName == QStringLiteral("圣盾") || card->getSpecialityList().contains(QStringLiteral("天使之墙")))
+                            player->addBasicStatus(2, card);
+                        else if(card->getType() == "attack" && card->getProperty()==QStringLiteral("幻"))
+                            player->addBasicStatus(3, card);
+                        else if(card->getSpecialityList().contains(QStringLiteral("威力赐福")))
+                            player->addBasicStatus(4, card);
+                        else if(card->getSpecialityList().contains(QStringLiteral("迅捷赐福")))
+                            player->addBasicStatus(5, card);
                     }
-                    break;
                 }
                 // 更新能量
                 if (player_info->has_gem())

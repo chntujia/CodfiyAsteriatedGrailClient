@@ -1,12 +1,18 @@
 ﻿#include "widget/GUI.h"
 #include "widget/Animation.h"
 #include "data/DataInterface.h"
+#include <QSound>
 
 GUI* gui=NULL;
 GUI::GUI(QObject *parent) :
     QObject(parent)
 {
 
+}
+
+void GUI::alert(){
+    QApplication::alert(window);
+    QSound::play("sound/Warning.wav");
 }
 
 QWidget *GUI::newWindow(int playerNum)
