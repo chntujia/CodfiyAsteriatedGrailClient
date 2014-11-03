@@ -39,9 +39,8 @@ public slots:
 private:
     RoomSet *roomSet;
     void newWindow(int playerNum);
-    network::RoomListResponse roomList;
+    QMap<int, network::RoomListResponse_RoomInfo> rooms;
     Ui::Lobby *ui;
-    QMessageBox* prop;
 
 };
 

@@ -126,10 +126,11 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RegisterResponse));
   LoginRequest_descriptor_ = file->message_type(2);
-  static const int LoginRequest_offsets_[3] = {
+  static const int LoginRequest_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LoginRequest, asguest_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LoginRequest, user_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LoginRequest, user_password_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LoginRequest, version_),
   };
   LoginRequest_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -218,7 +219,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RoomListResponse));
   RoomListResponse_RoomInfo_descriptor_ = RoomListResponse_descriptor_->nested_type(0);
-  static const int RoomListResponse_RoomInfo_offsets_[11] = {
+  static const int RoomListResponse_RoomInfo_offsets_[12] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, room_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, room_name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, max_player_),
@@ -230,6 +231,7 @@ void protobuf_AssignDesc_base_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, has_password_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, first_extension_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, second_extension_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, playing_),
   };
   RoomListResponse_RoomInfo_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -545,67 +547,69 @@ void protobuf_AddDesc_base_2eproto() {
     "oto\"j\n\017RegisterRequest\022\017\n\007user_id\030\001 \001(\t\022"
     "\025\n\ruser_password\030\002 \001(\t\022\020\n\010nickname\030\003 \001(\t"
     "\022\016\n\006mobile\030\004 \001(\t\022\r\n\005email\030\005 \001(\t\"!\n\020Regis"
-    "terResponse\022\r\n\005state\030\001 \001(\r\"G\n\014LoginReque"
+    "terResponse\022\r\n\005state\030\001 \001(\r\"X\n\014LoginReque"
     "st\022\017\n\007asGuest\030\001 \002(\010\022\017\n\007user_id\030\002 \001(\t\022\025\n\r"
-    "user_password\030\003 \001(\t\"0\n\rLoginResponse\022\r\n\005"
-    "state\030\001 \002(\005\022\020\n\010nickname\030\002 \001(\t\"\017\n\rLogoutR"
-    "equest\"\036\n\016LogoutResponse\022\014\n\004args\030\001 \003(\r\"@"
-    "\n\017RoomListRequest\022-\n\rrole_strategy\030\001 \002(\016"
-    "2\026.network.ROLE_STRATEGY\"\322\002\n\020RoomListRes"
-    "ponse\0221\n\005rooms\030\001 \003(\0132\".network.RoomListR"
-    "esponse.RoomInfo\032\212\002\n\010RoomInfo\022\017\n\007room_id"
-    "\030\001 \001(\005\022\021\n\troom_name\030\002 \001(\t\022\022\n\nmax_player\030"
-    "\003 \001(\005\022\022\n\nnow_player\030\004 \001(\005\022-\n\rrole_strate"
-    "gy\030\005 \001(\0162\026.network.ROLE_STRATEGY\022\021\n\tseat"
-    "_mode\030\006 \001(\005\022\022\n\nrole_range\030\007 \001(\005\022\023\n\013allow"
-    "_guest\030\010 \001(\010\022\024\n\014has_password\030\t \001(\010\022\027\n\017fi"
-    "rst_extension\030\n \001(\010\022\030\n\020second_extension\030"
-    "\013 \001(\010\"\336\001\n\021CreateRoomRequest\022\021\n\troom_name"
-    "\030\001 \001(\t\022\022\n\nmax_player\030\002 \001(\005\022-\n\rrole_strat"
-    "egy\030\003 \001(\0162\026.network.ROLE_STRATEGY\022\027\n\017fir"
-    "st_extension\030\004 \001(\010\022\030\n\020second_extension\030\005"
-    " \001(\010\022\021\n\tseat_mode\030\006 \001(\005\022\031\n\013allow_guest\030\007"
-    " \001(\010:\004true\022\022\n\010password\030\010 \001(\t:\000\"5\n\020EnterR"
-    "oomRequest\022\017\n\007room_id\030\001 \002(\005\022\020\n\010password\030"
-    "\002 \001(\t\"\022\n\020LeaveRoomRequest\"o\n\017JoinTeamReq"
-    "uest\022+\n\004team\030\001 \002(\0162\035.network.JoinTeamReq"
-    "uest.Team\"/\n\004Team\022\n\n\006TEAM_A\020\001\022\n\n\006TEAM_B\020"
-    "\000\022\017\n\013TEAM_RANDOM\020\002\"\207\001\n\023ReadyForGameReque"
-    "st\022/\n\004type\030\001 \002(\0162!.network.ReadyForGameR"
-    "equest.Type\"\?\n\004Type\022\017\n\013START_READY\020\001\022\026\n\022"
-    "CANCEL_START_REDAY\020\002\022\016\n\nSEAT_READY\020\003\"\356\002\n"
-    "\020SinglePlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004team\030\002 "
-    "\001(\r\022\017\n\007role_id\030\003 \001(\r\022\022\n\nhand_count\030\004 \001(\r"
-    "\022\022\n\nheal_count\030\005 \001(\r\022\020\n\010ex_cards\030\006 \003(\r\022\023"
-    "\n\013basic_cards\030\007 \003(\r\022\013\n\003gem\030\010 \001(\r\022\017\n\007crys"
-    "tal\030\t \001(\r\022\024\n\014yellow_token\030\n \001(\r\022\022\n\nblue_"
-    "token\030\013 \001(\r\022\025\n\rcovered_count\030\014 \001(\r\022\020\n\010is"
-    "_knelt\030\r \001(\010\022\r\n\005hands\030\016 \003(\r\022\020\n\010covereds\030"
-    "\017 \003(\r\022\020\n\010max_hand\030\020 \001(\r\022\020\n\010nickname\030\021 \001("
-    "\t\022\024\n\005ready\030\022 \001(\010:\005false\022\024\n\014delete_field\030"
-    "\023 \003(\t\"\267\002\n\010GameInfo\022\017\n\007room_id\030\001 \001(\005\022\021\n\tp"
-    "layer_id\030\002 \001(\005\022\022\n\nred_morale\030\003 \001(\r\022\023\n\013bl"
-    "ue_morale\030\004 \001(\r\022\017\n\007red_gem\030\005 \001(\r\022\020\n\010blue"
-    "_gem\030\006 \001(\r\022\023\n\013red_crystal\030\007 \001(\r\022\024\n\014blue_"
-    "crystal\030\010 \001(\r\022\021\n\tred_grail\030\t \001(\r\022\022\n\nblue"
-    "_grail\030\n \001(\r\022\014\n\004pile\030\013 \001(\r\022\017\n\007discard\030\014 "
-    "\001(\r\022\031\n\nis_started\030\r \001(\010:\005false\022/\n\014player"
-    "_infos\030\016 \003(\0132\031.network.SinglePlayerInfo\""
-    "\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\"1\n\005Error\022\n\n\002id\030\001 \002("
-    "\005\022\016\n\006dst_id\030\002 \002(\005\022\014\n\004args\030\003 \003(\005\"D\n\006Gossi"
-    "p\022!\n\004type\030\001 \001(\0162\023.network.GossipType\022\013\n\003"
-    "txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*\225\003\n\013MessageType\022\024\n"
-    "\020MSG_REGISTER_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020"
-    "\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022"
-    "\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022"
-    "\024\n\020MSG_ROOMLIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_RE"
-    "P\020\010\022\027\n\023MSG_CREATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTE"
-    "R_ROOM_REQ\020\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022"
-    "MSG_LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_RE"
-    "Q\020\r\022\026\n\022MSG_READY_GAME_REQ\020\016\022\025\n\021MSG_SINGL"
-    "E_PLAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016"
-    "\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023*0\n\nGossipT"
-    "ype\022\017\n\013GOSSIP_TALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 2599);
+    "user_password\030\003 \001(\t\022\017\n\007version\030\004 \001(\005\"0\n\r"
+    "LoginResponse\022\r\n\005state\030\001 \002(\005\022\020\n\010nickname"
+    "\030\002 \001(\t\"\017\n\rLogoutRequest\"\036\n\016LogoutRespons"
+    "e\022\014\n\004args\030\001 \003(\r\"@\n\017RoomListRequest\022-\n\rro"
+    "le_strategy\030\001 \002(\0162\026.network.ROLE_STRATEG"
+    "Y\"\367\002\n\020RoomListResponse\0221\n\005rooms\030\001 \003(\0132\"."
+    "network.RoomListResponse.RoomInfo\032\257\002\n\010Ro"
+    "omInfo\022\017\n\007room_id\030\001 \001(\005\022\021\n\troom_name\030\002 \001"
+    "(\t\022\022\n\nmax_player\030\003 \001(\005\022\022\n\nnow_player\030\004 \001"
+    "(\005\022-\n\rrole_strategy\030\005 \001(\0162\026.network.ROLE"
+    "_STRATEGY\022\021\n\tseat_mode\030\006 \001(\005\022\022\n\nrole_ran"
+    "ge\030\007 \001(\005\022\031\n\013allow_guest\030\010 \001(\010:\004true\022\033\n\014h"
+    "as_password\030\t \001(\010:\005false\022\027\n\017first_extens"
+    "ion\030\n \001(\010\022\030\n\020second_extension\030\013 \001(\010\022\026\n\007p"
+    "laying\030\014 \001(\010:\005false\"\336\001\n\021CreateRoomReques"
+    "t\022\021\n\troom_name\030\001 \001(\t\022\022\n\nmax_player\030\002 \001(\005"
+    "\022-\n\rrole_strategy\030\003 \001(\0162\026.network.ROLE_S"
+    "TRATEGY\022\027\n\017first_extension\030\004 \001(\010\022\030\n\020seco"
+    "nd_extension\030\005 \001(\010\022\021\n\tseat_mode\030\006 \001(\005\022\031\n"
+    "\013allow_guest\030\007 \001(\010:\004true\022\022\n\010password\030\010 \001"
+    "(\t:\000\"5\n\020EnterRoomRequest\022\017\n\007room_id\030\001 \002("
+    "\005\022\020\n\010password\030\002 \001(\t\"\022\n\020LeaveRoomRequest\""
+    "o\n\017JoinTeamRequest\022+\n\004team\030\001 \002(\0162\035.netwo"
+    "rk.JoinTeamRequest.Team\"/\n\004Team\022\n\n\006TEAM_"
+    "A\020\001\022\n\n\006TEAM_B\020\000\022\017\n\013TEAM_RANDOM\020\002\"\207\001\n\023Rea"
+    "dyForGameRequest\022/\n\004type\030\001 \002(\0162!.network"
+    ".ReadyForGameRequest.Type\"\?\n\004Type\022\017\n\013STA"
+    "RT_READY\020\001\022\026\n\022CANCEL_START_REDAY\020\002\022\016\n\nSE"
+    "AT_READY\020\003\"\356\002\n\020SinglePlayerInfo\022\n\n\002id\030\001 "
+    "\001(\r\022\014\n\004team\030\002 \001(\r\022\017\n\007role_id\030\003 \001(\r\022\022\n\nha"
+    "nd_count\030\004 \001(\r\022\022\n\nheal_count\030\005 \001(\r\022\020\n\010ex"
+    "_cards\030\006 \003(\r\022\023\n\013basic_cards\030\007 \003(\r\022\013\n\003gem"
+    "\030\010 \001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n\014yellow_token\030"
+    "\n \001(\r\022\022\n\nblue_token\030\013 \001(\r\022\025\n\rcovered_cou"
+    "nt\030\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010\022\r\n\005hands\030\016 \003("
+    "\r\022\020\n\010covereds\030\017 \003(\r\022\020\n\010max_hand\030\020 \001(\r\022\020\n"
+    "\010nickname\030\021 \001(\t\022\024\n\005ready\030\022 \001(\010:\005false\022\024\n"
+    "\014delete_field\030\023 \003(\t\"\267\002\n\010GameInfo\022\017\n\007room"
+    "_id\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005\022\022\n\nred_mora"
+    "le\030\003 \001(\r\022\023\n\013blue_morale\030\004 \001(\r\022\017\n\007red_gem"
+    "\030\005 \001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013red_crystal\030"
+    "\007 \001(\r\022\024\n\014blue_crystal\030\010 \001(\r\022\021\n\tred_grail"
+    "\030\t \001(\r\022\022\n\nblue_grail\030\n \001(\r\022\014\n\004pile\030\013 \001(\r"
+    "\022\017\n\007discard\030\014 \001(\r\022\031\n\nis_started\030\r \001(\010:\005f"
+    "alse\022/\n\014player_infos\030\016 \003(\0132\031.network.Sin"
+    "glePlayerInfo\"\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\"1\n\005Er"
+    "ror\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002(\005\022\014\n\004args\030"
+    "\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.network."
+    "GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*\225\003\n\013"
+    "MessageType\022\024\n\020MSG_REGISTER_REQ\020\001\022\024\n\020MSG"
+    "_REGISTER_REP\020\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMS"
+    "G_LOGIN_REP\020\004\022\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n\016MSG"
+    "_LOGOUT_REP\020\006\022\024\n\020MSG_ROOMLIST_REQ\020\007\022\024\n\020M"
+    "SG_ROOMLIST_REP\020\010\022\027\n\023MSG_CREATE_ROOM_REQ"
+    "\020\t\022\026\n\022MSG_ENTER_ROOM_REQ\020\n\022\026\n\022MSG_ENTER_"
+    "ROOM_REP\020\013\022\026\n\022MSG_LEAVE_ROOM_REQ\020\014\022\025\n\021MS"
+    "G_JOIN_TEAM_REQ\020\r\022\026\n\022MSG_READY_GAME_REQ\020"
+    "\016\022\025\n\021MSG_SINGLE_PLAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014"
+    "\n\010MSG_TALK\020\021\022\016\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_ERRO"
+    "R\020\023*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021\n\rGO"
+    "SSIP_NOTICE\020\002", 2653);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -1368,6 +1372,7 @@ void RegisterResponse::Swap(RegisterResponse* other) {
 const int LoginRequest::kAsGuestFieldNumber;
 const int LoginRequest::kUserIdFieldNumber;
 const int LoginRequest::kUserPasswordFieldNumber;
+const int LoginRequest::kVersionFieldNumber;
 #endif  // !_MSC_VER
 
 LoginRequest::LoginRequest()
@@ -1389,6 +1394,7 @@ void LoginRequest::SharedCtor() {
   asguest_ = false;
   user_id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   user_password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  version_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1441,6 +1447,7 @@ void LoginRequest::Clear() {
         user_password_->clear();
       }
     }
+    version_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -1497,6 +1504,22 @@ bool LoginRequest::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(32)) goto parse_version;
+        break;
+      }
+
+      // optional int32 version = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_version:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &version_)));
+          set_has_version();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1542,6 +1565,11 @@ void LoginRequest::SerializeWithCachedSizes(
       3, this->user_password(), output);
   }
 
+  // optional int32 version = 4;
+  if (has_version()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->version(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1575,6 +1603,11 @@ void LoginRequest::SerializeWithCachedSizes(
         3, this->user_password(), target);
   }
 
+  // optional int32 version = 4;
+  if (has_version()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->version(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1603,6 +1636,13 @@ int LoginRequest::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->user_password());
+    }
+
+    // optional int32 version = 4;
+    if (has_version()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->version());
     }
 
   }
@@ -1641,6 +1681,9 @@ void LoginRequest::MergeFrom(const LoginRequest& from) {
     if (from.has_user_password()) {
       set_user_password(from.user_password());
     }
+    if (from.has_version()) {
+      set_version(from.version());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1668,6 +1711,7 @@ void LoginRequest::Swap(LoginRequest* other) {
     std::swap(asguest_, other->asguest_);
     std::swap(user_id_, other->user_id_);
     std::swap(user_password_, other->user_password_);
+    std::swap(version_, other->version_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -2545,6 +2589,7 @@ const int RoomListResponse_RoomInfo::kAllowGuestFieldNumber;
 const int RoomListResponse_RoomInfo::kHasPasswordFieldNumber;
 const int RoomListResponse_RoomInfo::kFirstExtensionFieldNumber;
 const int RoomListResponse_RoomInfo::kSecondExtensionFieldNumber;
+const int RoomListResponse_RoomInfo::kPlayingFieldNumber;
 #endif  // !_MSC_VER
 
 RoomListResponse_RoomInfo::RoomListResponse_RoomInfo()
@@ -2570,10 +2615,11 @@ void RoomListResponse_RoomInfo::SharedCtor() {
   role_strategy_ = 1;
   seat_mode_ = 0;
   role_range_ = 0;
-  allow_guest_ = false;
+  allow_guest_ = true;
   has_password_ = false;
   first_extension_ = false;
   second_extension_ = false;
+  playing_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2623,12 +2669,13 @@ void RoomListResponse_RoomInfo::Clear() {
     role_strategy_ = 1;
     seat_mode_ = 0;
     role_range_ = 0;
-    allow_guest_ = false;
+    allow_guest_ = true;
   }
   if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     has_password_ = false;
     first_extension_ = false;
     second_extension_ = false;
+    playing_ = false;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -2757,7 +2804,7 @@ bool RoomListResponse_RoomInfo::MergePartialFromCodedStream(
         break;
       }
 
-      // optional bool allow_guest = 8;
+      // optional bool allow_guest = 8 [default = true];
       case 8: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -2773,7 +2820,7 @@ bool RoomListResponse_RoomInfo::MergePartialFromCodedStream(
         break;
       }
 
-      // optional bool has_password = 9;
+      // optional bool has_password = 9 [default = false];
       case 9: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -2814,6 +2861,22 @@ bool RoomListResponse_RoomInfo::MergePartialFromCodedStream(
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &second_extension_)));
           set_has_second_extension();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(96)) goto parse_playing;
+        break;
+      }
+
+      // optional bool playing = 12 [default = false];
+      case 12: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_playing:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &playing_)));
+          set_has_playing();
         } else {
           goto handle_uninterpreted;
         }
@@ -2879,12 +2942,12 @@ void RoomListResponse_RoomInfo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->role_range(), output);
   }
 
-  // optional bool allow_guest = 8;
+  // optional bool allow_guest = 8 [default = true];
   if (has_allow_guest()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(8, this->allow_guest(), output);
   }
 
-  // optional bool has_password = 9;
+  // optional bool has_password = 9 [default = false];
   if (has_has_password()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(9, this->has_password(), output);
   }
@@ -2897,6 +2960,11 @@ void RoomListResponse_RoomInfo::SerializeWithCachedSizes(
   // optional bool second_extension = 11;
   if (has_second_extension()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(11, this->second_extension(), output);
+  }
+
+  // optional bool playing = 12 [default = false];
+  if (has_playing()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(12, this->playing(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -2948,12 +3016,12 @@ void RoomListResponse_RoomInfo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->role_range(), target);
   }
 
-  // optional bool allow_guest = 8;
+  // optional bool allow_guest = 8 [default = true];
   if (has_allow_guest()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(8, this->allow_guest(), target);
   }
 
-  // optional bool has_password = 9;
+  // optional bool has_password = 9 [default = false];
   if (has_has_password()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(9, this->has_password(), target);
   }
@@ -2966,6 +3034,11 @@ void RoomListResponse_RoomInfo::SerializeWithCachedSizes(
   // optional bool second_extension = 11;
   if (has_second_extension()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(11, this->second_extension(), target);
+  }
+
+  // optional bool playing = 12 [default = false];
+  if (has_playing()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(12, this->playing(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -3027,14 +3100,14 @@ int RoomListResponse_RoomInfo::ByteSize() const {
           this->role_range());
     }
 
-    // optional bool allow_guest = 8;
+    // optional bool allow_guest = 8 [default = true];
     if (has_allow_guest()) {
       total_size += 1 + 1;
     }
 
   }
   if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    // optional bool has_password = 9;
+    // optional bool has_password = 9 [default = false];
     if (has_has_password()) {
       total_size += 1 + 1;
     }
@@ -3046,6 +3119,11 @@ int RoomListResponse_RoomInfo::ByteSize() const {
 
     // optional bool second_extension = 11;
     if (has_second_extension()) {
+      total_size += 1 + 1;
+    }
+
+    // optional bool playing = 12 [default = false];
+    if (has_playing()) {
       total_size += 1 + 1;
     }
 
@@ -3111,6 +3189,9 @@ void RoomListResponse_RoomInfo::MergeFrom(const RoomListResponse_RoomInfo& from)
     if (from.has_second_extension()) {
       set_second_extension(from.second_extension());
     }
+    if (from.has_playing()) {
+      set_playing(from.playing());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -3145,6 +3226,7 @@ void RoomListResponse_RoomInfo::Swap(RoomListResponse_RoomInfo* other) {
     std::swap(has_password_, other->has_password_);
     std::swap(first_extension_, other->first_extension_);
     std::swap(second_extension_, other->second_extension_);
+    std::swap(playing_, other->playing_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

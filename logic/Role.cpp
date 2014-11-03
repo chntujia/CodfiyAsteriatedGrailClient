@@ -1749,7 +1749,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         switch(error->id())
         {
         case GE_DISCONNECTED:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线</font>"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线，如果他不是数字君的话，说不定会回来呢</font>"));
             break;
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");

@@ -52,7 +52,7 @@ Logic::Logic(QObject *parent) :
 }
 
 void Logic::setupRoom(bool isStarted, GameInfo *gameInfo)
-{    
+{
     if(!init_before_start && !isStarted) {
         connect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
         dataInterface->setupRoom(isStarted);
@@ -325,13 +325,20 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         {
         //GE_DISCONNECTED
         case GE_DISCONNECTED:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线</font>"));
+        {
+            int targetId = error->dst_id();
+            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(targetId) + QStringLiteral("离开房间</font>"));
+            dataInterface->setNickName(targetId, "");
+            dataInterface->getPlayerById(targetId)->setTeam(-1);
+            gui->getPlayerArea()->getPlayerItem(targetId)->setReady(false);
+            gui->getPlayerArea()->update();
             break;
+        }
         case GE_NOT_WELCOME:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>啊咧？您不受待见呢。。</font>"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>这个房主比较高冷，下个房间见。。</font>"));
             break;
         case GE_WRONG_PASSWORD:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>被识破了呢。。</font>"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>瞎蒙果然是不行的。。</font>"));
             break;
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");

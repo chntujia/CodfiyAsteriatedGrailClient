@@ -5,23 +5,17 @@
 #include "data/DataInterface.h"
 #include <QTextStream>
 #include <QSound>
+#include "data/Common.h"
 ClientUI::ClientUI(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ClientUI)
 {
     ui->setupUi(this);
-    QFile *fp=new QFile("account");
-    if(fp->exists())
-    {
-        QTextStream account(fp);
-        fp->open(QIODevice::ReadOnly);
-        ui->editLoginName->setText(account.readLine());
-        ui->editPassword->setText(account.readLine());
-        fp->close();
-    }
-    int port = 11228;
-    QString ip = "127.0.0.1";
-    fp=new QFile("config");
+    QString ip = "115.28.77.222";
+    int port = 11116;
+//    int port = 11228;
+//    QString ip = "127.0.0.1";
+    QFile *fp = new QFile("config");
     if(fp->exists())
     {
         QTextStream config(fp);
@@ -41,6 +35,21 @@ ClientUI::ClientUI(QWidget *parent) :
     ui->regPassword->setValidator(new QRegExpValidator(rx3, this));
     ui->regPasswordAgain->setValidator(new QRegExpValidator(rx3, this));
     ui->editPassword->setValidator(new QRegExpValidator(rx3, this));
+
+    fp=new QFile("account");
+    if(fp->exists())
+    {
+        QTextStream account(fp);
+        int pos;
+        fp->open(QIODevice::ReadOnly);
+        QString userName = account.readLine();
+        if(QValidator::State::Acceptable == ui->editLoginName->validator()->validate(userName, pos))
+            ui->editLoginName->setText(userName);
+        QString password = account.readLine();
+        if(QValidator::State::Acceptable == ui->editPassword->validator()->validate(password, pos))
+            ui->editPassword->setText(password);
+        fp->close();
+    }
 
     connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)), this,SLOT(displayError(QAbstractSocket::SocketError)));
     connect(tcpSocket,SIGNAL(getMessage(unsigned short, google::protobuf::Message*)),
@@ -91,6 +100,11 @@ void ClientUI::showMessage(unsigned short proto_type, google::protobuf::Message*
         case 2: // 帐号被封停
             ui->LabError->setText(QStringLiteral("您的帐号已被封停，请联系客服"));
             break;
+        case 3:{
+            QMessageBox*prop = new QMessageBox(QMessageBox::Critical,"Warning",QStringLiteral("版本过低，请去贴吧下载最新版本：\nhttp://tieba.baidu.com/p/2293550031"));
+            prop->exec();
+            break;
+            }
         default:// 其它错误
             ui->LabError->setText(QStringLiteral("未知错误：") + result);
         }
@@ -175,6 +189,7 @@ void ClientUI::UserLogin()
     login_req->set_asguest(false);
     login_req->set_user_id(username.toStdString());
     login_req->set_user_password(password.toStdString());
+    login_req->set_version(VERSION);
     tcpSocket->sendMessage(network::MSG_LOGIN_REQ, login_req);
 }
 
@@ -182,6 +197,7 @@ void ClientUI::GuestLogin()
 {
     network::LoginRequest* login_req = new network::LoginRequest();
     login_req->set_asguest(true);
+    login_req->set_version(VERSION);
     tcpSocket->sendMessage(network::MSG_LOGIN_REQ, login_req);
 }
 

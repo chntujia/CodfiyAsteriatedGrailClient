@@ -466,6 +466,13 @@ class LoginRequest : public ::google::protobuf::Message {
   inline ::std::string* release_user_password();
   inline void set_allocated_user_password(::std::string* user_password);
 
+  // optional int32 version = 4;
+  inline bool has_version() const;
+  inline void clear_version();
+  static const int kVersionFieldNumber = 4;
+  inline ::google::protobuf::int32 version() const;
+  inline void set_version(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:network.LoginRequest)
  private:
   inline void set_has_asguest();
@@ -474,15 +481,18 @@ class LoginRequest : public ::google::protobuf::Message {
   inline void clear_has_user_id();
   inline void set_has_user_password();
   inline void clear_has_user_password();
+  inline void set_has_version();
+  inline void clear_has_version();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* user_id_;
-  ::std::string* user_password_;
   bool asguest_;
+  ::google::protobuf::int32 version_;
+  ::std::string* user_password_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -937,14 +947,14 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 role_range() const;
   inline void set_role_range(::google::protobuf::int32 value);
 
-  // optional bool allow_guest = 8;
+  // optional bool allow_guest = 8 [default = true];
   inline bool has_allow_guest() const;
   inline void clear_allow_guest();
   static const int kAllowGuestFieldNumber = 8;
   inline bool allow_guest() const;
   inline void set_allow_guest(bool value);
 
-  // optional bool has_password = 9;
+  // optional bool has_password = 9 [default = false];
   inline bool has_has_password() const;
   inline void clear_has_password();
   static const int kHasPasswordFieldNumber = 9;
@@ -964,6 +974,13 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   static const int kSecondExtensionFieldNumber = 11;
   inline bool second_extension() const;
   inline void set_second_extension(bool value);
+
+  // optional bool playing = 12 [default = false];
+  inline bool has_playing() const;
+  inline void clear_playing();
+  static const int kPlayingFieldNumber = 12;
+  inline bool playing() const;
+  inline void set_playing(bool value);
 
   // @@protoc_insertion_point(class_scope:network.RoomListResponse.RoomInfo)
  private:
@@ -989,6 +1006,8 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline void clear_has_first_extension();
   inline void set_has_second_extension();
   inline void clear_has_second_extension();
+  inline void set_has_playing();
+  inline void clear_has_playing();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1003,9 +1022,10 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   bool has_password_;
   bool first_extension_;
   bool second_extension_;
+  bool playing_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(11 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(12 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -2995,6 +3015,28 @@ inline void LoginRequest::set_allocated_user_password(::std::string* user_passwo
   }
 }
 
+// optional int32 version = 4;
+inline bool LoginRequest::has_version() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void LoginRequest::set_has_version() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void LoginRequest::clear_has_version() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void LoginRequest::clear_version() {
+  version_ = 0;
+  clear_has_version();
+}
+inline ::google::protobuf::int32 LoginRequest::version() const {
+  return version_;
+}
+inline void LoginRequest::set_version(::google::protobuf::int32 value) {
+  set_has_version();
+  version_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // LoginResponse
@@ -3358,7 +3400,7 @@ inline void RoomListResponse_RoomInfo::set_role_range(::google::protobuf::int32 
   role_range_ = value;
 }
 
-// optional bool allow_guest = 8;
+// optional bool allow_guest = 8 [default = true];
 inline bool RoomListResponse_RoomInfo::has_allow_guest() const {
   return (_has_bits_[0] & 0x00000080u) != 0;
 }
@@ -3369,7 +3411,7 @@ inline void RoomListResponse_RoomInfo::clear_has_allow_guest() {
   _has_bits_[0] &= ~0x00000080u;
 }
 inline void RoomListResponse_RoomInfo::clear_allow_guest() {
-  allow_guest_ = false;
+  allow_guest_ = true;
   clear_has_allow_guest();
 }
 inline bool RoomListResponse_RoomInfo::allow_guest() const {
@@ -3380,7 +3422,7 @@ inline void RoomListResponse_RoomInfo::set_allow_guest(bool value) {
   allow_guest_ = value;
 }
 
-// optional bool has_password = 9;
+// optional bool has_password = 9 [default = false];
 inline bool RoomListResponse_RoomInfo::has_has_password() const {
   return (_has_bits_[0] & 0x00000100u) != 0;
 }
@@ -3444,6 +3486,28 @@ inline bool RoomListResponse_RoomInfo::second_extension() const {
 inline void RoomListResponse_RoomInfo::set_second_extension(bool value) {
   set_has_second_extension();
   second_extension_ = value;
+}
+
+// optional bool playing = 12 [default = false];
+inline bool RoomListResponse_RoomInfo::has_playing() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_playing() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_playing() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void RoomListResponse_RoomInfo::clear_playing() {
+  playing_ = false;
+  clear_has_playing();
+}
+inline bool RoomListResponse_RoomInfo::playing() const {
+  return playing_;
+}
+inline void RoomListResponse_RoomInfo::set_playing(bool value) {
+  set_has_playing();
+  playing_ = value;
 }
 
 // -------------------------------------------------------------------

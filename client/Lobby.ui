@@ -111,7 +111,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>若创建房间后，在游戏界面里没有人物框，则没连上服务器</string>
+    <string>如果你知道Unity，如果你能想象Unity里的Codify，你愿意跟我们再疯一回嘛？</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

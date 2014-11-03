@@ -1,4 +1,4 @@
-#include "RoomSet.h"
+﻿#include "RoomSet.h"
 #include "ui_RoomSet.h"
 #include "QTime"
 #include "protocol/action_respond.pb.h"
@@ -59,10 +59,10 @@ void RoomSet::InitializeSet(){
     QTime time = QTime::currentTime();
     int rid = time.second()%4;
     QString roomNames[4];
-    roomNames[0] = "·Asteriated··Grail··Loading·";
-    roomNames[1] = "初心者召唤中";
-    roomNames[2] = "一起体验星杯传说的魅力吧！";
-    roomNames[3] = "水叔是好人！";
+    roomNames[0] = "I WANT YOU";
+    roomNames[1] = "YOU ARE CHOSEN";
+    roomNames[2] = QStringLiteral("我们在招3d美工，时薪为零");
+    roomNames[3] = QStringLiteral("水叔是好人！");
     ui->lineEditRoomName->setText(roomNames[rid]);
 
     QRegExp rx("[A-Za-z0-9_]{1,10}");

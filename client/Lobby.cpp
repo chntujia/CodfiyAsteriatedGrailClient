@@ -5,7 +5,7 @@
 #include "logic/Logic.h"
 #include "widget/RoomView.h"
 #include "widget/GUI.h"
-
+#include <QDebug>
 Lobby::Lobby(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Lobby)
@@ -13,6 +13,7 @@ Lobby::Lobby(QWidget *parent) :
     roomSet = NULL;
     ui->setupUi(this);
     setWindowTitle("Welcome back, " + dataInterface->nickName);
+    ui->label->setToolTip(QStringLiteral("联系方式：chntujia@gmail.com"));
     logic->setLobby(this);
     connect(ui->tableWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
     connect(ui->createButton, SIGNAL(clicked()), this, SLOT(onCreateRoom()));
@@ -28,14 +29,19 @@ Lobby::~Lobby()
 void Lobby::fill(RoomListResponse* list)
 {
     ui->tableWidget->setRowCount(0);
-    roomList.CopyFrom(*list);
     for(int i = 0; i < list->rooms_size(); i++)
     {
-        ui->tableWidget->insertRow(i);
         RoomListResponse_RoomInfo game = list->rooms(i);
+        rooms[game.room_id()] = game;
         QTableWidgetItem *newItem;
+        ui->tableWidget->insertRow(i);
 
-        newItem = new QTableWidgetItem(QString::number(game.room_id()));
+        if(game.playing()){
+            newItem = new QTableWidgetItem(QStringLiteral("（进行中）") + QString::number(game.room_id()));
+        }
+        else{
+            newItem = new QTableWidgetItem(QString::number(game.room_id()));
+        }
         ui->tableWidget->setItem(i, ROOM_ID, newItem);
 
         newItem = new QTableWidgetItem(QString::fromStdString(game.room_name()));
@@ -90,7 +96,9 @@ void Lobby::fill(RoomListResponse* list)
         ui->tableWidget->setItem(i, WELCOME_GUEST, newItem);
         newItem = new QTableWidgetItem(game.has_password() ? "Y" : "N");
         ui->tableWidget->setItem(i, HAS_PASSWORD, newItem);
+
     }
+    ui->tableWidget->sortByColumn(0);
 }
 
 void Lobby::newWindow(int playerNum)
@@ -109,12 +117,20 @@ void Lobby::setEnable(bool enable)
 
 void Lobby::onItemClicked(QModelIndex index)
 {
-    int row = index.row();
-    RoomListResponse_RoomInfo room = roomList.rooms(row);
+    QString raw = ui->tableWidget->item(index.row(), ROOM_ID)->data(Qt::DisplayRole).toString();
+    QStringList data = raw.split(QStringLiteral("）"));
+    int roomId;
+    if(data.size()>1){
+        roomId = data[1].toInt();
+    }
+    else{
+        roomId = raw.toInt();
+    }
+    RoomListResponse_RoomInfo room = rooms[roomId];
     network::EnterRoomRequest *enter= new network::EnterRoomRequest();
     if(room.has_password()){
         QString pwd = QInputDialog::getText(this, QStringLiteral("切，结界么？"),
-                                    QStringLiteral("请输入暗语:"), QLineEdit::Normal);
+                                    QStringLiteral("大声告诉我你知道的秘密:"), QLineEdit::Normal);
         if(!pwd.isEmpty())
             enter->set_password(pwd.toStdString());
     }
