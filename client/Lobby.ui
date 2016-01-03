@@ -71,6 +71,11 @@
      <string>座次</string>
     </property>
    </column>
+   <column>
+    <property name="text">
+     <string>禁聊</string>
+    </property>
+   </column>
   </widget>
   <widget class="QPushButton" name="createButton">
    <property name="geometry">

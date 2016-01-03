@@ -57,16 +57,21 @@ void RoomSet::InitializeSet(){
     ui->radioButtonRoleSelectionSanXuanYi->setChecked(true);
 
     QTime time = QTime::currentTime();
-    int rid = time.second()%4;
-    QString roomNames[4];
-    roomNames[0] = "I WANT YOU";
-    roomNames[1] = "YOU ARE CHOSEN";
-    roomNames[2] = QStringLiteral("我们在招3d美工，时薪为零");
-    roomNames[3] = QStringLiteral("水叔是好人！");
+    int rid = time.second()%7;
+    QString roomNames[7];
+    roomNames[0] = QStringLiteral("【封印破碎】Github注册网杯账号现已开放");
+    roomNames[1] = QStringLiteral("【百鬼夜行】我们还要抓450人来开启新浪微博注册！");
+    roomNames[2] = QStringLiteral("【怜悯】我才不告诉你官网是codifygrail.cn！");
+    roomNames[3] = QStringLiteral("【血腥咆哮】程序猿猿猿猿猿猿猿猿猿猿!");
+    roomNames[4] = QStringLiteral("【神圣契约】来吧！3d大神！");
+    roomNames[5] = QStringLiteral("【冒险家天堂】开发进度在QQ群184705348");
+    roomNames[6] = QStringLiteral("【智慧法典】win10/8需反选聊天记录方可见");
     ui->lineEditRoomName->setText(roomNames[rid]);
 
     QRegExp rx("[A-Za-z0-9_]{1,10}");
     ui->password->setValidator(new QRegExpValidator(rx, this));
+    QRegExp rx2(".{1,15}");
+    ui->lineEditRoomName->setValidator(new QRegExpValidator(rx2, this));
 }
 
 int RoomSet::getPlayerNum(){
@@ -102,6 +107,11 @@ QString RoomSet::getPassword()
 
 QString RoomSet::getRoomName(){
     return ui->lineEditRoomName->text();
+}
+
+bool RoomSet::getSilence()
+{
+    return ui->slience->isChecked();
 }
 
 void RoomSet::onCancelRoom(){

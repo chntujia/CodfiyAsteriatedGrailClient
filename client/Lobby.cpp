@@ -96,16 +96,24 @@ void Lobby::fill(RoomListResponse* list)
         ui->tableWidget->setItem(i, WELCOME_GUEST, newItem);
         newItem = new QTableWidgetItem(game.has_password() ? "Y" : "N");
         ui->tableWidget->setItem(i, HAS_PASSWORD, newItem);
+        newItem = new QTableWidgetItem(game.silence() ? "Y" : "N");
+        ui->tableWidget->setItem(i, SILENCE, newItem);
 
     }
     ui->tableWidget->sortByColumn(0);
+    ui->tableWidget->resizeColumnToContents (true);
 }
 
-void Lobby::newWindow(int playerNum)
+void Lobby::newWindow(int playerNum, bool silence)
 {
     RoomView* window = (RoomView*)gui->newWindow(playerNum);
     connect(window, SIGNAL(closed()), this, SLOT(onWindowClose()));
     setEnable(false);
+    if(silence)
+    {
+        gui->logAppend(QStringLiteral("这是个禁言房"));
+        gui->getChatLine()->setEnabled(false);
+    }
 }
 
 void Lobby::setEnable(bool enable)
@@ -136,7 +144,7 @@ void Lobby::onItemClicked(QModelIndex index)
     }
     ui->tableWidget->setEnabled(false);
 
-    newWindow(room.max_player());
+    newWindow(room.max_player(), room.silence());
 
     enter->set_room_id(room.room_id());
     logic->getClient()->sendMessage(network::MSG_ENTER_ROOM_REQ, enter);
@@ -167,6 +175,7 @@ void Lobby::onOpenRoom(){
     bool allowGuest = roomSet->getAllowGuest();
     std::string password = roomSet->getPassword().toStdString();
     std::string roomName = roomSet->getRoomName().toStdString();
+    bool slience = roomSet->getSilence();
 
     network::CreateRoomRequest* create = new network::CreateRoomRequest();
     create->set_role_strategy((network::ROLE_STRATEGY)roleSelectionStrategy);
@@ -177,10 +186,11 @@ void Lobby::onOpenRoom(){
     create->set_allow_guest(allowGuest);
     create->set_password(password);
     create->set_room_name(roomName);
+    create->set_silence(slience);
 
     logic->getClient()->sendMessage(network::MSG_CREATE_ROOM_REQ, create);
     roomSet->close();//注意此时调用onBackToLobby()
-    newWindow(playerNum);//打开游戏界面
+    newWindow(playerNum, slience);//打开游戏界面
 }
 
 void Lobby::onRefreshList()

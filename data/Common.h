@@ -2,7 +2,7 @@
 #define COMMON_H
 #include <QString>
 #include "protocol/action_respond.pb.h"
-#define VERSION 141023
+#define VERSION 151223
 enum GrailError{
     GE_SUCCESS,
     GE_TIMEOUT,

@@ -35,7 +35,6 @@ void GUI::cleanRoom()
 {
     handArea->cleanCardItem();
     coverArea->cleanCardItem();
-    logArea->clear();
     chatArea->clear();
 }
 

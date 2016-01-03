@@ -1,4 +1,4 @@
-#ifndef ROOMSET_H
+﻿#ifndef ROOMSET_H
 #define ROOMSET_H
 
 #include <QDialog>
@@ -23,6 +23,7 @@ public:
     bool getSecondExtension();
     QString getPassword();
     QString getRoomName();
+    bool getSilence();
 public slots:
     void onCancelRoom();
 

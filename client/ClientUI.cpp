@@ -6,15 +6,14 @@
 #include <QTextStream>
 #include <QSound>
 #include "data/Common.h"
+#include <QDesktopServices>
 ClientUI::ClientUI(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ClientUI)
 {
     ui->setupUi(this);
-    QString ip = "115.28.77.222";
-    int port = 11116;
-//    int port = 11228;
-//    QString ip = "127.0.0.1";
+    int port = 11111;
+    QString ip = "127.0.0.1";
     QFile *fp = new QFile("config");
     if(fp->exists())
     {
@@ -67,6 +66,7 @@ ClientUI::ClientUI(QWidget *parent) :
     ui->editPassword->setEchoMode(QLineEdit::Password);
     ui->regPassword->setEchoMode(QLineEdit::Password);
     ui->regPasswordAgain->setEchoMode(QLineEdit::Password);
+    ui->btnRegist->setEnabled(true);
 }
 
 ClientUI::~ClientUI()
@@ -203,8 +203,9 @@ void ClientUI::GuestLogin()
 
 void ClientUI::UserRegistShow()
 {
-    ui->frameLogin->hide();
-    ui->frameRegist->show();
+    QDesktopServices::openUrl(QUrl(QLatin1String("http://www.codifygrail.cn")));
+//    ui->frameLogin->hide();
+//    ui->frameRegist->show();
 }
 
 void ClientUI::UserRegist()

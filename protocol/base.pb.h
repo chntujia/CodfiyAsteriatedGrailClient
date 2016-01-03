@@ -466,7 +466,7 @@ class LoginRequest : public ::google::protobuf::Message {
   inline ::std::string* release_user_password();
   inline void set_allocated_user_password(::std::string* user_password);
 
-  // optional int32 version = 4;
+  // optional int32 version = 4 [default = -1];
   inline bool has_version() const;
   inline void clear_version();
   static const int kVersionFieldNumber = 4;
@@ -982,6 +982,13 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline bool playing() const;
   inline void set_playing(bool value);
 
+  // optional bool silence = 13 [default = false];
+  inline bool has_silence() const;
+  inline void clear_silence();
+  static const int kSilenceFieldNumber = 13;
+  inline bool silence() const;
+  inline void set_silence(bool value);
+
   // @@protoc_insertion_point(class_scope:network.RoomListResponse.RoomInfo)
  private:
   inline void set_has_room_id();
@@ -1008,6 +1015,8 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline void clear_has_second_extension();
   inline void set_has_playing();
   inline void clear_has_playing();
+  inline void set_has_silence();
+  inline void clear_has_silence();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1023,9 +1032,10 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   bool first_extension_;
   bool second_extension_;
   bool playing_;
+  bool silence_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(12 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(13 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -1243,6 +1253,13 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline ::std::string* release_password();
   inline void set_allocated_password(::std::string* password);
 
+  // optional bool silence = 9 [default = false];
+  inline bool has_silence() const;
+  inline void clear_silence();
+  static const int kSilenceFieldNumber = 9;
+  inline bool silence() const;
+  inline void set_silence(bool value);
+
   // @@protoc_insertion_point(class_scope:network.CreateRoomRequest)
  private:
   inline void set_has_room_name();
@@ -1261,20 +1278,23 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline void clear_has_allow_guest();
   inline void set_has_password();
   inline void clear_has_password();
+  inline void set_has_silence();
+  inline void clear_has_silence();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* room_name_;
   ::google::protobuf::int32 max_player_;
   int role_strategy_;
+  ::google::protobuf::int32 seat_mode_;
   bool first_extension_;
   bool second_extension_;
   bool allow_guest_;
-  ::google::protobuf::int32 seat_mode_;
+  bool silence_;
   ::std::string* password_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -3015,7 +3035,7 @@ inline void LoginRequest::set_allocated_user_password(::std::string* user_passwo
   }
 }
 
-// optional int32 version = 4;
+// optional int32 version = 4 [default = -1];
 inline bool LoginRequest::has_version() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
@@ -3026,7 +3046,7 @@ inline void LoginRequest::clear_has_version() {
   _has_bits_[0] &= ~0x00000008u;
 }
 inline void LoginRequest::clear_version() {
-  version_ = 0;
+  version_ = -1;
   clear_has_version();
 }
 inline ::google::protobuf::int32 LoginRequest::version() const {
@@ -3510,6 +3530,28 @@ inline void RoomListResponse_RoomInfo::set_playing(bool value) {
   playing_ = value;
 }
 
+// optional bool silence = 13 [default = false];
+inline bool RoomListResponse_RoomInfo::has_silence() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_silence() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_silence() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void RoomListResponse_RoomInfo::clear_silence() {
+  silence_ = false;
+  clear_has_silence();
+}
+inline bool RoomListResponse_RoomInfo::silence() const {
+  return silence_;
+}
+inline void RoomListResponse_RoomInfo::set_silence(bool value) {
+  set_has_silence();
+  silence_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // RoomListResponse
@@ -3814,6 +3856,28 @@ inline void CreateRoomRequest::set_allocated_password(::std::string* password) {
     clear_has_password();
     password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
+}
+
+// optional bool silence = 9 [default = false];
+inline bool CreateRoomRequest::has_silence() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void CreateRoomRequest::set_has_silence() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void CreateRoomRequest::clear_has_silence() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void CreateRoomRequest::clear_silence() {
+  silence_ = false;
+  clear_has_silence();
+}
+inline bool CreateRoomRequest::silence() const {
+  return silence_;
+}
+inline void CreateRoomRequest::set_silence(bool value) {
+  set_has_silence();
+  silence_ = value;
 }
 
 // -------------------------------------------------------------------

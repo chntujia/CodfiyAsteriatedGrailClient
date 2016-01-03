@@ -15,6 +15,7 @@
 #define WELCOME_GUEST 5
 #define HAS_PASSWORD 6
 #define SEAT_MODE  7
+#define SILENCE 8
 
 namespace Ui {
 class Lobby;
@@ -38,7 +39,7 @@ public slots:
     void onBackToLobby();
 private:
     RoomSet *roomSet;
-    void newWindow(int playerNum);
+    void newWindow(int playerNum, bool silence);
     QMap<int, network::RoomListResponse_RoomInfo> rooms;
     Ui::Lobby *ui;
 
