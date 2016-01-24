@@ -420,7 +420,7 @@
     <string>禁止聊天</string>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QLabel" name="labelRoleRange_3">
