@@ -1,5 +1,6 @@
 ﻿#include "PlayerItem.h"
 #include "data/DataInterface.h"
+#include "logic/Logic.h"
 #include <QPainter>
 #include <QPushButton.h>
 
@@ -163,10 +164,12 @@ QRectF PlayerItem::boundingRect() const
 void PlayerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawPixmap(0, 0, frame);
+    if(!player->getRoleID()){
     if(player->getColor() == 1)
         painter->drawPixmap(0, 0, redReadyFrame);
     else if(player->getColor() == 0)
         painter->drawPixmap(0, 0, blueReadyFrame);
+    }
     painter->drawPixmap(2,6,player->getFaceSource());
 
     QFont font;

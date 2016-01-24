@@ -83,7 +83,7 @@ void BPArea::disableRoleItem(int roleID)
 {
     RoleItem* role = getRoleByID(roleID);
     role->setEnabled(0);
-    role->setOpacity(0.5);
+    role->setOpacity(0.8);
 }
 
 void BPArea::onRoleSelected(int id)

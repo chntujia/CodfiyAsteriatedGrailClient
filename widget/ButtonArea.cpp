@@ -91,12 +91,12 @@ void DecisionArea::disable(int i)
     {
     case 0:
         okButton->setEnabled(0);
-        okButton->setOpacity(0.5);
+        okButton->setOpacity(0.8);
         okButton->selected=0;
         break;
     case 1:
         cancelButton->setEnabled(0);
-        cancelButton->setOpacity(0.5);
+        cancelButton->setOpacity(0.8);
         cancelButton->selected=0;
         break;
     case 2:
@@ -115,11 +115,11 @@ void DecisionArea::disable(int i)
 void DecisionArea::reset()
 {
     okButton->setEnabled(0);
-    okButton->setOpacity(0.5);
+    okButton->setOpacity(0.8);
     okButton->selected=0;
 
     cancelButton->setEnabled(0);
-    cancelButton->setOpacity(0.5);
+    cancelButton->setOpacity(0.8);
     cancelButton->selected=0;
 
     exchangeButton->setEnabled(0);
@@ -240,7 +240,7 @@ void ButtonArea::disable(int i)
 {
     buttons[i]->selected=0;
     buttons[i]->setEnabled(0);
-    buttons[i]->setOpacity(0.5);
+    buttons[i]->setOpacity(0.8);
 }
 
 SafeList<Button*> ButtonArea::getButtons()

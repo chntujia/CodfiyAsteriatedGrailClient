@@ -98,7 +98,7 @@ void HandArea::disableMagic()
         if(ptr->getCard()->getType()=="magic")
         {
             ptr->setEnabled(0);
-            ptr->setOpacity(0.7);
+            ptr->setOpacity(0.8);
         }
 }
 
@@ -116,7 +116,7 @@ void HandArea::disableElement(QString element)
         if(ptr->getCard()->getElement()==element)
         {
             ptr->setEnabled(0);
-            ptr->setOpacity(0.7);
+            ptr->setOpacity(0.8);
         }
 }
 void HandArea::enableElement(QString element)
@@ -216,7 +216,7 @@ void HandArea::disableAll()
     foreach(ptr,cardItems)
     {
         ptr->setEnabled(0);
-        ptr->setOpacity(0.7);
+        ptr->setOpacity(0.8);
     }
 }
 

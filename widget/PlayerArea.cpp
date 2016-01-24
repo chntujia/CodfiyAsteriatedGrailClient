@@ -139,7 +139,7 @@ void PlayerArea::enablePlayerItem(int id)
 void PlayerArea::disablePlayerItem(int id)
 {
     playerItems[id]->setEnabled(0);
-    playerItems[id]->setOpacity(0.6);
+    playerItems[id]->setOpacity(0.8);
 }
 
 void PlayerArea::enableAll()
@@ -156,7 +156,7 @@ void PlayerArea::disableAll()
     foreach(PlayerItem*ptr,playerItems)
     {
         ptr->setEnabled(0);
-        ptr->setOpacity(0.6);
+        ptr->setOpacity(0.8);
     }
 }
 
