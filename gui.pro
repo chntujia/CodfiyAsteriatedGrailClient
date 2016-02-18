@@ -47,6 +47,7 @@ HEADERS += client/Client.h \
            logic/ShenGuan.h \
            logic/ShiRen.h \
            logic/SiLing.h \
+           logic/spMoDao.h \
            logic/TianShi.h \
            logic/WuNv.h \
            logic/XianZhe.h \
@@ -152,6 +153,7 @@ SOURCES += main.cpp \
            logic/ShenGuan.cpp \
            logic/ShiRen.cpp \
            logic/SiLing.cpp \
+           logic/spMoDao.cpp \
            logic/TianShi.cpp \
            logic/WuNv.cpp \
            logic/XianZhe.cpp \

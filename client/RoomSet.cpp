@@ -90,6 +90,8 @@ bool RoomSet::getFirstExtension() { return ui->checkBoxRoleRangeYiKuo->isChecked
 
 bool RoomSet::getSecondExtension() { return ui->checkBoxRoleRangeSanBan->isChecked(); }
 
+bool RoomSet::getspMoDao() { return ui->checkBoxRoleRangespMoDao->isChecked(); }
+
 bool RoomSet::getAllowGuest()
 {
     return ui->allowGuest->isChecked();

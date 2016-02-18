@@ -21,6 +21,7 @@ public:
     bool getAllowGuest();
     bool getFirstExtension();
     bool getSecondExtension();
+    bool getspMoDao();
     QString getPassword();
     QString getRoomName();
     bool getSilence();

@@ -153,6 +153,9 @@ void Player::setRole(int roleID)
         roleName=QStringLiteral("[吟游诗人]");
         addToken(0, new Token(QStringLiteral("灵感"),4,0));
         break;
+    case 108:
+        roleName=QStringLiteral("[sp魔导师]");
+        break;
     }
 }
 

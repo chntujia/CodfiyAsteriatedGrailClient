@@ -19,6 +19,7 @@
 #include "QiDao.h"
 #include "ShenGuan.h"
 #include "SiLing.h"
+#include "spMoDao.h"
 #include "XianZhe.h"
 #include "JianDi.h"
 #include "GeDouJia.h"
@@ -229,6 +230,10 @@ void Logic::setMyRole(int roleID)
         break;
     case 31:
         myRole = new ShiRen;
+        hasSetRole = true;
+        break;
+    case 108:
+        myRole = new spMoDao;
         hasSetRole = true;
         break;
     }

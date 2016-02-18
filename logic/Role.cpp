@@ -336,6 +336,11 @@ void Role::drop(int howMany, int cause)
         tipArea->setMsg(QStringLiteral("弃一张法牌，否则受两点法术伤害"));
         decisionArea->enable(1);
         break;
+    case SP_MO_BAO_CHONG_JI:
+        handArea->enableMagic();
+        tipArea->setMsg(QStringLiteral("弃一张法牌，否则受两点法术伤害"));
+        decisionArea->enable(1);
+        break;
     case CHONG_YING_DISCARD:
         handArea->enableAll();
         tipArea->setMsg(QStringLiteral("弃1张牌，魔枪方角色可不如此做【除魔枪外每弃1张雷系牌或法术牌，魔枪下次的攻击伤害+1】"));
