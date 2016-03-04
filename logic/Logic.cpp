@@ -247,6 +247,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
     DecisionArea* decisionArea;
     BPArea* bpArea;
     SafeList<int> roleIDs;
+    SafeList<int> options;
     PlayerArea* playerArea;
     int targetID,roleID,howMany,num;
     QString arg[10];
@@ -309,6 +310,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             network::GameInfo* toRole = new network::GameInfo;
             toRole->CopyFrom(*game_info);
             myRole->decipher(network::MSG_GAME, toRole);
+            gui->hideBP();
         }
         gui->getPlayerArea()->update();
         break;
@@ -348,87 +350,66 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");
             break;
-        }
+			}
         break;
     }
 //选择角色
     case network::MSG_ROLE_REQ:
-        state=46;
         char_pick = (network::RoleRequest*) proto;
-
-        tipArea=gui->getTipArea();
-        decisionArea=gui->getDecisionArea();
-        tipArea->reset();        
-        howMany=char_pick->role_ids_size();
-        for(int i=0;i<howMany;i++){
-            roleID=char_pick->role_ids(i);
-            tipArea->addBoxItem(QString::number(roleID)+"."+dataInterface->getRoleName(roleID));
-        }
-        tipArea->setMsg(QStringLiteral("请选择角色："));
-        tipArea->showBox();
-        decisionArea->enable(0);
-        gui->alert();
-        break;
-    case 51:
-        // TODO:BP模式，暂不可用
-        state = 51;
-        tipArea=gui->getTipArea();
-        decisionArea=gui->getDecisionArea();
-        bpArea = gui->getBPArea();
-        tipArea->reset();
-        connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
-        connect(bpArea,SIGNAL(roleReady()),this,SLOT(roleAnalyse()));
-        num = arg[1].toInt();
-
-        for(int i=0;i<num;i++)
+        if(char_pick->strategy() == ROLE_STRATEGY_31)
         {
-            roleIDs<<arg[i+2].toInt();
+            state=46;
+            tipArea=gui->getTipArea();
+            decisionArea=gui->getDecisionArea();
+            tipArea->reset();
+            howMany=char_pick->role_ids_size();
+            for(int i=0;i<howMany;i++){
+                roleID=char_pick->role_ids(i);
+                tipArea->addBoxItem(QString::number(roleID)+"."+dataInterface->getRoleName(roleID));
+            }
+            tipArea->setMsg(QStringLiteral("请选择角色："));
+            tipArea->showBox();
+            decisionArea->enable(0);
+            gui->alert();
+            break;
         }
-
-        bpArea->BPStart(num, roleIDs);
-        break;
-    case 52:
-        // TODO:BP模式，暂不可用
-        state = 52;
-        bpArea = gui->getBPArea();
-        bpArea->setMsg("请禁用一角色");
-        bpArea->setQuota(1);
-        bpArea->enableAll();
-        playerArea = gui->getPlayerArea();
-        gui->alert();
-        break;
-    case 55:
-        // TODO:BP模式，暂不可用
-        state = 55;
-        bpArea = gui->getBPArea();
-        bpArea->setMsg("请选择一角色");
-        bpArea->setQuota(1);
-        bpArea->enableAll();
-        playerArea = gui->getPlayerArea();
-        gui->alert();
-        break;
-    case 54:
-        //  TODO:BP模式，暂不可用
-        bpArea = gui->getBPArea();
-        bpArea->ban(arg[1].toInt(), arg[2].toInt());
-        break;
-    case 57:
-        //  TODO:BP模式，暂不可用
-        bpArea = gui->getBPArea();
-        bpArea->choose(arg[1].toInt(), arg[2].toInt());
-        decisionArea = gui->getDecisionArea();
-        if(bpArea->checkOver())
+        else if(char_pick->strategy() == ROLE_STRATEGY_BP)
         {
-            bpArea->setVisible(0);
-            disconnect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
-            disconnect(bpArea,SIGNAL(roleReady()),this,SLOT(roleAnalyse()));
+            state = 51;
+            tipArea=gui->getTipArea();
+            decisionArea=gui->getDecisionArea();
+            bpArea = gui->getBPArea();
+            tipArea->reset();
+            howMany=char_pick->role_ids_size();
+            for(int i=0;i<howMany;i++){
+                roleIDs << char_pick->role_ids(i);
+                options << char_pick->args(i);
+            }
+            connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
+            connect(bpArea,SIGNAL(roleReady()),this,SLOT(roleAnalyse()));
+            bpArea->BPStart(howMany, roleIDs, options, char_pick->opration());
+            if(char_pick->opration() == BP_BAN )
+            {
+                state = 52;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请禁用一角色"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                playerArea = gui->getPlayerArea();
+                gui->alert();
+            }
+            else if(char_pick->opration() == BP_PICK )
+            {
+                state = 53;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请选择一角色"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                playerArea = gui->getPlayerArea();
+                gui->alert();
+            }
+            break;
         }
-        break;
-    case 59:
-        //  TODO:BP模式，暂不可用
-        if(gui!=NULL)
-            gui->chatAppend(arg[1].toInt(),arg[2]);
-        break;
     }
     delete proto;
 }
@@ -437,6 +418,10 @@ void Logic::onOkClicked()
 {
     QMutexLocker locker(&mutex);
 
+    int chosen = 0;
+    SafeList<int> selected;
+    BPArea* bpArea = NULL;
+    network::PickBan* pick;
     switch(state)
     {
     case JOIN_TEAM:
@@ -465,27 +450,36 @@ void Logic::onOkClicked()
         gui->reset();
         break;
     }
-    /*
-    TODO:BP
     case 52:
         bpArea=gui->getBPArea();
-        roles = bpArea->getSelectedRoles();
-        emit sendCommand("53;"+QString::number(roles[0])+";");
-        role= bpArea->getRoleByID(roles[0]);
-        role->setY(role->y()+20);
+        selected = bpArea->getSelectedRoles();
+        chosen = selected[0];
+        pick = new network::PickBan();
+        pick->add_role_ids(chosen);
+        pick->set_strategy(network::ROLE_STRATEGY_BP);
+        pick->set_is_pick(false);
+        emit sendCommand(network::MSG_PICK_BAN, pick);
+
+        disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
+
         bpArea->reset();
         gui->reset();
         break;
-    case 55:
+    case 53:
         bpArea=gui->getBPArea();
-        roles = bpArea->getSelectedRoles();
-        emit sendCommand("56;"+QString::number(roles[0])+";");
-        role= bpArea->getRoleByID(roles[0]);
-        role->setY(role->y()+20);
+        selected = bpArea->getSelectedRoles();
+        chosen = selected[0];
+        pick = new network::PickBan();
+        pick->add_role_ids(chosen);
+        pick->set_strategy(network::ROLE_STRATEGY_BP);
+        pick->set_is_pick(true);
+        emit sendCommand(network::MSG_PICK_BAN, pick);
+
+        disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
+
         bpArea->reset();
         gui->reset();
         break;
-    */
     }
 
 
@@ -571,7 +565,7 @@ void Logic::roleAnalyse()
     switch(state)
     {
     case 52:
-    case 55:
+    case 53:
         decisionArea->enable(0);
     }
 }

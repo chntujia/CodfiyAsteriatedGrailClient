@@ -230,7 +230,7 @@
   </widget>
   <widget class="QRadioButton" name="radioButtonRoleSelectionBanPick">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>

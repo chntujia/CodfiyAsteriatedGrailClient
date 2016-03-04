@@ -154,3 +154,8 @@ void GUI::closeCoverArea()
     this->coverArea->setVisible(false);
     this->handArea->setVisible(true);
 }
+
+void GUI::hideBP()
+{
+    bpArea->hide();
+}

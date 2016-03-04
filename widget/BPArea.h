@@ -10,16 +10,16 @@ class BPArea : public QGraphicsObject
     friend class GUI;
 public:
     BPArea();
+    ~BPArea();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void BPStart(int num, SafeList<int> roles);
+    void BPStart(int num, SafeList<int> roles, SafeList<int> options, uint op);
     void enableRoleItem(int roleID);
     void disableRoleItem(int roleID);
     void setMsg(QString msg);
     void setQuota(int howMany){least=most=howMany;}
     void setQuota(int least,int most){this->least=least;this->most=most;}
     SafeList<int> getSelectedRoles();
-    void ban(int playerID, int roleID);
     void choose(int playerID, int roleID);
     RoleItem *getRoleByID(int ID);
     void reset();
@@ -29,6 +29,7 @@ public:
     void enableAll();
     int getColor(int playerID);
     int getOrderInTeam(int playerID);
+    void hide();
 public slots:
     void onRoleSelected(int id);
     void onRoleUnselected(int id);
@@ -38,6 +39,7 @@ private:
     int least;
     int most;
     int currentSum;
+    bool justShow;
     QPixmap background;
     QString msg;
     SafeList<int> selectedRoles;
