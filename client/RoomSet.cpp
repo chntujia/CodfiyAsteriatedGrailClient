@@ -2,8 +2,9 @@
 #include "ui_RoomSet.h"
 #include "QTime"
 #include "protocol/action_respond.pb.h"
+#include "data/Common.h"
 
-RoomSet::RoomSet(QWidget *parent) :
+RoomSet::RoomSet(ACCOUNT_STATUS identity, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RoomSet)
 {
@@ -12,7 +13,7 @@ RoomSet::RoomSet(QWidget *parent) :
     connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelRoom()));
     connect(ui->allowPassword, SIGNAL(clicked(bool)), ui->password, SLOT(setEnabled(bool)));
     connect(ui->radioButtonPlayer6, SIGNAL(toggled(bool)), ui->radioButtonSeatOrderSanLian, SLOT(setEnabled(bool)));
-    InitializeSet();
+    InitializeSet(identity);
 }
 
 RoomSet::~RoomSet()
@@ -20,7 +21,7 @@ RoomSet::~RoomSet()
     delete ui;
 }
 
-void RoomSet::InitializeSet(){
+void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
 
     groupPlayerNum = new QButtonGroup();
     groupSeatOrder = new QButtonGroup();
@@ -59,19 +60,30 @@ void RoomSet::InitializeSet(){
     QTime time = QTime::currentTime();
     int rid = time.second()%7;
     QString roomNames[7];
-    roomNames[0] = QStringLiteral("【封印破碎】Github注册网杯账号现已开放");
-    roomNames[1] = QStringLiteral("【百鬼夜行】我们还要抓450人来开启新浪微博注册！");
-    roomNames[2] = QStringLiteral("【怜悯】我才不告诉你官网是codifygrail.cn！");
-    roomNames[3] = QStringLiteral("【血腥咆哮】程序猿猿猿猿猿猿猿猿猿猿!");
-    roomNames[4] = QStringLiteral("【神圣契约】来吧！3d大神！");
-    roomNames[5] = QStringLiteral("【冒险家天堂】开发进度在QQ群184705348");
-    roomNames[6] = QStringLiteral("【智慧法典】win10/8需反选聊天记录方可见");
+    roomNames[0] = QStringLiteral("Github注册网杯账号现已开放");
+    roomNames[1] = QStringLiteral("我们还要抓450人来开启新浪微博注册！");
+    roomNames[2] = QStringLiteral("我才不告诉你官网是codifygrail.cn！");
+    roomNames[3] = QStringLiteral("程序猿猿猿猿猿猿猿猿猿猿!");
+    roomNames[4] = QStringLiteral("来吧！3d大神！");
+    roomNames[5] = QStringLiteral("开发进度在QQ群184705348");
+    roomNames[6] = QStringLiteral("win10/8需反选聊天记录方可见");
     ui->lineEditRoomName->setText(roomNames[rid]);
 
     QRegExp rx("[A-Za-z0-9_]{1,10}");
     ui->password->setValidator(new QRegExpValidator(rx, this));
     QRegExp rx2(".{1,15}");
     ui->lineEditRoomName->setValidator(new QRegExpValidator(rx2, this));
+
+    switch(identity)
+    {
+    case STATUS_VIP:
+        ui->radioButtonRoleSelectionBanPick->setEnabled(true);
+        ui->checkBoxRoleRangespMoDao->setEnabled(true);
+    case STATUS_NORMAL:
+        ui->allowGuest->setEnabled(true);
+        ui->allowPassword->setEnabled(true);
+        break;
+    }
 }
 
 int RoomSet::getPlayerNum(){
@@ -122,6 +134,7 @@ void RoomSet::onCancelRoom(){
     delete groupRoleSelection;
     this->close();
 }
+
 void RoomSet::closeEvent(QCloseEvent * event){
 
     emit  backToLobby();

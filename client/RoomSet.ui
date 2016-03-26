@@ -230,7 +230,7 @@
   </widget>
   <widget class="QRadioButton" name="radioButtonRoleSelectionBanPick">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -355,7 +355,7 @@
   </widget>
   <widget class="QCheckBox" name="allowGuest">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -374,7 +374,7 @@
   </widget>
   <widget class="QCheckBox" name="allowPassword">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -438,7 +438,7 @@
   </widget>
   <widget class="QCheckBox" name="checkBoxRoleRangespMoDao">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -452,7 +452,7 @@
     <string>sp魔导师</string>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

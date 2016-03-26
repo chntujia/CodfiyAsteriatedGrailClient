@@ -157,7 +157,7 @@ void Lobby::onCreateRoom()
     //FIXME: popup
     //打开房间设置面板
     if(roomSet!= NULL){roomSet->close();}
-    roomSet = new RoomSet();
+    roomSet = new RoomSet(logic->getIdentity());
     roomSet->show();
     connect(roomSet, SIGNAL(createRoom()), this, SLOT(onOpenRoom()));
     connect(roomSet, SIGNAL(backToLobby()), this, SLOT(onBackToLobby()));

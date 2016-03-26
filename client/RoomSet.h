@@ -8,12 +8,13 @@ namespace Ui {
 class RoomSet;
 }
 
+enum ACCOUNT_STATUS;
 class RoomSet : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit RoomSet(QWidget *parent = 0);
+    explicit RoomSet(ACCOUNT_STATUS identity, QWidget *parent = 0);
     ~RoomSet();
     int getPlayerNum();
     int getSeatOrder();
@@ -34,7 +35,7 @@ signals:
     void createRoom();
     void backToLobby();
 private:
-    void InitializeSet();
+    void InitializeSet(ACCOUNT_STATUS identity);
 
     QButtonGroup* groupPlayerNum;
     QButtonGroup* groupSeatOrder;

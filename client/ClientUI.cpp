@@ -84,29 +84,32 @@ void ClientUI::showMessage(unsigned short proto_type, google::protobuf::Message*
         login_rep = (network::LoginResponse*)proto;
 
         // TODO: 登陆失败
-        int result = login_rep->state();
+        ACCOUNT_STATUS result = (ACCOUNT_STATUS)login_rep->state();
+        logic->setIdentity(result);
         switch (result)
         {
-        case 0: // 成功
+        case STATUS_VIP:
+        case STATUS_GUEST:
+        case STATUS_NORMAL: // 成功
             ui->LabError->setText(QStringLiteral("登入成功"));
             ui->frameLogin->hide();
             ui->frameRegist->hide();
             dataInterface->nickName = QString::fromStdString(login_rep->nickname());
             accept();
             break;
-        case 1: // 帐号错误
+        case STATUS_LOGIN_FAILED: // 帐号错误
             ui->LabError->setText(QStringLiteral("用户名或密码错误"));
             break;
-        case 2: // 帐号被封停
+        case STATUS_FORBIDDEN: // 帐号被封停
             ui->LabError->setText(QStringLiteral("您的帐号已被封停，请联系客服"));
             break;
-        case 3:{
+        case STATUS_OUTDATE:{
             QMessageBox*prop = new QMessageBox(QMessageBox::Critical,"Warning",QStringLiteral("版本过低，请去贴吧下载最新版本：\nhttp://tieba.baidu.com/p/2293550031"));
             prop->exec();
             break;
             }
         default:// 其它错误
-            ui->LabError->setText(QStringLiteral("未知错误：") + result);
+            ui->LabError->setText(QStringLiteral("未知错误：") + QString::number(result));
         }
         break;
     }

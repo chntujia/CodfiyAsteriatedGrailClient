@@ -56,6 +56,7 @@ void Logic::setupRoom(bool isStarted, GameInfo *gameInfo)
 {
     if(!init_before_start && !isStarted) {
         connect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
+        connect(gui->getBPArea(),SIGNAL(roleReady()),this,SLOT(roleAnalyse()));
         dataInterface->setupRoom(isStarted);
         gui->setupRoom(isStarted);
         normal();
@@ -249,8 +250,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
     SafeList<int> roleIDs;
     SafeList<int> options;
     PlayerArea* playerArea;
-    int targetID,roleID,howMany,num;
-    QString arg[10];
+    int targetID,roleID,howMany;
 
     network::RoleRequest* char_pick;
 
@@ -300,6 +300,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         {
             disconnect(getClient(),0,this,0);
             disconnect(gui->getDecisionArea(), 0, this, 0);
+            disconnect(gui->getBPArea(),0,this,0);
             for(int i=0;i<dataInterface->getPlayerMax();i++){
                 dataInterface->getPlayerList().at(i)->setRole(roles[i]);
                 gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
@@ -356,8 +357,13 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
 //选择角色
     case network::MSG_ROLE_REQ:
         char_pick = (network::RoleRequest*) proto;
+        int targetId = char_pick->id();
+        if(targetId != -1)
+            gui->logAppend(QStringLiteral("等待玩家") + QString::number(targetId) + QStringLiteral("选择角色"));
         if(char_pick->strategy() == ROLE_STRATEGY_31)
         {
+            if(targetId != myID)
+                break;
             state=46;
             tipArea=gui->getTipArea();
             decisionArea=gui->getDecisionArea();
@@ -384,10 +390,10 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             for(int i=0;i<howMany;i++){
                 roleIDs << char_pick->role_ids(i);
                 options << char_pick->args(i);
-            }
-            connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
-            connect(bpArea,SIGNAL(roleReady()),this,SLOT(roleAnalyse()));
+            }            
             bpArea->BPStart(howMany, roleIDs, options, char_pick->opration());
+            if(targetId != myID)
+                break;
             if(char_pick->opration() == BP_BAN )
             {
                 state = 52;
@@ -446,7 +452,6 @@ void Logic::onOkClicked()
         pick->set_is_pick(true);
 
         emit sendCommand(network::MSG_PICK_BAN, pick);
-        disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
         gui->reset();
         break;
     }
@@ -458,10 +463,7 @@ void Logic::onOkClicked()
         pick->add_role_ids(chosen);
         pick->set_strategy(network::ROLE_STRATEGY_BP);
         pick->set_is_pick(false);
-        emit sendCommand(network::MSG_PICK_BAN, pick);
-
-        disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
-
+        emit sendCommand(network::MSG_PICK_BAN, pick); 
         bpArea->reset();
         gui->reset();
         break;
@@ -474,9 +476,6 @@ void Logic::onOkClicked()
         pick->set_strategy(network::ROLE_STRATEGY_BP);
         pick->set_is_pick(true);
         emit sendCommand(network::MSG_PICK_BAN, pick);
-
-        disconnect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
-
         bpArea->reset();
         gui->reset();
         break;
@@ -558,6 +557,16 @@ void Logic::onButtonUnclicked(int id)
         normal();
     }
 }
+ACCOUNT_STATUS Logic::getIdentity() const
+{
+    return identity;
+}
+
+void Logic::setIdentity(const ACCOUNT_STATUS &value)
+{
+    identity = value;
+}
+
 
 void Logic::roleAnalyse()
 {
