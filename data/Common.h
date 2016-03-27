@@ -3,6 +3,17 @@
 #include <QString>
 #include "protocol/action_respond.pb.h"
 #define VERSION 151223
+
+enum ACCOUNT_STATUS{
+    STATUS_NORMAL = 0,
+    STATUS_LOGIN_FAILED = 1,
+    STATUS_FORBIDDEN = 2,
+    STATUS_OUTDATE = 3,
+    STATUS_VIP = 4,
+    STATUS_ADMIN = 5,
+    STATUS_GUEST = 6
+};
+
 enum GrailError{
     GE_SUCCESS,
     GE_TIMEOUT,
