@@ -56,6 +56,8 @@ QString getCauseString(int cause)
         return QStringLiteral("封印破碎");
     case FAN_SHI:
         return QStringLiteral("反噬");
+    case FA_LI_HU_DUN:
+        return QStringLiteral("法力护盾");
     case SHUI_YING:
         return QStringLiteral("水影");
     case QIAN_XING:
@@ -84,6 +86,8 @@ QString getCauseString(int cause)
         return QStringLiteral("神之庇护");
     case MO_BAO_CHONG_JI:
         return QStringLiteral("魔爆冲击");
+    case SP_MO_BAO_CHONG_JI:
+        return QStringLiteral("SP魔爆冲击");
     case MO_DAN_ZHANG_WO:
         return QStringLiteral("魔弹掌握");
     case MO_DAN_RONG_HE:

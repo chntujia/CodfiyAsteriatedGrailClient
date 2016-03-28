@@ -12,7 +12,7 @@ Button::Button(int id,QString msg)
     this->msg=msg;
     setToolTip(dataInterface->getButtonInfo(msg));
     setEnabled(0);
-    setOpacity(0.5);
+    setOpacity(0.8);
 }
 QRectF Button::boundingRect() const
 {

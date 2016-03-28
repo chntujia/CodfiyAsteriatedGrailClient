@@ -18,44 +18,75 @@ BPArea::BPArea():least(1),most(1)
     width=1000;
     setVisible(false);
     currentSum = 0;
+    justShow = true;
 }
 
-void BPArea::BPStart(int num, SafeList<int> roles)
+BPArea::~BPArea()
 {
-/*    QString queue = dataInterface->getQueue();
-    int red =0, blue = 0, max = queue.size()/2;
+    for(int i=0;i<roleItems.size();i++)
+    {
+        RoleItem * item = roleItems[i];
+        disconnect(item,SIGNAL(roleSelected(int)),this,SLOT(onRoleSelected(int)));
+        disconnect(item,SIGNAL(roleUnselected(int)),this,SLOT(onRoleUnselected(int)));
+        delete item;
+    }
+}
+
+void BPArea::BPStart(int num, SafeList<int> roles, SafeList<int> options, uint op)
+{
+    //QString queue = dataInterface->get;
+    int red =0, blue = 0, max = roles.size()/2;
     for(int i =0;i<max;i++)
     {
-        playerIDs << queue[i].digitValue();
-        color << queue[i+max].digitValue();
-        if(queue[i+max].digitValue()==1)
+        playerIDs << roles[i];
+        color << options[i];
+        if(roles[i+max] ==1)
             orderInTeam << ++red;
         else
             orderInTeam << ++blue;
     }
     gui->reset();
-     left = roles;
-    currentSum = 0;
+    selectedRoles.clear();
+    bool needCreate = (roleItems.size() == 0);
     for(int i=0;i<num;i++)
     {
-        roleItems << new RoleItem(roles[i]);
-        connect(roleItems[i],SIGNAL(roleSelected(int)),this,SLOT(onRoleSelected(int)));
-        connect(roleItems[i],SIGNAL(roleUnselected(int)),this,SLOT(onRoleUnselected(int)));
-        if(i<8)
+        RoleItem * item = NULL;
+        if(needCreate)
         {
-            roleItems[i]->setX(195+65*i);
-            roleItems[i]->setY(230);
+            item = new RoleItem(roles[i]);
+            roleItems << item;
         }
         else
         {
-            roleItems[i]->setX(195+65*(i-8));
-            roleItems[i]->setY(480);
+            item = roleItems[i];
         }
-        roleItems[i]->setParentItem(this);
+        item->setBPMsg(options[i]);
+        if(op == BP_NULL)
+        {
+            justShow = true;
+            disconnect(item,SIGNAL(roleSelected(int)),this,SLOT(onRoleSelected(int)));
+            disconnect(item,SIGNAL(roleUnselected(int)),this,SLOT(onRoleUnselected(int)));
+        }
+        else
+        {
+            justShow = false;
+            connect(item,SIGNAL(roleSelected(int)),this,SLOT(onRoleSelected(int)));
+            connect(item,SIGNAL(roleUnselected(int)),this,SLOT(onRoleUnselected(int)));
+        }
+        if(i<8)
+        {
+            item->setX(195+65*i);
+            item->setY(230);
+        }
+        else
+        {
+            item->setX(195+65*(i-8));
+            item->setY(480);
+        }
+        item->setParentItem(this);
     }
     setVisible(true);
     reset();
-    */
 }
 
 void BPArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -88,14 +119,18 @@ void BPArea::disableRoleItem(int roleID)
 
 void BPArea::onRoleSelected(int id)
 {
+    if(justShow)
+        return;
+    RoleItem* tmp;
     if(selectedRoles.count()>=most)
     {
         int firstRole=selectedRoles.takeFirst();
-        RoleItem* tmp = getRoleByID(firstRole);
-        tmp->setSelected(0);
-        tmp->setY(tmp->y()+20);
+        tmp = getRoleByID(firstRole);
+        tmp->setSelected(false);
     }
     selectedRoles<<id;
+    tmp = getRoleByID(id);
+    tmp->setSelected(true);
     if(selectedRoles.count()<least)
         return;
     emit roleReady();
@@ -104,6 +139,9 @@ void BPArea::onRoleSelected(int id)
 void BPArea::onRoleUnselected(int id)
 {
     selectedRoles.removeOne(id);
+    RoleItem* tmp;
+    tmp = getRoleByID(id);
+    tmp->setSelected(false);
     if(selectedRoles.count()<least)
     {
         gui->getDecisionArea()->disable(0);
@@ -130,7 +168,7 @@ RoleItem *BPArea::getRoleByID(int ID)
         if(ptr->getRoleID() ==ID)
             return ptr;
     }
-return 0;
+    return 0;
 }
 
 void BPArea::choose(int playerID, int roleID)
@@ -139,19 +177,9 @@ void BPArea::choose(int playerID, int roleID)
     RoleItem* choice = getRoleByID(roleID);
     choice->setEnabled(0);
     choice->setOpacity(0.8);
-    choice->setBPMsg(playerID,1);
+    choice->setBPMsg(playerID);
     remove(roleID);
 }
-
-void BPArea::ban(int playerID, int roleID)
-{
-    RoleItem* ban = getRoleByID(roleID);
-    ban->setEnabled(0);
-    ban->ban();
-    ban->setBPMsg(playerID,0);
-    remove(roleID);
-}
-
 
 void BPArea::reset()
 {
@@ -195,7 +223,7 @@ int BPArea::getColor(int playerID)
     for(int i=0;i<playerIDs.size();i++)
         if(playerIDs[i]==playerID)
             return color[i];
-return 0;
+    return 0;
 }
 
 int BPArea::getOrderInTeam(int playerID)
@@ -203,5 +231,16 @@ int BPArea::getOrderInTeam(int playerID)
     for(int i=0;i<playerIDs.size();i++)
         if(playerIDs[i]==playerID)
             return orderInTeam[i];
-return 0;
+    return 0;
+}
+
+void BPArea::hide()
+{
+    RoleItem * item;
+    for(int i=0;i<roleItems.size();i++)
+    {
+        item = roleItems[i];
+        item->setVisible(false);
+    }
+    setVisible(false);
 }

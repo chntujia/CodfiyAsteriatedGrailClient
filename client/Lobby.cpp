@@ -52,6 +52,8 @@ void Lobby::fill(RoomListResponse* list)
             roleNum += QStringLiteral(",一扩");
         if(game.second_extension())
             roleNum += QStringLiteral(",三版");
+        if(game.sp_mo_dao())
+            roleNum += QStringLiteral(",sp魔导");
         newItem = new QTableWidgetItem(roleNum);
         ui->tableWidget->setItem(i, ROLE_NUM, newItem);
 
@@ -155,7 +157,7 @@ void Lobby::onCreateRoom()
     //FIXME: popup
     //打开房间设置面板
     if(roomSet!= NULL){roomSet->close();}
-    roomSet = new RoomSet();
+    roomSet = new RoomSet(logic->getIdentity());
     roomSet->show();
     connect(roomSet, SIGNAL(createRoom()), this, SLOT(onOpenRoom()));
     connect(roomSet, SIGNAL(backToLobby()), this, SLOT(onBackToLobby()));
@@ -172,6 +174,7 @@ void Lobby::onOpenRoom(){
     int roleSelectionStrategy = roomSet->getRoleSelection();
     bool firstExtension = roomSet->getFirstExtension();
     bool secondExtension = roomSet->getSecondExtension();
+    bool spmodao = roomSet->getspMoDao();
     bool allowGuest = roomSet->getAllowGuest();
     std::string password = roomSet->getPassword().toStdString();
     std::string roomName = roomSet->getRoomName().toStdString();
@@ -183,6 +186,7 @@ void Lobby::onOpenRoom(){
     create->set_seat_mode(seatOrder);
     create->set_first_extension(firstExtension);
     create->set_second_extension(secondExtension);
+    create->set_sp_mo_dao(spmodao);
     create->set_allow_guest(allowGuest);
     create->set_password(password);
     create->set_room_name(roomName);

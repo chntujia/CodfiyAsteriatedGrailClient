@@ -22,10 +22,9 @@ public:
 private:
     Team* red,*blue;
     QPixmap background;
-    QPixmap Rgrail,Bgrail,Pcrystal,Pgem,Rdice[6],Bdice[6],Num[10];
+    QPixmap Rgrail,Bgrail,Pcrystal,Pgem,Num[10];
     int width;
     int height;
-    int avg;
     int round;
     int droppedCardNum,leftCardNum;
     int roomID;

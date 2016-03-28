@@ -8,7 +8,7 @@ RoleItem::RoleItem(int roleID)
     bpFlag = -1;
     this->width=pixmap.width();
     this->height=pixmap.height();
-    this->selected=0;
+    this->selected=false;
     setVisible(1);
 }
 
@@ -37,6 +37,14 @@ bool RoleItem::isSelected()
 }
 void RoleItem::setSelected(bool status)
 {
+    if(status && !this->selected)
+    {
+        setY(y()-20);
+    }
+    else if( !status && this->selected)
+    {
+        setY(y()+20);
+    }
     this->selected=status;
     update();
 }
@@ -45,47 +53,34 @@ void RoleItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(!this->selected)
     {
-        selected=1;
-        setY(y()-20);
         emit roleSelected(roleID);
     }
     else
     {
-        selected=0;
-        setY(y()+20);
         emit roleUnselected(roleID);
     }
 }
 
-void RoleItem::ban()
+void RoleItem::setBPMsg(int step)
 {
-    pixmap.load("resource/bp/Ban"+QString::number(roleID)+".png");
-    update();
-}
-
-void RoleItem::setBPMsg(int playerID, int flag)
-{
-    BPArea* bpArea = gui->getBPArea();
+    if(step == 0)
+        return;
     QStringList team;
-    team << "Blue";
     team << "Red";
-    bpFlag = flag;
-    int color = bpArea->getColor(playerID);
-    int num = bpArea->getOrderInTeam(playerID);
+    team << "Blue";
+    int index = (step-1)/4 + 1;
+    int flag = ((step-1)/2)%2;
+    int color = (step-1) % 2;
     switch(flag)
     {
     case 0:
-        player.load("resource/bp/Game"+team[color]+QString::number(num)+".png");
+        pixmap.load("resource/bp/Ban"+QString::number(roleID)+".png");
+        player.load("resource/bp/Game"+team[color]+QString::number(index)+".png");
         action.load("resource/bp/GameBan.png");
         break;
     case 1:
-        player.load("resource/bp/Game"+team[color]+QString::number(num)+".png");
+        player.load("resource/bp/Game"+team[color]+QString::number(index)+".png");
         action.load("resource/bp/GamePick"+team[color]+".png");
         break;
-    case 2:
-        player.load("resource/bp/Game"+team[color]+QString::number(num)+".png");
-        action.load("resource/bp/GameInsertBan.png");
-        break;
     }
-    update();
 }

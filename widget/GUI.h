@@ -53,6 +53,7 @@ public:
     BPArea* getBPArea(){return bpArea;}
     ChatLine*getChatLine(){return chatLine;}
     TimelineBar* getTimelineBar() { return this->timelineBar; }
+    void hideBP();
 public slots:
     void showCoverArea(bool show);
     void showCoverArea();

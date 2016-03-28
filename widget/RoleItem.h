@@ -19,8 +19,7 @@ public:
     int getRoleID();
     bool isSelected();
     void setSelected(bool yes);
-    void ban();
-    void setBPMsg(int playerID, int flag);
+    void setBPMsg(int step);
 signals:
     void roleSelected(int);
     void roleUnselected(int);

@@ -4,6 +4,8 @@
 #include <QObject>
 #include <client/Client.h>
 #include <client/Lobby.h>
+
+enum ACCOUNT_STATUS;
 class Role;
 class Logic : public QObject
 {
@@ -25,6 +27,9 @@ public:
     void ready();
     void joinTeam();
     Client* getClient(){return socket;}
+    ACCOUNT_STATUS getIdentity() const;
+    void setIdentity(const ACCOUNT_STATUS &value);
+
 signals:
     void sendCommand(unsigned short proto_type, google::protobuf::Message* proto);
 public slots:
@@ -36,6 +41,7 @@ public slots:
 private:
     Client* socket;
     Lobby* lobby;
+    ACCOUNT_STATUS identity;
     int count;
     int state;    
     int myID;
