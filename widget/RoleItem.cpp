@@ -77,10 +77,12 @@ void RoleItem::setBPMsg(int step)
         pixmap.load("resource/bp/Ban"+QString::number(roleID)+".png");
         player.load("resource/bp/Game"+team[color]+QString::number(index)+".png");
         action.load("resource/bp/GameBan.png");
+        this->setEnabled(false);
         break;
     case 1:
         player.load("resource/bp/Game"+team[color]+QString::number(index)+".png");
         action.load("resource/bp/GamePick"+team[color]+".png");
+        this->setEnabled(false);
         break;
     }
 }
