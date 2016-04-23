@@ -80,6 +80,7 @@ void Logic::cleanRoom()
     init_before_start = false;
     init_after_start = false;
     count = 0;
+    muteList.clear();
     dataInterface->cleanRoom();
     gui->cleanRoom();    
 }
@@ -269,8 +270,10 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             cleanRoom();
             if(myID == GUEST)
                 gui->logAppend(QStringLiteral("<font color=\'pink\'>房间已满，进入观战模式</font>"));
-            else
+            else{
                 gui->logAppend(QStringLiteral("<font color=\'pink\'>请准备</font>"));
+                gui->logAppend(QStringLiteral("<font color=\'pink\'>觉得某人烦的话，可以“mute n”，n是该玩家座次；“unmute n”恢复</font>"));
+            }
         }
         if(game_info->has_room_id()){
             gui->getTeamArea()->setRoomID(game_info->room_id());
@@ -586,4 +589,19 @@ void Logic::onError(int error)
         tipArea->setMsg(QStringLiteral("错误代码：") + QString::number(error)
                   + QStringLiteral(";可尝试等待系统重发"));
     }
+}
+
+void Logic::muteUser(int userId)
+{
+    muteList += userId;
+}
+
+void Logic::unmuteUser(int userId)
+{
+    muteList -= userId;
+}
+
+bool Logic::isMuted(int userId)
+{
+    return muteList.contains((userId));
 }

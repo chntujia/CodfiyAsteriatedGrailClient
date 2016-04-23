@@ -23,8 +23,7 @@ class ChatLine : public QLineEdit
 public:
     ChatLine(QWidget*parent=0);
 public slots:
-    void onReturnPressed();
-    void onTextChanged(QString);
+    void onReturnPressed();    
 signals:
     void toChat(unsigned short proto_type, google::protobuf::Message*);
 };

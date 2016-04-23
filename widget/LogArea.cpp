@@ -1,5 +1,7 @@
 ﻿#include "LogArea.h"
 #include "DataInterface.h"
+#include "gui.h"
+
 LogArea::LogArea(QWidget *parent) :
     QTextEdit(parent)
 {
@@ -22,6 +24,8 @@ ChatArea::ChatArea(QWidget *parent):
 }
 void ChatArea::append(int id,QString text)
 {
+    if(logic->isMuted(id))
+        return;
     QString name=dataInterface->getPlayerList().at(id)->getRoleName();
     if(name==NULL)
         name=dataInterface->getPlayerList().at(id)->getNickname();
@@ -44,13 +48,28 @@ void ChatLine::onReturnPressed()
 {    
     if(!text().isEmpty())
     {
+        QStringList args = text().split(" ");
+        if(args.size()>1){
+            bool ok;
+            int id = args[1].toInt(&ok);
+            ok &= id > -1 && id < dataInterface->getPlayerMax();
+            if(ok && args[0] == "mute"){
+                logic->muteUser(id);
+                gui->chatAppend(dataInterface->getID(), QStringLiteral("<font color=\'pink\'>玩家%1被关进小黑屋</font>").arg(QString::number(id)));
+                clear();
+                return;
+            }
+            else if(ok && args[0] == "unmute"){
+                logic->unmuteUser(id);
+                gui->chatAppend(dataInterface->getID(), QStringLiteral("<font color=\'pink\'>玩家%1又放出来了</font>").arg(QString::number(id)));
+                clear();
+                return;
+            }
+        }
         network::Talk* talk = new network::Talk();
         talk->set_txt(text().toStdString());
         emit toChat(network::MSG_TALK, talk);
     }
     clear();
 }
-void ChatLine::onTextChanged(QString t)
-{
-    qDebug()<<t;
-}
+
