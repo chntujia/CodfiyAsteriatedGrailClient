@@ -67,7 +67,7 @@ private:
     SafeList<Card*> coverCards;
     Player* myself;
     Team *red,*blue,*otherTeam,*myTeam;
-    QStringList roleList;
+    QMap<int,QString> roleList;
     QString nickNameList[8];
 
     int id;

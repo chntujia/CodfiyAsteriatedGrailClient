@@ -61,7 +61,7 @@ void JianDi::JianQiZhan(int targetID)
    playerArea->disablePlayerItem(targetID);
    playerArea->setQuota(1);
     decisionArea->disable(0);
-
+    handArea->disableAll();
 }
 
 void JianDi::TianShiZhiHun()

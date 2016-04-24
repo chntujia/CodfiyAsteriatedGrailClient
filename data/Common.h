@@ -2,7 +2,7 @@
 #define COMMON_H
 #include <QString>
 #include "protocol/action_respond.pb.h"
-#define VERSION 160327
+#define VERSION 160326
 
 enum ACCOUNT_STATUS{
     STATUS_NORMAL = 0,

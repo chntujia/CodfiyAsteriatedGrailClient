@@ -25,7 +25,7 @@ ClientUI::ClientUI(QWidget *parent) :
     }
     tcpSocket=new Client;
     tcpSocket->link(ip, port);
-    QRegExp rx1("^[A-Za-z][A-Za-z0-9_]{6,12}");
+    QRegExp rx1("^[A-Za-z][A-Za-z0-9_]{4,12}");
     ui->regLoginName->setValidator(new QRegExpValidator(rx1, this));
     ui->editLoginName->setValidator(new QRegExpValidator(rx1, this));
     QRegExp rx2("[\u4e00-\u9fa5A-Za-z0-9_]{2,10}");
