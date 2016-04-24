@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'ClientUI.ui'
 **
-** Created by: Qt User Interface Compiler version 5.1.1
+** Created by: Qt User Interface Compiler version 5.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
@@ -43,6 +44,10 @@ public:
     QPushButton *btnLogin;
     QPushButton *btnGuest;
     QPushButton *btnRegist;
+    QWidget *horizontalLayoutWidget;
+    QHBoxLayout *horizontalLayout_5;
+    QCheckBox *chkSaveUser;
+    QCheckBox *chkSavePwd;
     QFrame *frameRegist;
     QWidget *layoutWidget2;
     QVBoxLayout *verticalLayout;
@@ -104,7 +109,8 @@ public:
 
         LabError = new QLabel(frameLogin);
         LabError->setObjectName(QStringLiteral("LabError"));
-        LabError->setGeometry(QRect(30, 150, 191, 16));
+        LabError->setGeometry(QRect(30, 130, 191, 16));
+        LabError->setAlignment(Qt::AlignCenter);
         layoutWidget_2 = new QWidget(frameLogin);
         layoutWidget_2->setObjectName(QStringLiteral("layoutWidget_2"));
         layoutWidget_2->setGeometry(QRect(30, 100, 189, 22));
@@ -147,6 +153,24 @@ public:
         btnRegist->setEnabled(false);
 
         horizontalLayout_3->addWidget(btnRegist);
+
+        horizontalLayoutWidget = new QWidget(frameLogin);
+        horizontalLayoutWidget->setObjectName(QStringLiteral("horizontalLayoutWidget"));
+        horizontalLayoutWidget->setGeometry(QRect(40, 150, 168, 31));
+        horizontalLayout_5 = new QHBoxLayout(horizontalLayoutWidget);
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
+        chkSaveUser = new QCheckBox(horizontalLayoutWidget);
+        chkSaveUser->setObjectName(QStringLiteral("chkSaveUser"));
+
+        horizontalLayout_5->addWidget(chkSaveUser);
+
+        chkSavePwd = new QCheckBox(horizontalLayoutWidget);
+        chkSavePwd->setObjectName(QStringLiteral("chkSavePwd"));
+
+        horizontalLayout_5->addWidget(chkSavePwd);
 
         frameRegist = new QFrame(ClientUI);
         frameRegist->setObjectName(QStringLiteral("frameRegist"));
@@ -335,6 +359,8 @@ public:
         btnLogin->setText(QApplication::translate("ClientUI", "\347\231\273\345\205\245", 0));
         btnGuest->setText(QApplication::translate("ClientUI", "\346\270\270\345\256\242", 0));
         btnRegist->setText(QApplication::translate("ClientUI", "\346\263\250\345\206\214", 0));
+        chkSaveUser->setText(QApplication::translate("ClientUI", "\344\277\235\345\255\230\347\224\250\346\210\267\345\220\215", 0));
+        chkSavePwd->setText(QApplication::translate("ClientUI", "\344\277\235\345\255\230\345\257\206\347\240\201", 0));
         label_14->setText(QApplication::translate("ClientUI", "\347\224\250\346\210\267\345\220\215\357\274\232", 0));
         label_5->setText(QApplication::translate("ClientUI", "\346\230\265  \347\247\260\357\274\232", 0));
         label_10->setText(QApplication::translate("ClientUI", "\345\257\206  \347\240\201\357\274\232", 0));

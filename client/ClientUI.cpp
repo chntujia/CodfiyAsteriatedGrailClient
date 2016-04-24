@@ -42,11 +42,17 @@ ClientUI::ClientUI(QWidget *parent) :
         int pos;
         fp->open(QIODevice::ReadOnly);
         QString userName = account.readLine();
-        if(QValidator::State::Acceptable == ui->editLoginName->validator()->validate(userName, pos))
-            ui->editLoginName->setText(userName);
+		if (QValidator::State::Acceptable == ui->editLoginName->validator()->validate(userName, pos)){
+			ui->editLoginName->setText(userName);
+			ui->chkSaveUser->setChecked(true);
+		}
+            
         QString password = account.readLine();
-        if(QValidator::State::Acceptable == ui->editPassword->validator()->validate(password, pos))
-            ui->editPassword->setText(password);
+		if (QValidator::State::Acceptable == ui->editPassword->validator()->validate(password, pos)){
+			ui->editPassword->setText(password);
+			ui->chkSavePwd->setChecked(true);
+		}
+            
         fp->close();
     }
 
@@ -59,6 +65,8 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(ui->btnRegist, SIGNAL(clicked()), this, SLOT(UserRegistShow()));
     connect(ui->btnRegistCommit, SIGNAL(clicked()), this, SLOT(UserRegist()));
     connect(ui->btnBackLogin, SIGNAL(clicked()), this, SLOT(UserBackLogin()));
+	connect(ui->chkSaveUser, SIGNAL(clicked()), this, SLOT(CheckSaveUser()));
+	connect(ui->chkSavePwd, SIGNAL(clicked()), this, SLOT(CheckSavePwd()));
 
     ui->frameRegist->hide();
     ui->frameLogin->show();
@@ -194,6 +202,20 @@ void ClientUI::UserLogin()
     login_req->set_user_password(password.toStdString());
     login_req->set_version(VERSION);
     tcpSocket->sendMessage(network::MSG_LOGIN_REQ, login_req);
+
+	//判断是否有勾选保存用户
+	QFile *file = new QFile("account");
+	if (file->open(QIODevice::WriteOnly)){		
+		if (ui->chkSaveUser->isChecked()){
+			QTextStream account(file);
+			account << ui->editLoginName->text() << endl;
+			//判断是否有勾选保存密码
+			if (ui->chkSavePwd->isChecked()){
+				account << ui->editPassword->text() << endl;
+			}			
+		}		
+	}
+	file->close();
 }
 
 void ClientUI::GuestLogin()
@@ -269,4 +291,21 @@ void ClientUI::UserBackLogin()
     ui->editLoginName->setText("");
     ui->editPassword->setText("");
     ui->LabError->setText("");
+}
+
+//勾选保存密码时必须勾选保存用户
+void ClientUI::CheckSavePwd(){
+
+	if (ui->chkSavePwd->isChecked()){
+		ui->chkSaveUser->setChecked(true);
+	}
+}
+
+//不勾选保存用户时取消保存密码的勾选
+void ClientUI::CheckSaveUser(){
+	
+	if (!ui->chkSaveUser->isChecked()){
+		ui->chkSavePwd->setChecked(false);
+	}
+
 }
