@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Lobby</class>
  <widget class="QDialog" name="Lobby">
@@ -6,125 +6,113 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>835</width>
-    <height>372</height>
+    <width>1048</width>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QTableWidget" name="tableWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>711</width>
-     <height>351</height>
-    </rect>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetDefaultConstraint</enum>
    </property>
-   <property name="minimumSize">
-    <size>
-     <width>521</width>
-     <height>351</height>
-    </size>
-   </property>
-   <property name="sortingEnabled">
-    <bool>true</bool>
-   </property>
-   <column>
-    <property name="text">
-     <string>房号</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>房名</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>模式</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>角色</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>人数</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>实名</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>暗语</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>座次</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>禁聊</string>
-    </property>
-   </column>
-  </widget>
-  <widget class="QPushButton" name="createButton">
-   <property name="geometry">
-    <rect>
-     <x>740</x>
-     <y>10</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>创建房间</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="refreshButton">
-   <property name="geometry">
-    <rect>
-     <x>740</x>
-     <y>40</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>刷新</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>750</x>
-     <y>80</y>
-     <width>54</width>
-     <height>191</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>如果你知道Unity，如果你能想象Unity里的Codify，你愿意跟我们再疯一回嘛？</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-   <property name="wordWrap">
-    <bool>true</bool>
-   </property>
-  </widget>
+   <item>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="minimumSize">
+      <size>
+       <width>521</width>
+       <height>351</height>
+      </size>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <column>
+      <property name="text">
+       <string>房号</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>房名</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>模式</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>角色</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>人数</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>实名</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>暗语</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>座次</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>禁聊</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="createButton">
+       <property name="text">
+        <string>创建房间</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="refreshButton">
+       <property name="text">
+        <string>刷新</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>如果你知道Unity，如果你能想象Unity里的Codify，你愿意跟我们再疯一回嘛？</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

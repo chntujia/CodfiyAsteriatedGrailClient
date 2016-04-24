@@ -1,2 +1,14 @@
 platforms/
 gui.pro.user
+GeneratedFiles/
+Debug/
+Release/
+gui.sdf
+gui.sln
+gui.v12.suo
+gui.vcxproj
+gui.vcxproj.filters
+gui.vcxproj.user
+config
+gui.opensdf
+x64/config

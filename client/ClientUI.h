@@ -26,6 +26,8 @@ public slots:
     void UserRegist();
     void UserRegistShow();
     void UserBackLogin();
+	void CheckSavePwd();
+	void CheckSaveUser();
 private:
     Client* tcpSocket;
     Ui::ClientUI *ui;

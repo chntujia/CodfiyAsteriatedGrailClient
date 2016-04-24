@@ -19,6 +19,8 @@ Lobby::Lobby(QWidget *parent) :
     connect(ui->createButton, SIGNAL(clicked()), this, SLOT(onCreateRoom()));
     connect(ui->refreshButton, SIGNAL(clicked()), this, SLOT(onRefreshList()));
     onRefreshList();
+
+	this->setWindowFlags(this->windowFlags()&Qt::WindowMaximizeButtonHint);
 }
 
 Lobby::~Lobby()
