@@ -19,12 +19,17 @@ QRectF Button::boundingRect() const
     return QRectF(0, 0, width, height);
 }
 void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{    
-    painter->drawPixmap(0, 0, background);
+{       
+    if(isEnabled())
+        painter->drawPixmap(0, 0, QPixmap("resource/Button6.png"));
+    else
+        painter->drawPixmap(0, 0, QPixmap("resource/Button1.png"));
+
     QFont font;
     font.setBold(1);
     painter->setFont(font);
     painter->drawText(QRectF(0, 0, width, height),Qt::AlignCenter,msg);
+
     if(selected)
         painter->drawPixmap(0,0,QPixmap("resource/buttonSelected.png"));
 }
