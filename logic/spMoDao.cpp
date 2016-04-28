@@ -32,7 +32,6 @@ spMoDao::spMoDao()
     connect(huiMeiFengBao,SIGNAL(buttonSelected(int)),this,SLOT(HuiMeiFengBao()));
 
     Player*myself=dataInterface->getMyself();
-    myID=myself->getID();
 
     int myColor=myself->getColor();
 
