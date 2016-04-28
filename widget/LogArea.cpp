@@ -26,7 +26,7 @@ void ChatArea::append(int id,QString text)
 {
     if(logic->isMuted(id))
         return;
-    QString name=dataInterface->getPlayerList().at(id)->getRoleName();
+    QString name = id == -1 ? QStringLiteral("系统") : dataInterface->getPlayerList().at(id)->getRoleName();
     if(name==NULL)
         name=dataInterface->getPlayerList().at(id)->getNickname();
     if(name==NULL)
@@ -55,13 +55,13 @@ void ChatLine::onReturnPressed()
             ok &= id > -1 && id < dataInterface->getPlayerMax();
             if(ok && args[0] == "mute"){
                 logic->muteUser(id);
-                gui->chatAppend(dataInterface->getID(), QStringLiteral("<font color=\'pink\'>玩家%1被关进小黑屋</font>").arg(QString::number(id)));
+                gui->chatAppend(-1, QStringLiteral("<font color=\'pink\'>玩家%1被关进小黑屋</font>").arg(QString::number(id)));
                 clear();
                 return;
             }
             else if(ok && args[0] == "unmute"){
                 logic->unmuteUser(id);
-                gui->chatAppend(dataInterface->getID(), QStringLiteral("<font color=\'pink\'>玩家%1又放出来了</font>").arg(QString::number(id)));
+                gui->chatAppend(-1, QStringLiteral("<font color=\'pink\'>玩家%1又放出来了</font>").arg(QString::number(id)));
                 clear();
                 return;
             }
