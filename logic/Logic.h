@@ -12,6 +12,7 @@ class Logic : public QObject
     Q_OBJECT
 public:
     explicit Logic(QObject *parent = 0);
+void setBPlog(int roleID,int banORpick,int targetId);
     void setupRoom(bool isStarted, network::GameInfo* gameInfo);
     void cleanRoom();
     void destroyRoom();
@@ -20,6 +21,7 @@ public:
         this->socket = socket;
         makeConnection();
     }
+
     void setLobby(Lobby* l) { lobby = l; }
     void setMyRole(int roleID=0);
     void onError(int error);
