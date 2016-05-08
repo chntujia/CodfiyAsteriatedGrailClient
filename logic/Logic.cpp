@@ -44,7 +44,6 @@ Logic* logic=NULL;
 Logic::Logic(QObject *parent) :
     QObject(parent)
 {
-    count=0;
     hasShownRole=false;
     hasSetRole=false;
     myRole = NULL;
@@ -79,7 +78,6 @@ void Logic::cleanRoom()
 {
     init_before_start = false;
     init_after_start = false;
-    count = 0;
     muteList.clear();
     dataInterface->cleanRoom();
     gui->cleanRoom();    
@@ -280,14 +278,17 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         }
         setupRoom(game_info->is_started(), game_info);
 
+        int count = 0;
         for (int i = 0; i < game_info->player_infos_size(); ++i)
         {
             network::SinglePlayerInfo* player_info = (network::SinglePlayerInfo*)&(game_info->player_infos(i));
             targetID = player_info->id();
             if(player_info->has_role_id())
             {
-                roleID = player_info->role_id();
+                roleID = player_info->role_id();              
                 roles[targetID] = roleID;
+                dataInterface->getPlayerList().at(targetID)->setRole(roleID);
+                gui->getPlayerArea()->getPlayerItem(targetID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
                 count++;
             }
             if(player_info->has_nickname()){
@@ -299,15 +300,11 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             gui->getPlayerArea()->getPlayerItem(targetID)->setReady(player_info->ready());
         }
 
-        if(count==dataInterface->getPlayerMax())
+        if(count == dataInterface->getPlayerMax())
         {
             disconnect(getClient(),0,this,0);
             disconnect(gui->getDecisionArea(), 0, this, 0);
             disconnect(gui->getBPArea(),0,this,0);
-            for(int i=0;i<dataInterface->getPlayerMax();i++){
-                dataInterface->getPlayerList().at(i)->setRole(roles[i]);
-                gui->getPlayerArea()->getPlayerItem(i)->setToolTip(dataInterface->getRoleSkillInfo(roles[i]));
-            }
 
             roleID = myID == GUEST ? roles[0] : roles[myID];
             setMyRole(roleID);
@@ -363,7 +360,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         int targetId = char_pick->id();
         if(char_pick->strategy() == ROLE_STRATEGY_31)
         {
-            gui->logAppend(QStringLiteral("<font color=\'yellow\'>等待玩家") + QString::number(targetId) + QStringLiteral("选择角色")+"</front");
+            gui->logAppend(QStringLiteral("<font color=\'white\'>等待玩家") + QString::number(targetId) + QStringLiteral("选择角色")+"</front");
             if(targetId != myID)
                 break;
             state=46;
@@ -419,7 +416,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             }
             else
             {
-                QString msg = QStringLiteral("等待<font color=\'yellow\'>%1</font> %2 角色");
+                QString msg = QStringLiteral("等待<font color=\'yellow\'> %1</font> %2 角色");
                 QString nickname = dataInterface->getPlayerList().at(targetId)->getNickname();
                 gui->logAppend(msg.arg(nickname, char_pick->opration()==BP_PICK ? "PICK" : "BAN"));
             }

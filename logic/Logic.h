@@ -45,7 +45,6 @@ private:
     Client* socket;
     Lobby* lobby;
     ACCOUNT_STATUS identity;
-    int count;
     int state;    
     int myID;
     bool hasShownRole;
