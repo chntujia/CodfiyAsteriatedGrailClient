@@ -361,12 +361,9 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
     case network::MSG_ROLE_REQ:
         char_pick = (network::RoleRequest*) proto;
         int targetId = char_pick->id();
-        if(targetId != -1&&char_pick->strategy() != ROLE_STRATEGY_BP)
-          {
-          gui->logAppend(QStringLiteral("<font color=\'yellow\'>等待玩家") + QString::number(targetId) + QStringLiteral("选择角色")+"</front");
-        }
         if(char_pick->strategy() == ROLE_STRATEGY_31)
         {
+            gui->logAppend(QStringLiteral("<font color=\'yellow\'>等待玩家") + QString::number(targetId) + QStringLiteral("选择角色")+"</front");
             if(targetId != myID)
                 break;
             state=46;
@@ -386,7 +383,6 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         }
         else if(char_pick->strategy() == ROLE_STRATEGY_BP)
         {
-
             state = 51;
             tipArea=gui->getTipArea();
             decisionArea=gui->getDecisionArea();
@@ -398,51 +394,35 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
                 options << char_pick->args(i);
             }
             bpArea->BPStart(howMany, roleIDs, options, char_pick->opration());
-
-                if(char_pick->opration() ==  BP_NULL )
-                {
-                    int lastChosen=-1;
-                    for(int i=0;i<howMany;i++)
-                    {
-                        roleIDs << char_pick->role_ids(i);
-                        options << char_pick->args(i);
-                       if(options[i]!=0)
-                       {
-                           if(lastChosen==-1)
-                               lastChosen=i;
-                           else if(options[i]>options[lastChosen])
-                            lastChosen=i;
-                       }
-
-                    }
-                    if(lastChosen!=-1&&targetId!=-1)
-                    {
-                          int flag = ((options[lastChosen]-1)/2)%2;
-
-                    if(flag==1)
-                    {
-                        setBPlog( roleIDs[lastChosen],1,targetId);
-                    }
-                       else if(flag==0)
-                      {
-                          setBPlog( roleIDs[lastChosen],0,targetId);
-                      }
-
-
+            if(char_pick->opration() ==  BP_NULL )
+            {
+                int lastChosen = -1;
+                int step = 0;
+                for(int i = 0; i < howMany; i++){
+                    if(options[i] > step){
+                        step = options[i];
+                        lastChosen = i;
                     }
                 }
-               else if(char_pick->opration()==BP_PICK)
-               {
-                    QString msg = dataInterface->getPlayerList().at(targetId)->getNickname();
-                    gui->logAppend(QStringLiteral("等待")+msg+QStringLiteral("pick角色"));
+                if(step == 0){
+                    gui->logAppend(QStringLiteral("以下英雄响应了召唤："));
+                    QString msg;
+                    foreach(int id, roleIDs)
+                        msg += QStringLiteral("<font color=\'yellow\'>%1 </font>").arg(dataInterface->getRoleName(id));
+                    gui->logAppend(msg);
                 }
-                else if(char_pick->opration()==BP_BAN)
-                {
-                    QString msg = dataInterface->getPlayerList().at(targetId)->getNickname();
-                       gui->logAppend(QStringLiteral("等待")+msg+QStringLiteral("ban角色"));
+                else {
+                    QString msg = QStringLiteral("<font color=\'yellow\'>%1</font> %2 了<font color=\'yellow\'>%3</font>");
+                    QString nickname = dataInterface->getPlayerList().at(targetId)->getNickname();
+                    gui->logAppend(msg.arg(nickname, ((options[lastChosen]-1) % 4) < 2 ? "BAN" : "PICK", dataInterface->getRoleName(roleIDs[lastChosen])));
                 }
-
-
+            }
+            else
+            {
+                QString msg = QStringLiteral("等待<font color=\'yellow\'>%1</font> %2 角色");
+                QString nickname = dataInterface->getPlayerList().at(targetId)->getNickname();
+                gui->logAppend(msg.arg(nickname, char_pick->opration()==BP_PICK ? "PICK" : "BAN"));
+            }
             if(targetId != myID)
                 break;
             if(char_pick->opration() == BP_BAN )
@@ -652,238 +632,4 @@ void Logic::unmuteUser(int userId)
 bool Logic::isMuted(int userId)
 {
     return muteList.contains((userId));
-}
-
-void Logic::setBPlog(int roleID,int banORpick,int targetId)
-{
- //  (QStringLiteral("<font color=\'red\'>玩家") + QString::number(targetId) + QStringLiteral("离开房间</font>"));
-    QString roleName;
-     switch(roleID)
-     {
-        case 1:
-  if(banORpick==1)
-         gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>剑圣<font"));
-  else if(banORpick==0)
-      gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>剑圣<font"));
-         return ;
-         break;
-     case 2:
-
-      if(banORpick==1)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>狂战士<font"));
-      else if(banORpick==0)
-          gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>狂战士<font"));
-             return ;
-      break;
-     case 3:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>弓之女神<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>剑圣<font"));
-                return ;
-      break;
-     case 4:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>封印师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>封印师<font"));
-                return ;
-      break;
-     case 5:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>暗杀者<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>暗杀者<font"));
-                return ;
-      break;
-     case 6:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>圣女<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>圣女<font"));
-                return ;
-      break;
-     case 7:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>天使<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>天使<font"));
-                return ;
-      break;
-     case 8:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>魔导师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>魔导师<font"));
-                return ;
-      break;
-     case 108:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>SP魔导师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>SP魔导师<font"));
-                return ;
-      break;
-     case 9:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>魔剑<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>魔剑<font"));
-                return ;
-      break;
-     case 10:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>圣强<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>圣枪<font"));
-                return ;
-      break;
-     case 11:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>元素师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>元素师<font"));
-                return ;
-      break;
-     case 12:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>元素师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>元素师<font"));
-                return ;
-      break;
-     case 13:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>死灵法师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>死灵法师<font"));
-                return ;
-      break;
-     case 14:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>仲裁者<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>仲裁者<font"));
-                return ;
-      break;
-     case 15:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>神官<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>神官<font"));
-                return ;
-      break;
-     case 16:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>祈祷师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>祈祷师<font"));
-                return ;
-      break;
-     case 17:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>贤者<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>贤者<font"));
-                return ;
-      break;
-     case 18:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>灵符师<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>灵符师<font"));
-                return ;
-      break;
-     case 19:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>剑帝<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>剑帝<font"));
-                return ;
-      break;
-     case 20:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>格斗家<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>格斗家<font"));
-                return ;
-      break;
-     case 21:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>勇者<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>勇者<font"));
-                return ;
-      break;
-     case 22:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>灵魂术士<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>灵魂术士<font"));
-                return ;
-      break;
-     case 23:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>巫女<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>巫女<font"));
-                return ;
-      break;
-     case 24:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>蝶舞者<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>蝶舞者<font"));
-                return ;
-      break;
-     case 25:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>女武神<font"));
-         else if(banORpick==0)
-             gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>女武神<font"));
-                return ;
-      break;
-     case 26:
-         if(banORpick==1)
-                gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>魔弓<font"));
-         else if(banORpick==0)
-          gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>魔弓<font"));
-                return ;
-      break;
-     case 27:
-         if(banORpick==1)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>英灵人形<font"));
-         else if(banORpick==0)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>英灵人形<font"));
-                return ;
-      break;
-     case 28:
-         if(banORpick==1)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>红莲骑士<font"));
-         else if(banORpick==0)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>红莲骑士<font"));
-                return ;
-      break;
-     case 29:
-         if(banORpick==1)
-gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>魔枪<font"));
-         else if(banORpick==0)
-gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>魔枪<font"));
-                return ;
-      break;
-     case 30:
-         if(banORpick==1)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>苍炎魔女<font"));
-         else if(banORpick==0)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>苍炎魔女<font"));
-                return ;
-      break;
-     case 31:
-         if(banORpick==1)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("pick了")+QStringLiteral("<font color=\'yellow\'>吟游诗人<font"));
-         else if(banORpick==0)
-  gui->logAppend(dataInterface->getPlayerList().at(targetId)->getNickname()+QStringLiteral("ban了")+QStringLiteral("<font color=\'yellow\'>吟游诗人<font"));
-                return ;
-      break;
-     }
 }

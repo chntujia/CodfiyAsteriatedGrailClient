@@ -12,7 +12,6 @@ class Logic : public QObject
     Q_OBJECT
 public:
     explicit Logic(QObject *parent = 0);
-void setBPlog(int roleID,int banORpick,int targetId);
     void setupRoom(bool isStarted, network::GameInfo* gameInfo);
     void cleanRoom();
     void destroyRoom();
