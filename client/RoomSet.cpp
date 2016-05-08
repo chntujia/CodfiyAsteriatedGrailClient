@@ -61,12 +61,12 @@ void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
     int rid = time.second()%7;
     QString roomNames[7];
     roomNames[0] = QStringLiteral("Github注册网杯账号现已开放");
-    roomNames[1] = QStringLiteral("我们还要抓450人来开启新浪微博注册！");
+    roomNames[1] = QStringLiteral("微博注册已开启！");
     roomNames[2] = QStringLiteral("我才不告诉你官网是codifygrail.cn！");
-    roomNames[3] = QStringLiteral("程序猿猿猿猿猿猿猿猿猿猿!");
-    roomNames[4] = QStringLiteral("来吧！3d大神！");
+    roomNames[3] = QStringLiteral("数字将要废除，请及时注册");
+    roomNames[4] = QStringLiteral("来吧！动画设计师大神！");
     roomNames[5] = QStringLiteral("开发进度在QQ群184705348");
-    roomNames[6] = QStringLiteral("win10/8需反选聊天记录方可见");
+    roomNames[6] = QStringLiteral("win10/8需兼容性设置8位色");
     ui->lineEditRoomName->setText(roomNames[rid]);
 
     QRegExp rx("[A-Za-z0-9_]{1,10}");
