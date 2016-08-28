@@ -14,6 +14,7 @@ public:
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void BPStart(int num, SafeList<int> roles, SafeList<int> options, uint op);
+    void CMStart(int num, SafeList<int> roles, SafeList<int> options, uint op);
     void enableRoleItem(int roleID);
     void disableRoleItem(int roleID);
     void setMsg(QString msg);

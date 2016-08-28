@@ -35,10 +35,12 @@ void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
     groupSeatOrder->addButton(ui->radioButtonSeatOrderSanLian);
     groupSeatOrder->addButton(ui->radioButtonSeatOrderErLian);
     groupSeatOrder->addButton(ui->radioButtonSeatOrderJianGe);
+    groupSeatOrder->addButton(ui->radioButtonSeatOrderRBBRRB);
 
     groupRoleSelection->addButton(ui->radioButtonRoleSelectionSanXuanYi);
     groupRoleSelection->addButton(ui->radioButtonRoleSelectionSuiJi);
     groupRoleSelection->addButton(ui->radioButtonRoleSelectionBanPick);
+    groupRoleSelection->addButton(ui->radioButtonRoleSelectionCM);
     //设置按钮id
     groupPlayerNum->setId(ui->radioButtonPlayer6,6);
     groupPlayerNum->setId(ui->radioButtonPlayer4,4);
@@ -47,10 +49,12 @@ void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
     groupSeatOrder->setId(ui->radioButtonSeatOrderSanLian, network::SEAT_MODE_3COMBO);
     groupSeatOrder->setId(ui->radioButtonSeatOrderErLian, network::SEAT_MODE_2COMBO);
     groupSeatOrder->setId(ui->radioButtonSeatOrderJianGe, network::SEAT_MODE_INTERLACE);
+    groupSeatOrder->setId(ui->radioButtonSeatOrderRBBRRB, network::SEAT_MODE_RBBRRB);
 
     groupRoleSelection->setId(ui->radioButtonRoleSelectionSanXuanYi, network::ROLE_STRATEGY_31);
     groupRoleSelection->setId(ui->radioButtonRoleSelectionSuiJi, network::ROLE_STRATEGY_RANDOM);
     groupRoleSelection->setId(ui->radioButtonRoleSelectionBanPick, network::ROLE_STRATEGY_BP);
+    groupRoleSelection->setId(ui->radioButtonRoleSelectionCM, network::ROLE_STRATEGY_CM);
 
     //默认选项
     ui->radioButtonPlayer6->setChecked(true);

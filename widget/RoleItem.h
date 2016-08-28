@@ -20,6 +20,7 @@ public:
     bool isSelected();
     void setSelected(bool yes);
     void setBPMsg(int step);
+    void setCMMsg(int op);
 signals:
     void roleSelected(int);
     void roleUnselected(int);

@@ -136,7 +136,7 @@ void ButtonArea::init(bool playing)
         addButton(button);
     }
     else{
-        button = new Button(0, QStringLiteral("点名"));
+        button = new Button(0, QStringLiteral("队长"));
         addButton(button);
 
         button = new Button(1, QStringLiteral("准备"));

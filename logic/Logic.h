@@ -26,6 +26,7 @@ public:
     void onError(int error);
     void normal();
     void ready();
+    void leader();
     void joinTeam();
     Client* getClient(){return socket;}
     ACCOUNT_STATUS getIdentity() const;
@@ -37,6 +38,7 @@ signals:
     void sendCommand(unsigned short proto_type, google::protobuf::Message* proto);
 public slots:
     void onOkClicked();
+    void onCancelClicked();
     void getCommand(unsigned short proto_type, google::protobuf::Message* proto);
     void roleAnalyse();
     void onButtonClicked(int id);
