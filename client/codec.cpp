@@ -62,10 +62,6 @@ void* proto_decoder(const char* msg, unsigned short &type)
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         return proto;
         break;
-    case MSG_INSERT_BAN:
-        proto = new InsertBanRequest();
-        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
-        break;
     case MSG_CMD_REQ:
         proto = new CommandRequest();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);

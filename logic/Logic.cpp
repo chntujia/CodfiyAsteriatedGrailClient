@@ -255,7 +255,6 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
     QString msg;
 
     network::RoleRequest* char_pick;
-    network::InsertBanRequest* InsertBan_req;
     int targetId;
     switch (proto_type)
     {
@@ -361,22 +360,6 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             }
         break;
     }
-//询问IB
-    case network::MSG_INSERT_BAN:
-        InsertBan_req = (network::InsertBanRequest*)proto;
-        targetId = InsertBan_req->id();
-        if(targetId != myID)break;
-        else{
-        state=58;
-            msg=QStringLiteral("是否使用额外ban的机会？");
-            gui->reset();
-            decisionArea = gui->getDecisionArea();
-            decisionArea->enable(0);
-            decisionArea->enable(1);
-            tipArea=gui->getTipArea();
-            tipArea->setMsg(msg);
-        break;
-        }
 //选择角色
     case network::MSG_ROLE_REQ:
         char_pick = (network::RoleRequest*) proto;
