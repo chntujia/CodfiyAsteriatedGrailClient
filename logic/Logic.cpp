@@ -37,9 +37,8 @@
 #include <QSound>
 #include "Common.h"
 #define NORMAL 3
-#define READY 1
-#define JOIN_TEAM 2
-#define LEADER 0
+#define READY 0
+#define JOIN_TEAM 1
 
 Logic* logic=NULL;
 Logic::Logic(QObject *parent) :
@@ -62,6 +61,9 @@ void Logic::setupRoom(bool isStarted, GameInfo *gameInfo)
         gui->setupRoom(isStarted);
         normal();
         init_before_start = true;
+#ifdef DEBUG
+        ready();
+#endif
     }
     else if(!init_after_start && isStarted){
         dataInterface->initPlayerList(gameInfo);
@@ -301,9 +303,9 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             }
             gui->getPlayerArea()->getPlayerItem(targetID)->setReady(player_info->ready());
             if(player_info->has_leader()){
-            gui->getPlayerArea()->getPlayerItem(targetID)->setLeader(player_info->leader());
+                gui->getPlayerArea()->getPlayerItem(targetID)->setLeader(player_info->leader());
             }
-            }
+        }
 
 
         if(count == dataInterface->getPlayerMax())
@@ -322,6 +324,19 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         gui->getPlayerArea()->update();
         break;
     }
+
+    case network::MSG_BECOME_LEADER_REQ:
+        state = 60;
+        gui->reset();
+        tipArea = gui->getTipArea();
+        tipArea->setMsg(QStringLiteral("要申请做队长吗？"));
+
+        decisionArea = gui->getDecisionArea();
+        decisionArea->enable(0);
+        decisionArea->enable(1);
+        gui->alert();
+        break;
+
     case network::MSG_GOSSIP:
         if(gui!=NULL)
         {
@@ -337,7 +352,6 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         }
         switch(error->id())
         {
-        //GE_DISCONNECTED
         case GE_DISCONNECTED:
         {
             int targetId = error->dst_id();
@@ -718,6 +732,12 @@ void Logic::onOkClicked()
         bpArea->reset();
         gui->reset();
         break;
+    case 60:
+        BecomeLeaderResponse *res = new BecomeLeaderResponse;
+        res->set_yes(1);
+        emit sendCommand(network::MSG_BECOME_LEADER_REP, res);
+        gui->reset();
+        break;
     }
 
 
@@ -728,8 +748,8 @@ void Logic::onCancelClicked()
     BPArea* bpArea = NULL;
     switch(state)
     {
-        case 58:
-        case 59:
+    case 58:
+    case 59:
         pick = new network::PickBan();
         pick->add_role_ids(100);
         pick->set_strategy(network::ROLE_STRATEGY_CM);
@@ -737,6 +757,12 @@ void Logic::onCancelClicked()
         emit sendCommand(network::MSG_PICK_BAN, pick);
         bpArea=gui->getBPArea();
         bpArea->reset();
+        gui->reset();
+        break;
+    case 60:
+        BecomeLeaderResponse *res = new BecomeLeaderResponse;
+        res->set_yes(0);
+        emit sendCommand(network::MSG_BECOME_LEADER_REP, res);
         gui->reset();
         break;
 
@@ -751,22 +777,7 @@ void Logic::normal()
         ButtonArea* buttonArea = gui->getButtonArea();
         buttonArea->enable(0);
         buttonArea->enable(1);
-        buttonArea->enable(2);
     }
-}
-
-void Logic::leader()
-{
-    state = LEADER;
-    gui->reset();
-    ButtonArea* buttonArea = gui->getButtonArea();
-    buttonArea->enable(0);
-    buttonArea->enable(1);
-    Button* button = buttonArea->getButtons().at(0);
-    button->setSelected(true);
-    network::BecomeLeaderRequest* leader = new BecomeLeaderRequest;
-    leader->set_leader(network::BecomeLeaderRequest_Leader_Leader_Y);
-    emit sendCommand(network::MSG_BECOME_LEADER_REQ, leader);
 }
 
 void Logic::ready()
@@ -774,8 +785,8 @@ void Logic::ready()
     state = READY;
     gui->reset();
     ButtonArea* buttonArea = gui->getButtonArea();
-    buttonArea->enable(1);
-    Button* button = buttonArea->getButtons().at(1);
+    buttonArea->enable(0);
+    Button* button = buttonArea->getButtons().at(0);
     button->setSelected(true);
     network::ReadyForGameRequest* ready = new ReadyForGameRequest;
     ready->set_type(ReadyForGameRequest_Type_START_READY);
@@ -799,10 +810,6 @@ void Logic::onButtonClicked(int id)
 {
     switch(id)
     {
-    //点名
-    case LEADER:
-        leader();
-        break;
     //准备
     case READY:
         ready();
@@ -826,14 +833,6 @@ void Logic::onButtonUnclicked(int id)
         network::ReadyForGameRequest* ready = new ReadyForGameRequest;
         ready->set_type(ReadyForGameRequest_Type_CANCEL_START_REDAY);
         emit sendCommand(network::MSG_READY_GAME_REQ, ready);
-        break;
-    }
-    case LEADER:
-    {
-        normal();
-        network::BecomeLeaderRequest* leader = new BecomeLeaderRequest;
-        leader->set_leader(network::BecomeLeaderRequest_Leader_Leader_N);
-        emit sendCommand(network::MSG_BECOME_LEADER_REQ, leader);
         break;
     }
     default:

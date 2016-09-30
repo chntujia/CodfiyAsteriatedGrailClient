@@ -17,11 +17,14 @@ DecisionArea::DecisionArea()
     exchangeButton=new Button(2,QStringLiteral("无法行动"));
     exchangeButton->setParentItem(this);
     exchangeButton->setPos(-80,0);
+    exchangeButton->setOpacity(0);
+
     connect(exchangeButton,SIGNAL(buttonSelected(int)),this,SLOT(onButtonSelected(int)));
 
     resignButton=new Button(3,QStringLiteral("放弃行动"));
     resignButton->setParentItem(this);
     resignButton->setPos(-80,0);
+    resignButton->setOpacity(0);
     connect(resignButton,SIGNAL(buttonSelected(int)),this,SLOT(onButtonSelected(int)));
 }
 QRectF DecisionArea::boundingRect() const
@@ -136,13 +139,10 @@ void ButtonArea::init(bool playing)
         addButton(button);
     }
     else{
-        button = new Button(0, QStringLiteral("队长"));
+        button = new Button(0, QStringLiteral("准备"));
         addButton(button);
 
-        button = new Button(1, QStringLiteral("准备"));
-        addButton(button);
-
-        button = new Button(2, QStringLiteral("选队"));
+        button = new Button(1, QStringLiteral("选队"));
         addButton(button);
 
         foreach(Button* b, buttons){

@@ -26,7 +26,6 @@ public:
     void onError(int error);
     void normal();
     void ready();
-    void leader();
     void joinTeam();
     Client* getClient(){return socket;}
     ACCOUNT_STATUS getIdentity() const;

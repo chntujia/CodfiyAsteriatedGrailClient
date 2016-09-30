@@ -34,6 +34,7 @@ protected:
 signals:
     void createRoom();
     void backToLobby();
+
 private:
     void InitializeSet(ACCOUNT_STATUS identity);
 

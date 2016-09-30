@@ -11,8 +11,6 @@ RoomSet::RoomSet(ACCOUNT_STATUS identity, QWidget *parent) :
     ui->setupUi(this);
     connect(ui->okButton, SIGNAL(clicked()), this, SIGNAL(createRoom()));
     connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelRoom()));
-    connect(ui->allowPassword, SIGNAL(clicked(bool)), ui->password, SLOT(setEnabled(bool)));
-    connect(ui->radioButtonPlayer6, SIGNAL(toggled(bool)), ui->radioButtonSeatOrderSanLian, SLOT(setEnabled(bool)));
     InitializeSet(identity);
 }
 
@@ -78,11 +76,17 @@ void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
     QRegExp rx2(".{1,15}");
     ui->lineEditRoomName->setValidator(new QRegExpValidator(rx2, this));
 
+#ifdef DEBUG
+    ui->allowGuest->setChecked(true);
+    identity = STATUS_VIP;
+#endif
+
     switch(identity)
     {
     case STATUS_VIP:
         ui->radioButtonRoleSelectionBanPick->setEnabled(true);
         ui->checkBoxRoleRangespMoDao->setEnabled(true);
+        ui->radioButtonRoleSelectionCM->setEnabled(true);
     case STATUS_NORMAL:
         ui->allowGuest->setEnabled(true);
         ui->allowPassword->setEnabled(true);

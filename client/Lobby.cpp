@@ -70,7 +70,7 @@ void Lobby::fill(RoomListResponse* list)
             newItem = new QTableWidgetItem(QStringLiteral("BAN-PICK"));
             break;
         case ROLE_STRATEGY_CM:
-            newItem = new QTableWidgetItem(QStringLiteral("队长模式"));
+            newItem = new QTableWidgetItem(QStringLiteral("CM01"));
             break;
         default:
             newItem = new QTableWidgetItem(QStringLiteral("Error"));

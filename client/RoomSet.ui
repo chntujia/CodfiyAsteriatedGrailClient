@@ -230,7 +230,7 @@
   </widget>
   <widget class="QRadioButton" name="radioButtonRoleSelectionBanPick">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -242,6 +242,9 @@
    </property>
    <property name="text">
     <string>Ban-Pick</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="labelRoleRange">
@@ -456,6 +459,9 @@
    </property>
   </widget>
   <widget class="QRadioButton" name="radioButtonRoleSelectionCM">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>250</x>
@@ -465,7 +471,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>队长模式</string>
+    <string>CM01</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="radioButtonSeatOrderRBBRRB">
@@ -497,6 +503,70 @@
     <hint type="destinationlabel">
      <x>330</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonRoleSelectionCM</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButtonPlayer4</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>291</x>
+     <y>337</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonRoleSelectionCM</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButtonPlayer6</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>313</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>262</x>
+     <y>175</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonPlayer6</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButtonSeatOrderSanLian</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>319</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>allowPassword</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>password</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>402</x>
+     <y>464</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>488</y>
     </hint>
    </hints>
   </connection>
