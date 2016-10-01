@@ -71,10 +71,12 @@ void DecisionArea::enable(int i)
         cancelButton->selected=0;
         break;
     case 2:
+        exchangeButton->setOpacity(1);
         exchangeButton->setEnabled(1);
         exchangeButton->selected=0;
         break;
     case 3:
+        resignButton->setOpacity(1);
         resignButton->setEnabled(1);
         resignButton->selected=0;
         break;
@@ -95,12 +97,14 @@ void DecisionArea::disable(int i)
         cancelButton->selected=0;
         break;
     case 2:
+        exchangeButton->setOpacity(0);
         exchangeButton->setEnabled(0);
         exchangeButton->selected=0;
         break;
     case 3:
+        resignButton->setOpacity(0);
         resignButton->setEnabled(0);
-        exchangeButton->selected=0;
+        resignButton->selected=0;
         break;
     }
 }
@@ -113,11 +117,13 @@ void DecisionArea::reset()
     cancelButton->setEnabled(0);
     cancelButton->selected=0;
 
+    exchangeButton->setOpacity(0);
     exchangeButton->setEnabled(0);
     exchangeButton->selected=0;
 
+    resignButton->setOpacity(0);
     resignButton->setEnabled(0);
-    exchangeButton->selected=0;
+    resignButton->selected=0;
 }
 
 ButtonArea::ButtonArea()
