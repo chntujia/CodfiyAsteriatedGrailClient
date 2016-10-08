@@ -11,8 +11,6 @@ RoomSet::RoomSet(ACCOUNT_STATUS identity, QWidget *parent) :
     ui->setupUi(this);
     connect(ui->okButton, SIGNAL(clicked()), this, SIGNAL(createRoom()));
     connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelRoom()));
-    connect(ui->allowPassword, SIGNAL(clicked(bool)), ui->password, SLOT(setEnabled(bool)));
-    connect(ui->radioButtonPlayer6, SIGNAL(toggled(bool)), ui->radioButtonSeatOrderSanLian, SLOT(setEnabled(bool)));
     InitializeSet(identity);
 }
 
@@ -35,10 +33,12 @@ void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
     groupSeatOrder->addButton(ui->radioButtonSeatOrderSanLian);
     groupSeatOrder->addButton(ui->radioButtonSeatOrderErLian);
     groupSeatOrder->addButton(ui->radioButtonSeatOrderJianGe);
+    groupSeatOrder->addButton(ui->radioButtonSeatOrderRBBRRB);
 
     groupRoleSelection->addButton(ui->radioButtonRoleSelectionSanXuanYi);
     groupRoleSelection->addButton(ui->radioButtonRoleSelectionSuiJi);
     groupRoleSelection->addButton(ui->radioButtonRoleSelectionBanPick);
+    groupRoleSelection->addButton(ui->radioButtonRoleSelectionCM);
     //设置按钮id
     groupPlayerNum->setId(ui->radioButtonPlayer6,6);
     groupPlayerNum->setId(ui->radioButtonPlayer4,4);
@@ -47,10 +47,12 @@ void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
     groupSeatOrder->setId(ui->radioButtonSeatOrderSanLian, network::SEAT_MODE_3COMBO);
     groupSeatOrder->setId(ui->radioButtonSeatOrderErLian, network::SEAT_MODE_2COMBO);
     groupSeatOrder->setId(ui->radioButtonSeatOrderJianGe, network::SEAT_MODE_INTERLACE);
+    groupSeatOrder->setId(ui->radioButtonSeatOrderRBBRRB, network::SEAT_MODE_RBBRRB);
 
     groupRoleSelection->setId(ui->radioButtonRoleSelectionSanXuanYi, network::ROLE_STRATEGY_31);
     groupRoleSelection->setId(ui->radioButtonRoleSelectionSuiJi, network::ROLE_STRATEGY_RANDOM);
     groupRoleSelection->setId(ui->radioButtonRoleSelectionBanPick, network::ROLE_STRATEGY_BP);
+    groupRoleSelection->setId(ui->radioButtonRoleSelectionCM, network::ROLE_STRATEGY_CM);
 
     //默认选项
     ui->radioButtonPlayer6->setChecked(true);
@@ -74,11 +76,17 @@ void RoomSet::InitializeSet(ACCOUNT_STATUS identity){
     QRegExp rx2(".{1,15}");
     ui->lineEditRoomName->setValidator(new QRegExpValidator(rx2, this));
 
+#ifdef DEBUG
+    ui->allowGuest->setChecked(true);
+    identity = STATUS_VIP;
+#endif
+
     switch(identity)
     {
     case STATUS_VIP:
         ui->radioButtonRoleSelectionBanPick->setEnabled(true);
         ui->checkBoxRoleRangespMoDao->setEnabled(true);
+        ui->radioButtonRoleSelectionCM->setEnabled(true);
     case STATUS_NORMAL:
         ui->allowGuest->setEnabled(true);
         ui->allowPassword->setEnabled(true);

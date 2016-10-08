@@ -14,6 +14,7 @@ ClientUI::ClientUI(QWidget *parent) :
     ui->setupUi(this);
     int port = 11111;
     QString ip = "127.0.0.1";
+//    QString ip = "115.28.77.222";
     QFile *fp = new QFile("config");
     if(fp->exists())
     {
@@ -74,7 +75,10 @@ ClientUI::ClientUI(QWidget *parent) :
     ui->editPassword->setEchoMode(QLineEdit::Password);
     ui->regPassword->setEchoMode(QLineEdit::Password);
     ui->regPasswordAgain->setEchoMode(QLineEdit::Password);
-    ui->btnRegist->setEnabled(true);
+
+#ifdef DEBUG
+    GuestLogin();
+#endif
 }
 
 ClientUI::~ClientUI()

@@ -12,4 +12,4 @@ gui.vcxproj.user
 config
 gui.opensdf
 x64/config
-account
+lib/libprotobuf.lib

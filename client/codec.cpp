@@ -102,6 +102,10 @@ void* proto_decoder(const char* msg, unsigned short &type)
         proto = new Error();
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
+    case MSG_BECOME_LEADER_REQ:
+        proto = new BecomeLeaderRequest;
+        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+        break;
 	default:
         qDebug("codec.cpp:: Cannot find matched type: %d", header_ptr->type);
 		return NULL;

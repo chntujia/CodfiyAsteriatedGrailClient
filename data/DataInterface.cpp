@@ -82,6 +82,7 @@ void DataInterface::initButtonDB()
 
 void DataInterface::initRoleList()
 {    
+    roleList[0] = QStringLiteral("角色");
     roleList[1] = QStringLiteral("[剑圣]");
     roleList[2] = QStringLiteral("[狂战士]");
     roleList[3] = QStringLiteral("[弓之女神]");

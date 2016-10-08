@@ -17,11 +17,14 @@ DecisionArea::DecisionArea()
     exchangeButton=new Button(2,QStringLiteral("无法行动"));
     exchangeButton->setParentItem(this);
     exchangeButton->setPos(-80,0);
+    exchangeButton->setOpacity(0);
+
     connect(exchangeButton,SIGNAL(buttonSelected(int)),this,SLOT(onButtonSelected(int)));
 
     resignButton=new Button(3,QStringLiteral("放弃行动"));
     resignButton->setParentItem(this);
     resignButton->setPos(-80,0);
+    resignButton->setOpacity(0);
     connect(resignButton,SIGNAL(buttonSelected(int)),this,SLOT(onButtonSelected(int)));
 }
 QRectF DecisionArea::boundingRect() const
@@ -68,10 +71,12 @@ void DecisionArea::enable(int i)
         cancelButton->selected=0;
         break;
     case 2:
+        exchangeButton->setOpacity(1);
         exchangeButton->setEnabled(1);
         exchangeButton->selected=0;
         break;
     case 3:
+        resignButton->setOpacity(1);
         resignButton->setEnabled(1);
         resignButton->selected=0;
         break;
@@ -92,12 +97,14 @@ void DecisionArea::disable(int i)
         cancelButton->selected=0;
         break;
     case 2:
+        exchangeButton->setOpacity(0);
         exchangeButton->setEnabled(0);
         exchangeButton->selected=0;
         break;
     case 3:
+        resignButton->setOpacity(0);
         resignButton->setEnabled(0);
-        exchangeButton->selected=0;
+        resignButton->selected=0;
         break;
     }
 }
@@ -110,11 +117,13 @@ void DecisionArea::reset()
     cancelButton->setEnabled(0);
     cancelButton->selected=0;
 
+    exchangeButton->setOpacity(0);
     exchangeButton->setEnabled(0);
     exchangeButton->selected=0;
 
+    resignButton->setOpacity(0);
     resignButton->setEnabled(0);
-    exchangeButton->selected=0;
+    resignButton->selected=0;
 }
 
 ButtonArea::ButtonArea()
@@ -136,13 +145,10 @@ void ButtonArea::init(bool playing)
         addButton(button);
     }
     else{
-        button = new Button(0, QStringLiteral("点名"));
+        button = new Button(0, QStringLiteral("准备"));
         addButton(button);
 
-        button = new Button(1, QStringLiteral("准备"));
-        addButton(button);
-
-        button = new Button(2, QStringLiteral("选队"));
+        button = new Button(1, QStringLiteral("选队"));
         addButton(button);
 
         foreach(Button* b, buttons){

@@ -190,7 +190,7 @@
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>290</y>
+     <y>299</y>
      <width>61</width>
      <height>20</height>
     </rect>
@@ -202,8 +202,8 @@
   <widget class="QRadioButton" name="radioButtonRoleSelectionSuiJi">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>320</y>
+     <x>380</x>
+     <y>328</y>
      <width>82</width>
      <height>17</height>
     </rect>
@@ -216,7 +216,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>290</y>
+     <y>299</y>
      <width>82</width>
      <height>17</height>
     </rect>
@@ -235,13 +235,16 @@
    <property name="geometry">
     <rect>
      <x>380</x>
-     <y>290</y>
+     <y>299</y>
      <width>82</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
     <string>Ban-Pick</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="labelRoleRange">
@@ -355,7 +358,7 @@
   </widget>
   <widget class="QCheckBox" name="allowGuest">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -455,7 +458,117 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QRadioButton" name="radioButtonRoleSelectionCM">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>328</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>CM01</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButtonSeatOrderRBBRRB">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>270</y>
+     <width>89</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>红蓝蓝红红蓝</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>radioButtonRoleSelectionCM</sender>
+   <signal>clicked()</signal>
+   <receiver>radioButtonSeatOrderRBBRRB</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>353</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>330</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonRoleSelectionCM</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButtonPlayer4</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>291</x>
+     <y>337</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonRoleSelectionCM</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButtonPlayer6</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>313</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>262</x>
+     <y>175</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonPlayer6</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButtonSeatOrderSanLian</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>319</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>allowPassword</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>password</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>402</x>
+     <y>464</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

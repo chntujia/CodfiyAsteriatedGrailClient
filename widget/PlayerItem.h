@@ -36,6 +36,7 @@ public:
     bool isSelected();
     void adjustStatusItems();
     void setReady(bool r) { ready = r; }
+    void setLeader(int l){withleader = l;}
 public slots:
     void addBasicStatusItem(BasicStatus* status);
     void removeBasicStatusItem(BasicStatus *status);
@@ -60,10 +61,12 @@ private:
     QPixmap redReadyFrame;
     QPixmap blueReadyFrame;
     QPixmap readyStatus;
+    QPixmap readyWithLeader;
     int width;
     int height;
     bool selected;
     bool ready;
+    int withleader;
     SafeList<StatusItem*> statusItems;
 
 };

@@ -37,6 +37,7 @@ signals:
     void sendCommand(unsigned short proto_type, google::protobuf::Message* proto);
 public slots:
     void onOkClicked();
+    void onCancelClicked();
     void getCommand(unsigned short proto_type, google::protobuf::Message* proto);
     void roleAnalyse();
     void onButtonClicked(int id);

@@ -36,9 +36,9 @@
 #include "ShiRen.h"
 #include <QSound>
 #include "Common.h"
-#define NORMAL 0
-#define READY 1
-#define JOIN_TEAM 2
+#define NORMAL 3
+#define READY 0
+#define JOIN_TEAM 1
 
 Logic* logic=NULL;
 Logic::Logic(QObject *parent) :
@@ -55,11 +55,15 @@ void Logic::setupRoom(bool isStarted, GameInfo *gameInfo)
 {
     if(!init_before_start && !isStarted) {
         connect(gui->getDecisionArea(),SIGNAL(okClicked()),this,SLOT(onOkClicked()));
+        connect(gui->getDecisionArea(),SIGNAL(cancelClicked()),this,SLOT(onCancelClicked()));
         connect(gui->getBPArea(),SIGNAL(roleReady()),this,SLOT(roleAnalyse()));
         dataInterface->setupRoom(isStarted);
         gui->setupRoom(isStarted);
         normal();
         init_before_start = true;
+#ifdef DEBUG
+        ready();
+#endif
     }
     else if(!init_after_start && isStarted){
         dataInterface->initPlayerList(gameInfo);
@@ -80,7 +84,7 @@ void Logic::cleanRoom()
     init_after_start = false;
     muteList.clear();
     dataInterface->cleanRoom();
-    gui->cleanRoom();    
+    gui->cleanRoom();
 }
 
 void Logic::destroyRoom(){
@@ -250,21 +254,21 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
     SafeList<int> options;
     PlayerArea* playerArea;
     int targetID,roleID,howMany;
+    QString msg;
 
     network::RoleRequest* char_pick;
-
+    int targetId;
     switch (proto_type)
     {
     case network::MSG_ROOMLIST_REP:
         lobby->fill((network::RoomListResponse*) proto);
         break;
-
     case network::MSG_GAME:
     {
         network::GameInfo* game_info = (network::GameInfo*) proto;
         if(game_info->has_player_id()){
             myID = game_info->player_id();
-            dataInterface->setID(myID);            
+            dataInterface->setID(myID);
             cleanRoom();
             if(myID == GUEST)
                 gui->logAppend(QStringLiteral("<font color=\'pink\'>房间已满，进入观战模式</font>"));
@@ -285,7 +289,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             targetID = player_info->id();
             if(player_info->has_role_id())
             {
-                roleID = player_info->role_id();              
+                roleID = player_info->role_id();
                 roles[targetID] = roleID;
                 dataInterface->getPlayerList().at(targetID)->setRole(roleID);
                 gui->getPlayerArea()->getPlayerItem(targetID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
@@ -298,7 +302,11 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
                 dataInterface->getPlayerById(targetID)->setTeam(player_info->team());
             }
             gui->getPlayerArea()->getPlayerItem(targetID)->setReady(player_info->ready());
+            if(player_info->has_leader()){
+                gui->getPlayerArea()->getPlayerItem(targetID)->setLeader(player_info->leader());
+            }
         }
+
 
         if(count == dataInterface->getPlayerMax())
         {
@@ -316,11 +324,24 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         gui->getPlayerArea()->update();
         break;
     }
+
+    case network::MSG_BECOME_LEADER_REQ:
+        state = 60;
+        gui->reset();
+        tipArea = gui->getTipArea();
+        tipArea->setMsg(QStringLiteral("要申请做队长吗？"));
+
+        decisionArea = gui->getDecisionArea();
+        decisionArea->enable(0);
+        decisionArea->enable(1);
+        gui->alert();
+        break;
+
     case network::MSG_GOSSIP:
         if(gui!=NULL)
         {
             network::Gossip* gossip = (network::Gossip*) proto;
-            gui->chatAppend(gossip->id(), QString::fromStdString(gossip->txt()));   
+            gui->chatAppend(gossip->id(), QString::fromStdString(gossip->txt()));
         }
         break;
     case network::MSG_ERROR:
@@ -331,7 +352,6 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         }
         switch(error->id())
         {
-        //GE_DISCONNECTED
         case GE_DISCONNECTED:
         {
             int targetId = error->dst_id();
@@ -351,13 +371,13 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");
             break;
-			}
+            }
         break;
     }
 //选择角色
     case network::MSG_ROLE_REQ:
         char_pick = (network::RoleRequest*) proto;
-        int targetId = char_pick->id();
+        targetId = char_pick->id();
         if(char_pick->strategy() == ROLE_STRATEGY_31)
         {
             gui->logAppend(QStringLiteral("<font color=\'white\'>等待玩家") + QString::number(targetId) + QStringLiteral("选择角色")+"</front");
@@ -444,6 +464,172 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             }
             break;
         }
+        else if(char_pick->strategy() == ROLE_STRATEGY_CM)
+        {
+            state = 51;
+            tipArea=gui->getTipArea();
+            decisionArea=gui->getDecisionArea();
+            bpArea = gui->getBPArea();
+            tipArea->reset();
+            howMany=char_pick->role_ids_size();
+            int lastChosen = -1;
+            for(int i=0;i<howMany;i++){
+                roleIDs << char_pick->role_ids(i);
+                if(char_pick->args(i)>0){
+                    if(lastChosen==-1)
+                    lastChosen =0;
+                    if(char_pick->args(i)>10){
+                        lastChosen =i;
+                        options << (char_pick->args(i) - 10);
+                        continue;
+                    }
+                }
+                    options << char_pick->args(i);
+            }
+
+            QString oprating;
+            if(char_pick->opration() ==  CM_NULL)
+            {
+            if (lastChosen >0)
+            {
+                switch(options[lastChosen])
+                {
+                case CM_RED_BAN:
+                case CM_BLUE_BAN:
+                    oprating = QStringLiteral("禁用");break;
+                case CM_RED_PICK:
+                case CM_BLUE_PICK:
+                    oprating = QStringLiteral("选择");break;
+                case CM_RED_IB:
+                case CM_BLUE_IB:
+                    oprating = QStringLiteral("额外禁用");break;
+                default:
+                    oprating = QStringLiteral("错误");break;
+                }
+            }
+            else if(lastChosen==-1)
+                oprating = QStringLiteral("禁用");
+            else if(lastChosen==0)
+                oprating = QStringLiteral("没有额外禁用");
+            }
+            else
+            {
+                switch(char_pick->opration())
+                {
+                case CM_RED_BAN:
+                case CM_BLUE_BAN:
+                    oprating = QStringLiteral("禁用");break;
+                case CM_RED_PICK:
+                case CM_BLUE_PICK:
+                    oprating = QStringLiteral("选择");break;
+                case CM_RED_IB:
+                case CM_BLUE_IB:
+                    oprating = QStringLiteral("额外禁用");break;
+                default:
+                    oprating = QStringLiteral("错误");break;
+                }
+            }
+            bpArea->CMStart(howMany, roleIDs, options, char_pick->opration());
+            if(char_pick->opration() ==  CM_NULL)
+            {
+                if(lastChosen == -1){
+                    gui->logAppend(QStringLiteral("以下英雄响应了召唤："));
+                    QString msg;
+                    foreach(int id, roleIDs)
+                        msg += QStringLiteral("<font color=\'yellow\'>%1 </font>").arg(dataInterface->getRoleName(id));
+                    gui->logAppend(msg);
+                }
+                else {
+                    QString msg = QStringLiteral("<font color=\'yellow\'>%1 </font>%2 <font color=\'yellow\'>%3</font>");
+                    QString nickname = dataInterface->getPlayerList().at(targetId)->getNickname();
+                    if(lastChosen==0)gui->logAppend(msg.arg(nickname, oprating, dataInterface->getRoleName(0)));
+                    else
+                    gui->logAppend(msg.arg(nickname, oprating+QStringLiteral("了"),dataInterface->getRoleName(roleIDs[lastChosen])));
+                }
+            }
+            else
+            {
+                QString msg = QStringLiteral("等待<font color=\'yellow\'> %1</font> %2 角色");
+                QString nickname = dataInterface->getPlayerList().at(targetId)->getNickname();
+                gui->logAppend(msg.arg(nickname, oprating));
+            }
+            if(targetId != myID)
+                break;
+            switch(char_pick->opration())
+            {
+            case CM_RED_BAN:
+            {
+                state = 54;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请禁用一角色"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                playerArea = gui->getPlayerArea();
+                gui->alert();
+                break;
+            }
+            case CM_BLUE_BAN:
+            {
+                state = 55;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请禁用一角色"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                playerArea = gui->getPlayerArea();
+                gui->alert();
+                break;
+            }
+            case CM_RED_PICK:
+            {
+                state = 56;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请选择一角色"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                playerArea = gui->getPlayerArea();
+                gui->alert();
+                break;
+            }
+            case CM_BLUE_PICK:
+            {
+                state = 57;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请选择一角色"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                playerArea = gui->getPlayerArea();
+                gui->alert();
+                break;
+            }
+            case CM_RED_IB:
+            {
+                state = 58;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请额外禁用角色，或点‘取消’"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                decisionArea = gui->getDecisionArea();
+                decisionArea->enable(1);
+                playerArea = gui->getPlayerArea();
+                gui->alert();
+                break;
+            }
+            case CM_BLUE_IB:
+            {
+                state = 59;
+                bpArea = gui->getBPArea();
+                bpArea->setMsg(QStringLiteral("请额外禁用角色，或点‘取消’"));
+                bpArea->setQuota(1);
+                bpArea->enableAll();
+                playerArea = gui->getPlayerArea();
+                decisionArea = gui->getDecisionArea();
+                decisionArea->enable(1);
+                gui->alert();
+                break;
+            }
+            }
+            break;
+        }
     }
     delete proto;
 }
@@ -491,7 +677,7 @@ void Logic::onOkClicked()
         pick->add_role_ids(chosen);
         pick->set_strategy(network::ROLE_STRATEGY_BP);
         pick->set_is_pick(false);
-        emit sendCommand(network::MSG_PICK_BAN, pick); 
+        emit sendCommand(network::MSG_PICK_BAN, pick);
         bpArea->reset();
         gui->reset();
         break;
@@ -507,9 +693,80 @@ void Logic::onOkClicked()
         bpArea->reset();
         gui->reset();
         break;
+    case 54:
+    case 55:
+        bpArea=gui->getBPArea();
+        selected = bpArea->getSelectedRoles();
+        chosen = selected[0];
+        pick = new network::PickBan();
+        pick->add_role_ids(chosen);
+        pick->set_strategy(network::ROLE_STRATEGY_CM);
+        pick->set_is_pick(false);
+        emit sendCommand(network::MSG_PICK_BAN, pick);
+        bpArea->reset();
+        gui->reset();
+        break;
+    case 56:
+    case 57:
+        bpArea=gui->getBPArea();
+        selected = bpArea->getSelectedRoles();
+        chosen = selected[0];
+        pick = new network::PickBan();
+        pick->add_role_ids(chosen);
+        pick->set_strategy(network::ROLE_STRATEGY_CM);
+        pick->set_is_pick(true);
+        emit sendCommand(network::MSG_PICK_BAN, pick);
+        bpArea->reset();
+        gui->reset();
+        break;
+    case 58:
+    case 59:
+        bpArea=gui->getBPArea();
+        selected = bpArea->getSelectedRoles();
+        chosen = selected[0];
+        pick = new network::PickBan();
+        pick->add_role_ids(chosen);
+        pick->set_strategy(network::ROLE_STRATEGY_CM);
+        pick->set_is_pick(false);
+        emit sendCommand(network::MSG_PICK_BAN, pick);
+        bpArea->reset();
+        gui->reset();
+        break;
+    case 60:
+        BecomeLeaderResponse *res = new BecomeLeaderResponse;
+        res->set_yes(1);
+        emit sendCommand(network::MSG_BECOME_LEADER_REP, res);
+        gui->reset();
+        break;
     }
 
 
+}
+void Logic::onCancelClicked()
+{
+    network::PickBan* pick;
+    BPArea* bpArea = NULL;
+    switch(state)
+    {
+    case 58:
+    case 59:
+        pick = new network::PickBan();
+        pick->add_role_ids(100);
+        pick->set_strategy(network::ROLE_STRATEGY_CM);
+        pick->set_is_pick(false);
+        emit sendCommand(network::MSG_PICK_BAN, pick);
+        bpArea=gui->getBPArea();
+        bpArea->reset();
+        gui->reset();
+        break;
+    case 60:
+        BecomeLeaderResponse *res = new BecomeLeaderResponse;
+        res->set_yes(0);
+        emit sendCommand(network::MSG_BECOME_LEADER_REP, res);
+        gui->reset();
+        break;
+
+    }
 }
 
 void Logic::normal()
@@ -518,8 +775,8 @@ void Logic::normal()
     gui->reset();
     if(myID != GUEST){
         ButtonArea* buttonArea = gui->getButtonArea();
+        buttonArea->enable(0);
         buttonArea->enable(1);
-        buttonArea->enable(2);
     }
 }
 
@@ -528,10 +785,9 @@ void Logic::ready()
     state = READY;
     gui->reset();
     ButtonArea* buttonArea = gui->getButtonArea();
-    buttonArea->enable(1);
-    Button* button = buttonArea->getButtons().at(1);
+    buttonArea->enable(0);
+    Button* button = buttonArea->getButtons().at(0);
     button->setSelected(true);
-
     network::ReadyForGameRequest* ready = new ReadyForGameRequest;
     ready->set_type(ReadyForGameRequest_Type_START_READY);
     emit sendCommand(network::MSG_READY_GAME_REQ, ready);
@@ -554,9 +810,6 @@ void Logic::onButtonClicked(int id)
 {
     switch(id)
     {
-    //点名
-    case 0:
-        break;
     //准备
     case READY:
         ready();
@@ -565,6 +818,7 @@ void Logic::onButtonClicked(int id)
     case JOIN_TEAM:
         joinTeam();
         break;
+
     }
 }
 
@@ -603,6 +857,12 @@ void Logic::roleAnalyse()
     {
     case 52:
     case 53:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
+    case 58:
+    case 59:
         decisionArea->enable(0);
     }
 }

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'ClientUI.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.0
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -145,12 +145,13 @@ public:
 
         btnGuest = new QPushButton(layoutWidget1);
         btnGuest->setObjectName(QStringLiteral("btnGuest"));
+        btnGuest->setEnabled(false);
 
         horizontalLayout_3->addWidget(btnGuest);
 
         btnRegist = new QPushButton(layoutWidget1);
         btnRegist->setObjectName(QStringLiteral("btnRegist"));
-        btnRegist->setEnabled(false);
+        btnRegist->setEnabled(true);
 
         horizontalLayout_3->addWidget(btnRegist);
 

@@ -88,6 +88,62 @@ void BPArea::BPStart(int num, SafeList<int> roles, SafeList<int> options, uint o
     setVisible(true);
     reset();
 }
+void BPArea::CMStart(int num, SafeList<int> roles, SafeList<int> options, uint op)
+{
+    //QString queue = dataInterface->get;
+    int red =0, blue = 0, max = roles.size()/2;
+    for(int i =0;i<max;i++)
+    {
+        playerIDs << roles[i];
+        color << options[i];
+        if(roles[i+max] ==1)
+            orderInTeam << ++red;
+        else
+            orderInTeam << ++blue;
+    }
+    gui->reset();
+    selectedRoles.clear();
+    bool needCreate = (roleItems.size() == 0);
+    for(int i=0;i<num;i++)
+    {
+        RoleItem * item = NULL;
+        if(needCreate)
+        {
+            item = new RoleItem(roles[i]);
+            roleItems << item;
+        }
+        else
+        {
+            item = roleItems[i];
+        }
+        item->setCMMsg(options[i]);
+        if(op == CM_NULL)
+        {
+            justShow = true;
+            disconnect(item,SIGNAL(roleSelected(int)),this,SLOT(onRoleSelected(int)));
+            disconnect(item,SIGNAL(roleUnselected(int)),this,SLOT(onRoleUnselected(int)));
+        }
+        else
+        {
+            justShow = false;
+            connect(item,SIGNAL(roleSelected(int)),this,SLOT(onRoleSelected(int)));
+            connect(item,SIGNAL(roleUnselected(int)),this,SLOT(onRoleUnselected(int)));
+        }
+        if(i<8)
+        {
+            item->setX(195+65*i);
+            item->setY(230);
+        }
+        else
+        {
+            item->setX(195+65*(i-8));
+            item->setY(480);
+        }
+        item->setParentItem(this);
+    }
+    setVisible(true);
+    reset();
+}
 
 void BPArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {

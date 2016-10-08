@@ -146,6 +146,7 @@ PlayerItem::PlayerItem(Player* player):selected(0), ready(false)
     redReadyFrame = QPixmap("resource/playerReadyRed.png");
     blueReadyFrame = QPixmap("resource/playerReadyBlue.png");
     readyStatus = QPixmap("resource/playerReady.png");
+    readyWithLeader = QPixmap("resource/playerLeader.png");
     this->width=frame.width();
     this->height=frame.height();
     gem=QPixmap("resource/Egem.png");
@@ -223,6 +224,9 @@ void PlayerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         painter->drawPixmap(-5,-4,QPixmap("resource/playerSelected.png"));
     if(ready)
         painter->drawPixmap(0, 0, readyStatus);
+    if(withleader==1)
+        painter->drawPixmap(0, 0, readyWithLeader);
+
 }
 
 void PlayerItem::addBasicStatusItem(BasicStatus *status)

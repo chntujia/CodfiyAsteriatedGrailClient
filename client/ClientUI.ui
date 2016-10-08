@@ -118,6 +118,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnGuest">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>游客</string>
        </property>
@@ -126,7 +129,7 @@
      <item>
       <widget class="QPushButton" name="btnRegist">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>注册</string>
