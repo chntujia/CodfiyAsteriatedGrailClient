@@ -16,22 +16,15 @@ JianSheng::JianSheng()
 void JianSheng::LianXuJi()
 {
     //借用基类的额外攻击行动状态
-    state=10;
-    gui->reset();
-    handArea->setQuota(1);
-    handArea->enableElement("wind");
-    handArea->disableMagic();
-    playerArea->setQuota(1);
-    decisionArea->enable(3);
+    handArea->disableElementExcept("wind");
 }
 
 void JianSheng::attackAction()
 {
+    Role::attackAction();
+
     //若是连续技的额外行动，则只能用风系
     if(LIAN_XU_JI == chosenAction){
         LianXuJi();
-    }
-    else{
-        Role::attackAction();
     }
 }

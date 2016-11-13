@@ -18,6 +18,7 @@ public:
     void disableMagic();
     int getElementCount();
     void disableElement(QString element);
+    void disableElementExcept(QString element);
     void enableElement(QString element);
     void enableMoDan();
     void enableAll();

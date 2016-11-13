@@ -119,6 +119,15 @@ void HandArea::disableElement(QString element)
             ptr->setOpacity(0.8);
         }
 }
+void HandArea::disableElementExcept(QString element)
+{
+    foreach(CardItem *ptr,cardItems)
+        if(ptr->getCard()->getElement()!=element)
+        {
+            ptr->setEnabled(0);
+            ptr->setOpacity(0.8);
+        }
+}
 void HandArea::enableElement(QString element)
 {
     foreach(CardItem *ptr,cardItems)
