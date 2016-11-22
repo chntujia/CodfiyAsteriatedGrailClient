@@ -2,8 +2,7 @@
 #define COMMON_H
 #include <QString>
 #include "protocol/action_respond.pb.h"
-#define VERSION 160508
-#define DEBUG
+
 enum ACCOUNT_STATUS{
     STATUS_NORMAL = 0,
     STATUS_LOGIN_FAILED = 1,

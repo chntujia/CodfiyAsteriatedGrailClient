@@ -1,4 +1,4 @@
-﻿#include <QSound>
+﻿
 
 #include "MoNv.h"
 enum CAUSE{
@@ -82,20 +82,14 @@ void MoNv::enbleFireAttack(QString element)
 
 void MoNv::attacked(QString element,int hitRate)
 {
-    state=2;
-    playerArea->setQuota(1);
-    handArea->setQuota(1);
+    Role::attacked(element, hitRate);
 
-    decisionArea->enable(1);
+    handArea->disableAttack();
     if(hitRate==0)
     {
         this->enbleFireAttack(element);
         handArea->enableElement("darkness");
     }
-    handArea->disableMagic();
-    handArea->enableElement("light");
-    gui->alert();
-    QSound::play("sound/Warning.wav");
 }
 
 void MoNv::normal()

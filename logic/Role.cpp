@@ -1,6 +1,12 @@
 ﻿#include "Role.h"
 #include <QStringList>
-#include <QSound>
+#ifdef SOUND
+  #include <QSound>
+  #define QSound(x) QSound::play(x)
+#else
+  #define QSound(x)
+#endif
+
 #include "data/Common.h"
 #include "data/DataInterface.h"
 #include "widget/GUI.h"
@@ -1126,7 +1132,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 targetID=cmd->args(2);
                 sourceID=cmd->args(3);
                 card=dataInterface->getCard(cardID);
-                QSound::play("sound/Attack.wav");
+                QSound("sound/Attack.wav");
 
                 if(targetID!=myID)
                 {
@@ -1440,7 +1446,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         else
             msg=playerList[sourceID]->getRoleName()+QStringLiteral("未命中")+playerList[targetID]->getRoleName();
         gui->logAppend(msg);
-        QSound::play("sound/Hit.wav");
+        QSound("sound/Hit.wav");
         break;
     }
 
@@ -1457,7 +1463,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         }
         gui->logAppend(msg);
         playerArea->drawLineBetween(sourceID, targetID);
-        QSound::play("sound/Hurt.wav");
+        QSound("sound/Hurt.wav");
         break;
     }
     case network::MSG_SKILL:
@@ -1498,8 +1504,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         if (game_info->has_red_morale())
         {
             if (red->getMorale() > game_info->red_morale())
-                QSound::play("sound/Hurt.wav");
-            QSound::play("sound/Morale.wav");
+                QSound("sound/Hurt.wav");
+            QSound("sound/Morale.wav");
             red->setMorale(game_info->red_morale());
             teamArea->update();
             if (red->getMorale() == 0)
@@ -1508,8 +1514,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         if (game_info->has_blue_morale())
         {
             if (blue->getMorale() > game_info->blue_morale())
-                QSound::play("sound/Hurt.wav");
-            QSound::play("sound/Morale.wav");
+                QSound("sound/Hurt.wav");
+            QSound("sound/Morale.wav");
             blue->setMorale(game_info->blue_morale());
             teamArea->update();
             if (blue->getMorale() == 0)
@@ -1536,31 +1542,31 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         {
             tipArea->win(winner);
             if(winner==dataInterface->getMyself()->getColor())
-                QSound::play("sound/Win.wav");
+                QSound("sound/Win.wav");
             else
-                QSound::play("sound/Lose.wav");
+                QSound("sound/Lose.wav");
         }
 
         // 更新战绩区
         if (game_info->has_red_gem())
         {
             red->setGem(game_info->red_gem());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         if (game_info->has_blue_gem())
         {
             blue->setGem(game_info->blue_gem());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         if (game_info->has_red_crystal())
         {
             red->setCrystal(game_info->red_crystal());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         if (game_info->has_blue_crystal())
         {
             blue->setCrystal(game_info->blue_crystal());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         // 更新牌堆、弃牌堆
         if (game_info->has_pile())
@@ -1572,7 +1578,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             if (game_info->discard()==0 && teamArea->getDroppedCardNum() != 0)
             {
                 gui->logAppend(QStringLiteral("牌堆重洗"));
-                QSound::play("sound/Shuffle.wav");
+                QSound("sound/Shuffle.wav");
             }
             teamArea->setDroppedCardNum(game_info->discard());
         }
@@ -1647,7 +1653,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     player->setCrossNum(player_info->heal_count());
 
                     playerArea->update();
-                    QSound::play("sound/Cure.wav");
+                    QSound("sound/Cure.wav");
                 }
                 // 更新专属
                 if (player_info->ex_cards_size() > 0)
@@ -1662,7 +1668,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 if (player_info->basic_cards_size() > 0)
                 {
                     if (player_info->basic_cards_size() > player->getBasicStatus().size())
-                        QSound::play("sound/Equip.wav");
+                        QSound("sound/Equip.wav");
 
                     player->cleanBasicStatus();
                     for (int j = 0; j < player_info->basic_cards_size(); ++j)

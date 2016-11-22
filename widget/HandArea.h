@@ -14,6 +14,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void adjustCards();
     void enableAttack();
+    void disableAttack();
     void enableMagic();
     void disableMagic();
     int getElementCount();

@@ -34,7 +34,9 @@
 #include "YingLingRenXing.h"
 #include "MoNv.h"
 #include "ShiRen.h"
-#include <QSound>
+#ifdef SOUND
+  #include <QSound>
+#endif
 #include "Common.h"
 #define NORMAL 3
 #define READY 0

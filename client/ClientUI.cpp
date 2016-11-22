@@ -4,9 +4,9 @@
 #include "client/ui_ClientUI.h"
 #include "data/DataInterface.h"
 #include <QTextStream>
-#include <QSound>
 #include "data/Common.h"
 #include <QDesktopServices>
+
 ClientUI::ClientUI(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ClientUI)
