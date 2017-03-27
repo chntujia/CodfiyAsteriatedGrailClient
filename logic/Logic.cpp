@@ -72,11 +72,6 @@ void Logic::setupRoom(bool isStarted, GameInfo *gameInfo)
         dataInterface->setupRoom(isStarted);
         gui->setupRoom(isStarted);
         init_after_start = true;
-        if(myID != GUEST){
-            network::ReadyForGameRequest* ready = new ReadyForGameRequest;
-            ready->set_type(ReadyForGameRequest_Type_SEAT_READY);
-            emit sendCommand(network::MSG_READY_GAME_REQ, ready);
-        }
     }
 }
 

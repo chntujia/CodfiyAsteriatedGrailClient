@@ -70,6 +70,10 @@ void Role::makeConnection()
     connect(handArea,SIGNAL(cardReady()),this,SLOT(cardAnalyse()));
     connect(coverArea,SIGNAL(cardReady()),this,SLOT(coverCardAnalyse()));
     connect(playerArea,SIGNAL(playerReady()),this,SLOT(playerAnalyse()));
+
+    network::ReadyForGameRequest* ready = new ReadyForGameRequest;
+    ready->set_type(ReadyForGameRequest_Type_SEAT_READY);
+    emit sendCommand(network::MSG_READY_GAME_REQ, ready);
 }
 
 void Role::coverCardAnalyse()
