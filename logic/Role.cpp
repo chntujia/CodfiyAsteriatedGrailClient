@@ -55,8 +55,7 @@ Role::Role(QObject *parent) :
 void Role::makeConnection()
 {
     connect(logic->getClient(),SIGNAL(getMessage(unsigned short, google::protobuf::Message*)),
-            this,SLOT(decipher(unsigned short, google::protobuf::Message*)),
-            Qt::QueuedConnection);
+            this,SLOT(decipher(unsigned short, google::protobuf::Message*)));
 
     connect(this,SIGNAL(sendCommand(unsigned short, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(unsigned short, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));

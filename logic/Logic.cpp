@@ -99,8 +99,7 @@ void Logic::destroyRoom(){
 void Logic::makeConnection()
 {
     connect(socket, SIGNAL(getMessage(unsigned short, google::protobuf::Message*)),
-            logic, SLOT(getCommand(unsigned short, google::protobuf::Message*)),
-            Qt::QueuedConnection);
+            logic, SLOT(getCommand(unsigned short, google::protobuf::Message*)));
 }
 
 void Logic::setMyRole(int roleID)

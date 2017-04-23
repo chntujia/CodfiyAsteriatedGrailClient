@@ -69,6 +69,8 @@ ClientUI::ClientUI(QWidget *parent) :
 	connect(ui->chkSaveUser, SIGNAL(clicked()), this, SLOT(CheckSaveUser()));
 	connect(ui->chkSavePwd, SIGNAL(clicked()), this, SLOT(CheckSavePwd()));
 
+    logic->setClient(tcpSocket);
+
     ui->frameRegist->hide();
     ui->frameLogin->show();
 
