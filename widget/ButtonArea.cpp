@@ -130,11 +130,11 @@ ButtonArea::ButtonArea()
 {
 }
 
-void ButtonArea::init(bool playing)
+void ButtonArea::init(bool roleInited)
 {
     Button *button;
     clear();
-    if(playing){
+    if(roleInited){
         button = new Button(0, QStringLiteral("购买"));
         addButton(button);
 

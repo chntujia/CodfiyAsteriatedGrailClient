@@ -11,7 +11,7 @@
 #include "data/DataInterface.h"
 #include "widget/GUI.h"
 #include "logic/Logic.h"
-
+#define POLLING 61
 Role::Role(QObject *parent) :
     QObject(parent)
 {
@@ -69,10 +69,6 @@ void Role::makeConnection()
     connect(handArea,SIGNAL(cardReady()),this,SLOT(cardAnalyse()));
     connect(coverArea,SIGNAL(cardReady()),this,SLOT(coverCardAnalyse()));
     connect(playerArea,SIGNAL(playerReady()),this,SLOT(playerAnalyse()));
-
-    network::ReadyForGameRequest* ready = new ReadyForGameRequest;
-    ready->set_type(ReadyForGameRequest_Type_SEAT_READY);
-    emit sendCommand(network::MSG_READY_GAME_REQ, ready);
 }
 
 void Role::coverCardAnalyse()
@@ -1048,6 +1044,17 @@ void Role::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    case POLLING:
+    {
+        PollingResponse *res = new PollingResponse;
+        TipArea *tipArea = gui->getTipArea();
+        int chosen = tipArea->getBoxCurrentIndex();
+        res->set_option(chosen);
+        emit sendCommand(network::MSG_POLLING_REP, res);
+        tipArea->reset();
+        tipArea->setMsg(QStringLiteral("为避免误伤，等待期间不要离开"));
+        break;
+    }
     }
     }catch(int error){
         logic->onError(error);
@@ -1343,9 +1350,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             if(targetID == myID){
                 timelineBar->startCounting(59);
             }
-            else{
-                timelineBar->stopCounting();
-            }
         }
         break;
     }
@@ -1491,8 +1495,15 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     // 对话及公告
     {
         network::Gossip* gossip = (network::Gossip*)proto;
-        if (gossip->type() == network::GOSSIP_TALK)
+        switch (gossip->type())
+        {
+        case network::GOSSIP_TALK:
             gui->chatAppend(gossip->id(), QString(gossip->txt().c_str()));
+            break;
+        case network::GOSSIP_NOTICE:
+            gui->logAppend(QString(gossip->txt().c_str()));
+            break;
+        }
         break;
     }
     case network::MSG_GAME:
@@ -1763,12 +1774,31 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         switch(error->id())
         {
         case GE_DISCONNECTED:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线，如果他不是数字君的话，说不定会回来呢</font>"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线，请等他回来，或者票死他</font>"));
             break;
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");
             break;
         }
+        break;
+    }
+    case network::MSG_POLLING_REQ:
+    {
+        state = POLLING;
+        network::PollingRequest* req = (network::PollingRequest*) proto;
+        gui->hideBP();
+        gui->reset();
+        tipArea = gui->getTipArea();
+        tipArea->setMsg(QString::fromStdString(req->object()));
+        for(int i = 0; i < req->options_size(); i++){
+            tipArea->addBoxItem(QString::fromStdString(req->options(i)));
+        }
+        tipArea->showBox();
+
+        decisionArea = gui->getDecisionArea();
+        decisionArea->enable(0);
+        timelineBar->startCounting(59);
+        gui->alert();
         break;
     }
     default:

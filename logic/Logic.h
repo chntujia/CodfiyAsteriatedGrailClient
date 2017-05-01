@@ -49,12 +49,10 @@ private:
     int state;    
     int myID;
     bool hasShownRole;
-    bool hasSetRole;
     Role* myRole;
     bool init_before_start;
     bool init_after_start;
     int roles[8];
-    QMutex mutex;
     QSet<int> muteList;
 };
 extern Logic* logic;

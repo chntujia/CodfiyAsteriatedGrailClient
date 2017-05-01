@@ -53,10 +53,12 @@ void GUI::reset()
 
     coverArea->reset();
     showCoverArea(false);
+    timelineBar->stopCounting();
 }
 
 void GUI::setEnable(bool flag)
 {
+    reset();
     handArea->setEnabled(flag);
     playerArea->setEnabled(flag);
     buttonArea->setEnabled(flag);
