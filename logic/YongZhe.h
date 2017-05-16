@@ -11,7 +11,6 @@ public:
     void MingJingZhiShui();
     void JinDuanZhiLi();
     void SiDou();
-    void turnBegin();
     void askForSkill(network::Command* cmd);
     void additionalAction();
 public slots:

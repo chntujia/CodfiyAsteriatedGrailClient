@@ -14,10 +14,12 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void adjustCards();
     void enableAttack();
+    void disableAttack();
     void enableMagic();
     void disableMagic();
     int getElementCount();
     void disableElement(QString element);
+    void disableElementExcept(QString element);
     void enableElement(QString element);
     void enableMoDan();
     void enableAll();

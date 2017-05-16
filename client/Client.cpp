@@ -8,8 +8,7 @@ Client::Client()
     nextBlockSize = -1;
     connect(this,SIGNAL(readyRead()),this,SLOT(readMessage()));
     connect(logic,SIGNAL(sendCommand(unsigned short, google::protobuf::Message*)),this,SLOT(sendMessage(unsigned short, google::protobuf::Message*)));
-    connect(this,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
-    logic->setClient(this);
+    connect(this,SIGNAL(disconnected()),this,SLOT(onDisconnected()));   
 }
 
 void Client::onDisconnected()

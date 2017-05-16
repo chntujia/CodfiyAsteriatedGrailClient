@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
     logic = new Logic;
     animation = new Animation;
     gui = new GUI;
-    //FIXME: use ClientUI login and then destroy it
     ClientUI c;
 #ifdef LOBBY
     c.disconnect(&c);

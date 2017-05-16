@@ -9,6 +9,10 @@ QT += network widgets multimedia
 INCLUDEPATH += include
 LIBS += lib/libprotobuf.lib
 
+DEFINES += VERSION=161001
+DEFINES += DEBUG
+DEFINES += SOUND
+
 # Input
 HEADERS += client/Client.h \
            client/ClientUI.h \

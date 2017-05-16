@@ -161,10 +161,6 @@ void YongZhe::onCancelClicked()
 
     }
 }
-void YongZhe::turnBegin()
-{
-    Role::turnBegin();
-}
 
 void YongZhe::askForSkill(network::Command* cmd)
 {

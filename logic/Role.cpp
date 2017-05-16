@@ -1,11 +1,17 @@
 ﻿#include "Role.h"
 #include <QStringList>
-#include <QSound>
+#ifdef SOUND
+  #include <QSound>
+  #define QSound(x) QSound::play(x)
+#else
+  #define QSound(x)
+#endif
+
 #include "data/Common.h"
 #include "data/DataInterface.h"
 #include "widget/GUI.h"
 #include "logic/Logic.h"
-
+#define POLLING 61
 Role::Role(QObject *parent) :
     QObject(parent)
 {
@@ -49,8 +55,7 @@ Role::Role(QObject *parent) :
 void Role::makeConnection()
 {
     connect(logic->getClient(),SIGNAL(getMessage(unsigned short, google::protobuf::Message*)),
-            this,SLOT(decipher(unsigned short, google::protobuf::Message*)),
-            Qt::QueuedConnection);
+            this,SLOT(decipher(unsigned short, google::protobuf::Message*)));
 
     connect(this,SIGNAL(sendCommand(unsigned short, google::protobuf::Message*)),logic->getClient(),SLOT(sendMessage(unsigned short, google::protobuf::Message*)));
     connect(decisionArea,SIGNAL(okClicked()),this,SLOT(onOkClicked()));
@@ -1039,6 +1044,17 @@ void Role::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+    case POLLING:
+    {
+        PollingResponse *res = new PollingResponse;
+        TipArea *tipArea = gui->getTipArea();
+        int chosen = tipArea->getBoxCurrentIndex();
+        res->set_option(chosen);
+        emit sendCommand(network::MSG_POLLING_REP, res);
+        tipArea->reset();
+        tipArea->setMsg(QStringLiteral("为避免误伤，等待期间不要离开"));
+        break;
+    }
     }
     }catch(int error){
         logic->onError(error);
@@ -1126,7 +1142,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 targetID=cmd->args(2);
                 sourceID=cmd->args(3);
                 card=dataInterface->getCard(cardID);
-                QSound::play("sound/Attack.wav");
+                QSound("sound/Attack.wav");
 
                 if(targetID!=myID)
                 {
@@ -1334,9 +1350,6 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             if(targetID == myID){
                 timelineBar->startCounting(59);
             }
-            else{
-                timelineBar->stopCounting();
-            }
         }
         break;
     }
@@ -1440,7 +1453,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         else
             msg=playerList[sourceID]->getRoleName()+QStringLiteral("未命中")+playerList[targetID]->getRoleName();
         gui->logAppend(msg);
-        QSound::play("sound/Hit.wav");
+        QSound("sound/Hit.wav");
         break;
     }
 
@@ -1457,7 +1470,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         }
         gui->logAppend(msg);
         playerArea->drawLineBetween(sourceID, targetID);
-        QSound::play("sound/Hurt.wav");
+        QSound("sound/Hurt.wav");
         break;
     }
     case network::MSG_SKILL:
@@ -1482,8 +1495,15 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     // 对话及公告
     {
         network::Gossip* gossip = (network::Gossip*)proto;
-        if (gossip->type() == network::GOSSIP_TALK)
+        switch (gossip->type())
+        {
+        case network::GOSSIP_TALK:
             gui->chatAppend(gossip->id(), QString(gossip->txt().c_str()));
+            break;
+        case network::GOSSIP_NOTICE:
+            gui->logAppend(QString(gossip->txt().c_str()));
+            break;
+        }
         break;
     }
     case network::MSG_GAME:
@@ -1498,8 +1518,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         if (game_info->has_red_morale())
         {
             if (red->getMorale() > game_info->red_morale())
-                QSound::play("sound/Hurt.wav");
-            QSound::play("sound/Morale.wav");
+                QSound("sound/Hurt.wav");
+            QSound("sound/Morale.wav");
             red->setMorale(game_info->red_morale());
             teamArea->update();
             if (red->getMorale() == 0)
@@ -1508,8 +1528,8 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         if (game_info->has_blue_morale())
         {
             if (blue->getMorale() > game_info->blue_morale())
-                QSound::play("sound/Hurt.wav");
-            QSound::play("sound/Morale.wav");
+                QSound("sound/Hurt.wav");
+            QSound("sound/Morale.wav");
             blue->setMorale(game_info->blue_morale());
             teamArea->update();
             if (blue->getMorale() == 0)
@@ -1536,31 +1556,31 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         {
             tipArea->win(winner);
             if(winner==dataInterface->getMyself()->getColor())
-                QSound::play("sound/Win.wav");
+                QSound("sound/Win.wav");
             else
-                QSound::play("sound/Lose.wav");
+                QSound("sound/Lose.wav");
         }
 
         // 更新战绩区
         if (game_info->has_red_gem())
         {
             red->setGem(game_info->red_gem());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         if (game_info->has_blue_gem())
         {
             blue->setGem(game_info->blue_gem());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         if (game_info->has_red_crystal())
         {
             red->setCrystal(game_info->red_crystal());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         if (game_info->has_blue_crystal())
         {
             blue->setCrystal(game_info->blue_crystal());
-            QSound::play("sound/Stone.wav");
+            QSound("sound/Stone.wav");
         }
         // 更新牌堆、弃牌堆
         if (game_info->has_pile())
@@ -1572,7 +1592,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
             if (game_info->discard()==0 && teamArea->getDroppedCardNum() != 0)
             {
                 gui->logAppend(QStringLiteral("牌堆重洗"));
-                QSound::play("sound/Shuffle.wav");
+                QSound("sound/Shuffle.wav");
             }
             teamArea->setDroppedCardNum(game_info->discard());
         }
@@ -1647,7 +1667,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                     player->setCrossNum(player_info->heal_count());
 
                     playerArea->update();
-                    QSound::play("sound/Cure.wav");
+                    QSound("sound/Cure.wav");
                 }
                 // 更新专属
                 if (player_info->ex_cards_size() > 0)
@@ -1662,7 +1682,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 if (player_info->basic_cards_size() > 0)
                 {
                     if (player_info->basic_cards_size() > player->getBasicStatus().size())
-                        QSound::play("sound/Equip.wav");
+                        QSound("sound/Equip.wav");
 
                     player->cleanBasicStatus();
                     for (int j = 0; j < player_info->basic_cards_size(); ++j)
@@ -1754,12 +1774,31 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         switch(error->id())
         {
         case GE_DISCONNECTED:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线，如果他不是数字君的话，说不定会回来呢</font>"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线，请等他回来，或者票死他</font>"));
             break;
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");
             break;
         }
+        break;
+    }
+    case network::MSG_POLLING_REQ:
+    {
+        state = POLLING;
+        network::PollingRequest* req = (network::PollingRequest*) proto;
+        gui->hideBP();
+        gui->reset();
+        tipArea = gui->getTipArea();
+        tipArea->setMsg(QString::fromStdString(req->object()));
+        for(int i = 0; i < req->options_size(); i++){
+            tipArea->addBoxItem(QString::fromStdString(req->options(i)));
+        }
+        tipArea->showBox();
+
+        decisionArea = gui->getDecisionArea();
+        decisionArea->enable(0);
+        timelineBar->startCounting(59);
+        gui->alert();
         break;
     }
     default:

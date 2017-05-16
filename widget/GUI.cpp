@@ -1,7 +1,12 @@
 ﻿#include "widget/GUI.h"
 #include "widget/Animation.h"
 #include "data/DataInterface.h"
-#include <QSound>
+#ifdef SOUND
+  #include <QSound>
+  #define QSound(x) QSound(x)
+#else
+  #define QSound(x)
+#endif
 
 GUI* gui=NULL;
 GUI::GUI(QObject *parent) :
@@ -12,7 +17,7 @@ GUI::GUI(QObject *parent) :
 
 void GUI::alert(){
     QApplication::alert(window);
-    QSound::play("sound/Warning.wav");
+    QSound("sound/Warning.wav");
 }
 
 QWidget *GUI::newWindow(int playerNum)
@@ -48,10 +53,12 @@ void GUI::reset()
 
     coverArea->reset();
     showCoverArea(false);
+    timelineBar->stopCounting();
 }
 
 void GUI::setEnable(bool flag)
 {
+    reset();
     handArea->setEnabled(flag);
     playerArea->setEnabled(flag);
     buttonArea->setEnabled(flag);

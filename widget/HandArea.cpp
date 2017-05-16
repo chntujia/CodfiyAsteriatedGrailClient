@@ -83,6 +83,15 @@ void HandArea::enableAttack()
             ptr->setOpacity(1);
         }
 }
+void HandArea::disableAttack()
+{
+    foreach(CardItem *ptr,cardItems)
+        if(ptr->getCard()->getType()=="attack")
+        {
+            ptr->setEnabled(0);
+            ptr->setOpacity(0.8);
+        }
+}
 void HandArea::enableMagic()
 {
     foreach(CardItem *ptr,cardItems)
@@ -114,6 +123,15 @@ void HandArea::disableElement(QString element)
 {
     foreach(CardItem *ptr,cardItems)
         if(ptr->getCard()->getElement()==element)
+        {
+            ptr->setEnabled(0);
+            ptr->setOpacity(0.8);
+        }
+}
+void HandArea::disableElementExcept(QString element)
+{
+    foreach(CardItem *ptr,cardItems)
+        if(ptr->getCard()->getElement()!=element)
         {
             ptr->setEnabled(0);
             ptr->setOpacity(0.8);

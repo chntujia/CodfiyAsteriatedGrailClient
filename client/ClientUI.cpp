@@ -4,9 +4,9 @@
 #include "client/ui_ClientUI.h"
 #include "data/DataInterface.h"
 #include <QTextStream>
-#include <QSound>
 #include "data/Common.h"
 #include <QDesktopServices>
+
 ClientUI::ClientUI(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ClientUI)
@@ -68,6 +68,8 @@ ClientUI::ClientUI(QWidget *parent) :
     connect(ui->btnBackLogin, SIGNAL(clicked()), this, SLOT(UserBackLogin()));
 	connect(ui->chkSaveUser, SIGNAL(clicked()), this, SLOT(CheckSaveUser()));
 	connect(ui->chkSavePwd, SIGNAL(clicked()), this, SLOT(CheckSavePwd()));
+
+    logic->setClient(tcpSocket);
 
     ui->frameRegist->hide();
     ui->frameLogin->show();

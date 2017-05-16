@@ -45,6 +45,7 @@ void TipArea::reset()
     setVisible(0);
     box->clear();
     boxItem->setVisible(0);
+    winflag = false;
     clearStatus();
 }
 
