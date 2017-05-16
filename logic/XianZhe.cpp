@@ -29,7 +29,7 @@ void XianZhe::normal()
     Player *myself=dataInterface->getMyself();
 
     int elements = handArea->getElementCount();
-    // 有能量              && 至少有2系牌
+    // 有能量 && 至少有2系牌
     if(myself->getGem()>0 && elements>1)
     {
         buttonArea->enable(3);
@@ -53,6 +53,11 @@ void XianZhe::FaShuFanTan()
 
     decisionArea->enable(1);
     decisionArea->disable(0);
+
+	//关闭buttonArea中的购买、提炼合成等项
+	buttonArea->disable(0);
+	buttonArea->disable(1);
+	buttonArea->disable(2);
 }
 
 void XianZhe::MoDaoFaDian()
