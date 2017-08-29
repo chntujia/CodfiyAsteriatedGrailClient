@@ -242,14 +242,8 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
             gui->getTeamArea()->setRoomID(game_info->room_id());
         }
         int count = 0;
-        for (int i = 0; i < game_info->player_infos_size(); ++i)
-        {
-            network::SinglePlayerInfo* player_info = (network::SinglePlayerInfo*)&(game_info->player_infos(i));
-            if(player_info->has_role_id())
-                count++;
-        }
 
-        setupRoom(count == dataInterface->getPlayerMax(), game_info);
+        setupRoom(game_info -> is_started(), game_info);
 
         for (int i = 0; i < game_info->player_infos_size(); ++i)
         {
@@ -261,6 +255,7 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
                 roles[targetID] = roleID;
                 dataInterface->getPlayerList().at(targetID)->setRole(roleID);
                 gui->getPlayerArea()->getPlayerItem(targetID)->setToolTip(dataInterface->getRoleSkillInfo(roleID));
+				count++;
             }
             if(player_info->has_nickname()){
                 dataInterface->setNickName(targetID, QString::fromStdString(player_info->nickname()));
