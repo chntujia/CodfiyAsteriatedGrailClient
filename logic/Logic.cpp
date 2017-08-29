@@ -737,7 +737,7 @@ void Logic::onOkClicked()
         TipArea *tipArea = gui->getTipArea();
         int chosen = tipArea->getBoxCurrentIndex();
         res->set_option(chosen);
-        emit sendCommand(network::MSG_BECOME_LEADER_REP, res);
+        emit sendCommand(network::MSG_POLLING_REP, res);
         gui->reset();
         break;
     }
