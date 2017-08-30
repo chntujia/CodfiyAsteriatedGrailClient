@@ -1051,7 +1051,7 @@ void Role::onOkClicked()
         int chosen = tipArea->getBoxCurrentIndex();
         res->set_option(chosen);
         emit sendCommand(network::MSG_POLLING_REP, res);
-        tipArea->reset();
+        gui->reset();
         tipArea->setMsg(QStringLiteral("为避免误伤，等待期间不要离开"));
         break;
     }
