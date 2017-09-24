@@ -351,6 +351,14 @@ void ShengNv::onCancelClicked()
         gui->reset();
         break;
 //冰霜祷言
+	case BING_SHUANG_DAO_YAN:
+		respond = new network::Respond();
+		respond->set_src_id(myID);
+		respond->set_respond_id(BING_SHUANG_DAO_YAN);
+		respond->add_args(0);
+		emit sendCommand(network::MSG_RESPOND, respond);
+		gui->reset();
+		break;
 //治疗术
     case ZHI_LIAO_SHU:
 //治愈之光

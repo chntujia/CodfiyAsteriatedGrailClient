@@ -41,7 +41,7 @@ void TianShi::TianShiJiBan()
     playerArea->setQuota(1);
     playerArea->enableAll();
 
-    decisionArea->disable(1);
+    decisionArea->enable(1);
     decisionArea->disable(0);
 }
 
@@ -362,6 +362,7 @@ void TianShi::onOkClicked()
 //天使羁绊
     case TIAN_SHI_JI_BAN:
         respond = newRespond(TIAN_SHI_JI_BAN);
+		respond->add_args(1);
         respond->add_dst_ids(selectedPlayers[0]->getID());
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
@@ -390,6 +391,15 @@ void TianShi::onCancelClicked()
         gui->reset();
         normal();
         break;
+//天使羁绊
+	case TIAN_SHI_JI_BAN:
+		respond = new network::Respond();
+		respond->set_src_id(myID);
+		respond->set_respond_id(TIAN_SHI_JI_BAN);
+		respond->add_args(0);
+		emit sendCommand(network::MSG_RESPOND, respond);
+		gui->reset();
+		break;
 //天使之歌1
     case TIAN_SHI_ZHI_GE:
         respond = newRespond(TIAN_SHI_ZHI_GE);
