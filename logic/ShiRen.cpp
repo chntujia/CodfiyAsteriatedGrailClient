@@ -60,7 +60,7 @@ void ShiRen::BuXieHeXianTarget()
     playerArea->reset();
     tipArea->reset();
     tipArea->addBoxItem(QStringLiteral("1.你和目标角色各摸（x-1）张牌【强制】"));
-    tipArea->addBoxItem(QStringLiteral("2.你和目标角色各弃（x-1）张牌【强制】"));
+    tipArea->addBoxItem(QStringLiteral("2.你和目标角色各弃x张牌【强制】"));
     tipArea->setMsg(QStringLiteral("选择技能效果"));
     tipArea->showBox();
 
@@ -77,7 +77,7 @@ void ShiRen::ChenLunXieZouQu()
 
     gui->reset();
 
-    tipArea->setMsg(QStringLiteral("选择【沉沦协奏曲】目标（有法术牌则会造成伤害）或取消"));
+    tipArea->setMsg(QStringLiteral("选择【沉沦协奏曲】伤害目标或取消"));
 
     handArea->enableAll();
     handArea->setQuota(2);
