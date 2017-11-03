@@ -1827,7 +1827,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         tipArea = gui->getTipArea();
         switch(state){
         case POLLING_DISCONNECTED:
-            gui->logAppend(req->option() == 0 ? QStringLiteral("房间泛起了绿光，大家决定再给他一次机会") : QStringLiteral("房间已废，可有序离开，愿外面没有始乱终弃的人"));
+            gui->logAppend(req->option() == 1 ?  QStringLiteral("房间已废，可有序离开，愿外面没有始乱终弃的人"): QStringLiteral("房间泛起了绿光，大家决定再给他一次机会"));
             break;
         case POLLING_GAMEOVER:
             if(req->option() == -1){
