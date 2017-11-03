@@ -41,7 +41,8 @@
 #define NORMAL 3
 #define READY 0
 #define JOIN_TEAM 1
-#define POLLING 61
+#define POLLING_DISCONNECTED 61
+#define POLLING_GAMEOVER 62
 
 Logic* logic=NULL;
 Logic::Logic(QObject *parent) :
@@ -606,19 +607,36 @@ void Logic::getCommand(unsigned short proto_type, google::protobuf::Message* pro
     }
     case network::MSG_POLLING_REQ:
     {
-        state = POLLING;
         network::PollingRequest* req = (network::PollingRequest*) proto;
         gui->hideBP();
         gui->reset();
         tipArea = gui->getTipArea();
-        tipArea->setMsg(QString::fromStdString(req->object()));
-        for(int i = 0; i < req->options_size(); i++){
-            tipArea->addBoxItem(QString::fromStdString(req->options(i)));
-        }
-        tipArea->showBox();
-
         decisionArea = gui->getDecisionArea();
-        decisionArea->enable(0);
+        switch(req->type()){
+        case PollingType::POLLING_FORCE_WAIT:
+            gui->setEnable(0);
+            tipArea->setMsg(QStringLiteral("有人掉线了，请等他回来"));
+            break;
+        case PollingType::POLLING_LEGAL_LEAVE:
+            state = POLLING_DISCONNECTED;
+            tipArea->setMsg(QStringLiteral("人走茶未凉，要不再等等?"));
+            tipArea->addBoxItem(QStringLiteral("等"));
+            tipArea->addBoxItem(QStringLiteral("不等"));
+            tipArea->showBox();
+            decisionArea->enable(0);
+            break;
+        case PollingType::POLLING_MVP:
+            state = POLLING_GAMEOVER;
+            tipArea->setMsg(QStringLiteral("本场MVP由你决定"));
+            for(int i = 0; i < dataInterface->getPlayerMax(); i++){
+                tipArea->addBoxItem(dataInterface->getPlayerById(i)->getNickname());
+            }
+            tipArea->showBox();
+            decisionArea->enable(0);
+            break;
+        }
+
+        gui->getTimelineBar()->startCounting(59);
         gui->alert();
         break;
     }
@@ -731,7 +749,8 @@ void Logic::onOkClicked()
         gui->reset();
         break;
     }
-    case POLLING:
+    case POLLING_DISCONNECTED:
+    case POLLING_GAMEOVER:
     {
         PollingResponse *res = new PollingResponse;
         TipArea *tipArea = gui->getTipArea();
@@ -739,6 +758,7 @@ void Logic::onOkClicked()
         res->set_option(chosen);
         emit sendCommand(network::MSG_POLLING_REP, res);
         gui->reset();
+        tipArea->setMsg(QStringLiteral("为避免误伤，等待期间不要离开"));
         break;
     }
     }

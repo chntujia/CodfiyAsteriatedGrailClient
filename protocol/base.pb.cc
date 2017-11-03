@@ -97,6 +97,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
   PollingResponse_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* MessageType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* GossipType_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* PollingType_descriptor_ = NULL;
 
 }  // namespace
 
@@ -379,7 +380,7 @@ void protobuf_AssignDesc_base_2eproto() {
       -1);
   ReadyForGameRequest_Type_descriptor_ = ReadyForGameRequest_descriptor_->enum_type(0);
   SinglePlayerInfo_descriptor_ = file->message_type(15);
-  static const int SinglePlayerInfo_offsets_[20] = {
+  static const int SinglePlayerInfo_offsets_[21] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, team_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, role_id_),
@@ -400,6 +401,7 @@ void protobuf_AssignDesc_base_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, ready_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, delete_field_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, leader_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, online_),
   };
   SinglePlayerInfo_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -504,9 +506,8 @@ void protobuf_AssignDesc_base_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HeartBeat, _internal_metadata_),
       -1);
   PollingRequest_descriptor_ = file->message_type(21);
-  static const int PollingRequest_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PollingRequest, object_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PollingRequest, options_),
+  static const int PollingRequest_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PollingRequest, type_),
   };
   PollingRequest_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -536,6 +537,7 @@ void protobuf_AssignDesc_base_2eproto() {
       -1);
   MessageType_descriptor_ = file->enum_type(0);
   GossipType_descriptor_ = file->enum_type(1);
+  PollingType_descriptor_ = file->enum_type(2);
 }
 
 namespace {
@@ -698,7 +700,7 @@ void protobuf_AddDesc_base_2eproto() {
     "rResponse\022\022\n\003yes\030\001 \001(\010:\005false\"w\n\023ReadyFo"
     "rGameRequest\022/\n\004type\030\001 \002(\0162!.network.Rea"
     "dyForGameRequest.Type\"/\n\004Type\022\017\n\013START_R"
-    "EADY\020\001\022\026\n\022CANCEL_START_REDAY\020\002\"\376\002\n\020Singl"
+    "EADY\020\001\022\026\n\022CANCEL_START_REDAY\020\002\"\216\003\n\020Singl"
     "ePlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004team\030\002 \001(\r\022\017\n"
     "\007role_id\030\003 \001(\r\022\022\n\nhand_count\030\004 \001(\r\022\022\n\nhe"
     "al_count\030\005 \001(\r\022\020\n\010ex_cards\030\006 \003(\r\022\023\n\013basi"
@@ -708,35 +710,38 @@ void protobuf_AddDesc_base_2eproto() {
     "\030\r \001(\010\022\r\n\005hands\030\016 \003(\r\022\020\n\010covereds\030\017 \003(\r\022"
     "\020\n\010max_hand\030\020 \001(\r\022\020\n\010nickname\030\021 \001(\t\022\024\n\005r"
     "eady\030\022 \001(\010:\005false\022\024\n\014delete_field\030\023 \003(\t\022"
-    "\016\n\006leader\030\024 \001(\r\"\267\002\n\010GameInfo\022\017\n\007room_id\030"
-    "\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005\022\022\n\nred_morale\030\003"
-    " \001(\r\022\023\n\013blue_morale\030\004 \001(\r\022\017\n\007red_gem\030\005 \001"
-    "(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013red_crystal\030\007 \001("
-    "\r\022\024\n\014blue_crystal\030\010 \001(\r\022\021\n\tred_grail\030\t \001"
-    "(\r\022\022\n\nblue_grail\030\n \001(\r\022\014\n\004pile\030\013 \001(\r\022\017\n\007"
-    "discard\030\014 \001(\r\022\031\n\nis_started\030\r \001(\010:\005false"
-    "\022/\n\014player_infos\030\016 \003(\0132\031.network.SingleP"
-    "layerInfo\"\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\"1\n\005Error\022"
-    "\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002(\005\022\014\n\004args\030\003 \003("
-    "\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.network.Goss"
-    "ipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r\"\013\n\tHeart"
-    "Beat\"1\n\016PollingRequest\022\016\n\006object\030\001 \002(\t\022\017"
-    "\n\007options\030\002 \003(\t\"!\n\017PollingResponse\022\016\n\006op"
-    "tion\030\001 \001(\r*\210\004\n\013MessageType\022\024\n\020MSG_REGIST"
-    "ER_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020\002\022\021\n\rMSG_LO"
-    "GIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022\022\n\016MSG_LOGO"
-    "UT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022\024\n\020MSG_ROOM"
-    "LIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_REP\020\010\022\027\n\023MSG_"
-    "CREATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTER_ROOM_REQ\020"
-    "\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022MSG_LEAVE_R"
-    "OOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_REQ\020\r\022\026\n\022MSG_"
-    "READY_GAME_REQ\020\016\022\025\n\021MSG_SINGLE_PLAYER\020\017\022"
-    "\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nMSG_GOSSI"
-    "P\020\022\022\r\n\tMSG_ERROR\020\023\022\021\n\rMSG_HEARTBEAT\020\024\022\031\n"
-    "\025MSG_BECOME_LEADER_REQ\020\025\022\031\n\025MSG_BECOME_L"
-    "EADER_REP\020\026\022\023\n\017MSG_POLLING_REQ\020\027\022\023\n\017MSG_"
-    "POLLING_REP\020\030*0\n\nGossipType\022\017\n\013GOSSIP_TA"
-    "LK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 3023);
+    "\016\n\006leader\030\024 \001(\r\022\016\n\006online\030\025 \001(\010\"\267\002\n\010Game"
+    "Info\022\017\n\007room_id\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005"
+    "\022\022\n\nred_morale\030\003 \001(\r\022\023\n\013blue_morale\030\004 \001("
+    "\r\022\017\n\007red_gem\030\005 \001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013"
+    "red_crystal\030\007 \001(\r\022\024\n\014blue_crystal\030\010 \001(\r\022"
+    "\021\n\tred_grail\030\t \001(\r\022\022\n\nblue_grail\030\n \001(\r\022\014"
+    "\n\004pile\030\013 \001(\r\022\017\n\007discard\030\014 \001(\r\022\031\n\nis_star"
+    "ted\030\r \001(\010:\005false\022/\n\014player_infos\030\016 \003(\0132\031"
+    ".network.SinglePlayerInfo\"\023\n\004Talk\022\013\n\003txt"
+    "\030\001 \001(\t\"1\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 "
+    "\002(\005\022\014\n\004args\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001("
+    "\0162\023.network.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002i"
+    "d\030\003 \001(\r\"\013\n\tHeartBeat\"4\n\016PollingRequest\022\""
+    "\n\004type\030\001 \002(\0162\024.network.PollingType\"!\n\017Po"
+    "llingResponse\022\016\n\006option\030\001 \002(\r*\210\004\n\013Messag"
+    "eType\022\024\n\020MSG_REGISTER_REQ\020\001\022\024\n\020MSG_REGIS"
+    "TER_REP\020\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_LOGI"
+    "N_REP\020\004\022\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n\016MSG_LOGOU"
+    "T_REP\020\006\022\024\n\020MSG_ROOMLIST_REQ\020\007\022\024\n\020MSG_ROO"
+    "MLIST_REP\020\010\022\027\n\023MSG_CREATE_ROOM_REQ\020\t\022\026\n\022"
+    "MSG_ENTER_ROOM_REQ\020\n\022\026\n\022MSG_ENTER_ROOM_R"
+    "EP\020\013\022\026\n\022MSG_LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_JOIN"
+    "_TEAM_REQ\020\r\022\026\n\022MSG_READY_GAME_REQ\020\016\022\025\n\021M"
+    "SG_SINGLE_PLAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010MSG_"
+    "TALK\020\021\022\016\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023\022\021\n"
+    "\rMSG_HEARTBEAT\020\024\022\031\n\025MSG_BECOME_LEADER_RE"
+    "Q\020\025\022\031\n\025MSG_BECOME_LEADER_REP\020\026\022\023\n\017MSG_PO"
+    "LLING_REQ\020\027\022\023\n\017MSG_POLLING_REP\020\030*0\n\nGoss"
+    "ipType\022\017\n\013GOSSIP_TALK\020\001\022\021\n\rGOSSIP_NOTICE"
+    "\020\002*O\n\013PollingType\022\026\n\022POLLING_FORCE_WAIT\020"
+    "\001\022\027\n\023POLLING_LEGAL_LEAVE\020\002\022\017\n\013POLLING_MV"
+    "P\020\003", 3123);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -840,6 +845,21 @@ bool GossipType_IsValid(int value) {
   switch(value) {
     case 1:
     case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* PollingType_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PollingType_descriptor_;
+}
+bool PollingType_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+    case 3:
       return true;
     default:
       return false;
@@ -7650,6 +7670,7 @@ const int SinglePlayerInfo::kNicknameFieldNumber;
 const int SinglePlayerInfo::kReadyFieldNumber;
 const int SinglePlayerInfo::kDeleteFieldFieldNumber;
 const int SinglePlayerInfo::kLeaderFieldNumber;
+const int SinglePlayerInfo::kOnlineFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SinglePlayerInfo::SinglePlayerInfo()
@@ -7687,6 +7708,7 @@ void SinglePlayerInfo::SharedCtor() {
   nickname_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ready_ = false;
   leader_ = 0u;
+  online_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -7750,14 +7772,13 @@ void SinglePlayerInfo::Clear() {
   }
   if (_has_bits_[8 / 32] & 40704u) {
     ZR_(crystal_, covered_count_);
-    is_knelt_ = false;
-    max_hand_ = 0u;
+    ZR_(max_hand_, is_knelt_);
   }
-  if (_has_bits_[16 / 32] & 720896u) {
+  if (_has_bits_[16 / 32] & 1769472u) {
+    ZR_(ready_, online_);
     if (has_nickname()) {
       nickname_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
-    ready_ = false;
     leader_ = 0u;
   }
 
@@ -8102,6 +8123,21 @@ bool SinglePlayerInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(168)) goto parse_online;
+        break;
+      }
+
+      // optional bool online = 21;
+      case 21: {
+        if (tag == 168) {
+         parse_online:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &online_)));
+          set_has_online();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -8245,6 +8281,11 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(20, this->leader(), output);
   }
 
+  // optional bool online = 21;
+  if (has_online()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(21, this->online(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -8370,6 +8411,11 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(20, this->leader(), target);
   }
 
+  // optional bool online = 21;
+  if (has_online()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(21, this->online(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -8468,7 +8514,7 @@ int SinglePlayerInfo::ByteSize() const {
     }
 
   }
-  if (_has_bits_[16 / 32] & 720896u) {
+  if (_has_bits_[16 / 32] & 1769472u) {
     // optional string nickname = 17;
     if (has_nickname()) {
       total_size += 2 +
@@ -8486,6 +8532,11 @@ int SinglePlayerInfo::ByteSize() const {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->leader());
+    }
+
+    // optional bool online = 21;
+    if (has_online()) {
+      total_size += 2 + 1;
     }
 
   }
@@ -8625,6 +8676,9 @@ void SinglePlayerInfo::MergeFrom(const SinglePlayerInfo& from) {
     if (from.has_leader()) {
       set_leader(from.leader());
     }
+    if (from.has_online()) {
+      set_online(from.online());
+    }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -8675,6 +8729,7 @@ void SinglePlayerInfo::InternalSwap(SinglePlayerInfo* other) {
   std::swap(ready_, other->ready_);
   delete_field_.UnsafeArenaSwap(&other->delete_field_);
   std::swap(leader_, other->leader_);
+  std::swap(online_, other->online_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -9254,6 +9309,30 @@ void SinglePlayerInfo::clear_leader() {
   set_has_leader();
   leader_ = value;
   // @@protoc_insertion_point(field_set:network.SinglePlayerInfo.leader)
+}
+
+// optional bool online = 21;
+bool SinglePlayerInfo::has_online() const {
+  return (_has_bits_[0] & 0x00100000u) != 0;
+}
+void SinglePlayerInfo::set_has_online() {
+  _has_bits_[0] |= 0x00100000u;
+}
+void SinglePlayerInfo::clear_has_online() {
+  _has_bits_[0] &= ~0x00100000u;
+}
+void SinglePlayerInfo::clear_online() {
+  online_ = false;
+  clear_has_online();
+}
+ bool SinglePlayerInfo::online() const {
+  // @@protoc_insertion_point(field_get:network.SinglePlayerInfo.online)
+  return online_;
+}
+ void SinglePlayerInfo::set_online(bool value) {
+  set_has_online();
+  online_ = value;
+  // @@protoc_insertion_point(field_set:network.SinglePlayerInfo.online)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -11803,8 +11882,7 @@ void HeartBeat::InternalSwap(HeartBeat* other) {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int PollingRequest::kObjectFieldNumber;
-const int PollingRequest::kOptionsFieldNumber;
+const int PollingRequest::kTypeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 PollingRequest::PollingRequest()
@@ -11825,9 +11903,8 @@ PollingRequest::PollingRequest(const PollingRequest& from)
 }
 
 void PollingRequest::SharedCtor() {
-  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  object_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  type_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -11837,7 +11914,6 @@ PollingRequest::~PollingRequest() {
 }
 
 void PollingRequest::SharedDtor() {
-  object_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -11869,10 +11945,7 @@ PollingRequest* PollingRequest::New(::google::protobuf::Arena* arena) const {
 
 void PollingRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:network.PollingRequest)
-  if (has_object()) {
-    object_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  options_.Clear();
+  type_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
@@ -11889,37 +11962,21 @@ bool PollingRequest::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string object = 1;
+      // required .network.PollingType type = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_object()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->object().data(), this->object().length(),
-            ::google::protobuf::internal::WireFormat::PARSE,
-            "network.PollingRequest.object");
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::network::PollingType_IsValid(value)) {
+            set_type(static_cast< ::network::PollingType >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_options;
-        break;
-      }
-
-      // repeated string options = 2;
-      case 2: {
-        if (tag == 18) {
-         parse_options:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_options()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->options(this->options_size() - 1).data(),
-            this->options(this->options_size() - 1).length(),
-            ::google::protobuf::internal::WireFormat::PARSE,
-            "network.PollingRequest.options");
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(18)) goto parse_options;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -11949,24 +12006,10 @@ failure:
 void PollingRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:network.PollingRequest)
-  // required string object = 1;
-  if (has_object()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->object().data(), this->object().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "network.PollingRequest.object");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->object(), output);
-  }
-
-  // repeated string options = 2;
-  for (int i = 0; i < this->options_size(); i++) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->options(i).data(), this->options(i).length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "network.PollingRequest.options");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->options(i), output);
+  // required .network.PollingType type = 1;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -11979,25 +12022,10 @@ void PollingRequest::SerializeWithCachedSizes(
 ::google::protobuf::uint8* PollingRequest::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:network.PollingRequest)
-  // required string object = 1;
-  if (has_object()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->object().data(), this->object().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "network.PollingRequest.object");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->object(), target);
-  }
-
-  // repeated string options = 2;
-  for (int i = 0; i < this->options_size(); i++) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->options(i).data(), this->options(i).length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "network.PollingRequest.options");
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(2, this->options(i), target);
+  // required .network.PollingType type = 1;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->type(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -12012,19 +12040,11 @@ int PollingRequest::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:network.PollingRequest)
   int total_size = 0;
 
-  // required string object = 1;
-  if (has_object()) {
+  // required .network.PollingType type = 1;
+  if (has_type()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->object());
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
-  // repeated string options = 2;
-  total_size += 1 * this->options_size();
-  for (int i = 0; i < this->options_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->options(i));
-  }
-
   if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -12058,11 +12078,9 @@ void PollingRequest::MergeFrom(const PollingRequest& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  options_.MergeFrom(from.options_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_object()) {
-      set_has_object();
-      object_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.object_);
+    if (from.has_type()) {
+      set_type(from.type());
     }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
@@ -12095,8 +12113,7 @@ void PollingRequest::Swap(PollingRequest* other) {
   InternalSwap(other);
 }
 void PollingRequest::InternalSwap(PollingRequest* other) {
-  object_.Swap(&other->object_);
-  options_.UnsafeArenaSwap(&other->options_);
+  std::swap(type_, other->type_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -12113,113 +12130,29 @@ void PollingRequest::InternalSwap(PollingRequest* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // PollingRequest
 
-// required string object = 1;
-bool PollingRequest::has_object() const {
+// required .network.PollingType type = 1;
+bool PollingRequest::has_type() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-void PollingRequest::set_has_object() {
+void PollingRequest::set_has_type() {
   _has_bits_[0] |= 0x00000001u;
 }
-void PollingRequest::clear_has_object() {
+void PollingRequest::clear_has_type() {
   _has_bits_[0] &= ~0x00000001u;
 }
-void PollingRequest::clear_object() {
-  object_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_object();
+void PollingRequest::clear_type() {
+  type_ = 1;
+  clear_has_type();
 }
- const ::std::string& PollingRequest::object() const {
-  // @@protoc_insertion_point(field_get:network.PollingRequest.object)
-  return object_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ ::network::PollingType PollingRequest::type() const {
+  // @@protoc_insertion_point(field_get:network.PollingRequest.type)
+  return static_cast< ::network::PollingType >(type_);
 }
- void PollingRequest::set_object(const ::std::string& value) {
-  set_has_object();
-  object_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:network.PollingRequest.object)
-}
- void PollingRequest::set_object(const char* value) {
-  set_has_object();
-  object_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:network.PollingRequest.object)
-}
- void PollingRequest::set_object(const char* value, size_t size) {
-  set_has_object();
-  object_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:network.PollingRequest.object)
-}
- ::std::string* PollingRequest::mutable_object() {
-  set_has_object();
-  // @@protoc_insertion_point(field_mutable:network.PollingRequest.object)
-  return object_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* PollingRequest::release_object() {
-  // @@protoc_insertion_point(field_release:network.PollingRequest.object)
-  clear_has_object();
-  return object_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void PollingRequest::set_allocated_object(::std::string* object) {
-  if (object != NULL) {
-    set_has_object();
-  } else {
-    clear_has_object();
-  }
-  object_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), object);
-  // @@protoc_insertion_point(field_set_allocated:network.PollingRequest.object)
-}
-
-// repeated string options = 2;
-int PollingRequest::options_size() const {
-  return options_.size();
-}
-void PollingRequest::clear_options() {
-  options_.Clear();
-}
- const ::std::string& PollingRequest::options(int index) const {
-  // @@protoc_insertion_point(field_get:network.PollingRequest.options)
-  return options_.Get(index);
-}
- ::std::string* PollingRequest::mutable_options(int index) {
-  // @@protoc_insertion_point(field_mutable:network.PollingRequest.options)
-  return options_.Mutable(index);
-}
- void PollingRequest::set_options(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:network.PollingRequest.options)
-  options_.Mutable(index)->assign(value);
-}
- void PollingRequest::set_options(int index, const char* value) {
-  options_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:network.PollingRequest.options)
-}
- void PollingRequest::set_options(int index, const char* value, size_t size) {
-  options_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:network.PollingRequest.options)
-}
- ::std::string* PollingRequest::add_options() {
-  // @@protoc_insertion_point(field_add_mutable:network.PollingRequest.options)
-  return options_.Add();
-}
- void PollingRequest::add_options(const ::std::string& value) {
-  options_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:network.PollingRequest.options)
-}
- void PollingRequest::add_options(const char* value) {
-  options_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:network.PollingRequest.options)
-}
- void PollingRequest::add_options(const char* value, size_t size) {
-  options_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:network.PollingRequest.options)
-}
- const ::google::protobuf::RepeatedPtrField< ::std::string>&
-PollingRequest::options() const {
-  // @@protoc_insertion_point(field_list:network.PollingRequest.options)
-  return options_;
-}
- ::google::protobuf::RepeatedPtrField< ::std::string>*
-PollingRequest::mutable_options() {
-  // @@protoc_insertion_point(field_mutable_list:network.PollingRequest.options)
-  return &options_;
+ void PollingRequest::set_type(::network::PollingType value) {
+  assert(::network::PollingType_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:network.PollingRequest.type)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -12307,7 +12240,7 @@ bool PollingResponse::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 option = 1;
+      // required uint32 option = 1;
       case 1: {
         if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -12346,7 +12279,7 @@ failure:
 void PollingResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:network.PollingResponse)
-  // optional uint32 option = 1;
+  // required uint32 option = 1;
   if (has_option()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->option(), output);
   }
@@ -12361,7 +12294,7 @@ void PollingResponse::SerializeWithCachedSizes(
 ::google::protobuf::uint8* PollingResponse::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:network.PollingResponse)
-  // optional uint32 option = 1;
+  // required uint32 option = 1;
   if (has_option()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->option(), target);
   }
@@ -12378,13 +12311,12 @@ int PollingResponse::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:network.PollingResponse)
   int total_size = 0;
 
-  // optional uint32 option = 1;
+  // required uint32 option = 1;
   if (has_option()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::UInt32Size(
         this->option());
   }
-
   if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -12443,6 +12375,7 @@ void PollingResponse::CopyFrom(const PollingResponse& from) {
 }
 
 bool PollingResponse::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
   return true;
 }
@@ -12469,7 +12402,7 @@ void PollingResponse::InternalSwap(PollingResponse* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // PollingResponse
 
-// optional uint32 option = 1;
+// required uint32 option = 1;
 bool PollingResponse::has_option() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }

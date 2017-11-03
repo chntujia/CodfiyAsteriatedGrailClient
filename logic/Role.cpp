@@ -11,7 +11,8 @@
 #include "data/DataInterface.h"
 #include "widget/GUI.h"
 #include "logic/Logic.h"
-#define POLLING 61
+#define POLLING_DISCONNECTED 61
+#define POLLING_GAMEOVER 62
 Role::Role(QObject *parent) :
     QObject(parent)
 {
@@ -1044,7 +1045,8 @@ void Role::onOkClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
-    case POLLING:
+    case POLLING_DISCONNECTED:
+    case POLLING_GAMEOVER:
     {
         PollingResponse *res = new PollingResponse;
         TipArea *tipArea = gui->getTipArea();
@@ -1774,7 +1776,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
         switch(error->id())
         {
         case GE_DISCONNECTED:
-            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线，请等他回来，或者票死他</font>"));
+            gui->logAppend(QStringLiteral("<font color=\'red\'>玩家") + QString::number(error->dst_id()) + QStringLiteral("掉线，请等他回来</font>"));
             break;
         default:
             gui->logAppend(QStringLiteral("<font color=\'red\'>错误代码") + QString::number(error->id()) + "</font>");
@@ -1784,21 +1786,58 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     }
     case network::MSG_POLLING_REQ:
     {
-        state = POLLING;
         network::PollingRequest* req = (network::PollingRequest*) proto;
         gui->hideBP();
         gui->reset();
         tipArea = gui->getTipArea();
-        tipArea->setMsg(QString::fromStdString(req->object()));
-        for(int i = 0; i < req->options_size(); i++){
-            tipArea->addBoxItem(QString::fromStdString(req->options(i)));
-        }
-        tipArea->showBox();
-
         decisionArea = gui->getDecisionArea();
-        decisionArea->enable(0);
+        switch(req->type()){
+        case PollingType::POLLING_FORCE_WAIT:
+            gui->setEnable(0);
+            tipArea->setMsg(QStringLiteral("有人掉线了，请等他回来"));
+            break;
+        case PollingType::POLLING_LEGAL_LEAVE:
+            state = POLLING_DISCONNECTED;
+            tipArea->setMsg(QStringLiteral("人走茶未凉，要不再等等?"));
+            tipArea->addBoxItem(QStringLiteral("等"));
+            tipArea->addBoxItem(QStringLiteral("不等"));
+            tipArea->showBox();
+            decisionArea->enable(0);
+            break;
+        case PollingType::POLLING_MVP:
+            state = POLLING_GAMEOVER;
+            tipArea->setMsg(QStringLiteral("本场MVP由你决定"));
+            for(int i = 0; i < dataInterface->getPlayerMax(); i++){
+                tipArea->addBoxItem(dataInterface->getPlayerById(i)->getNickname());
+            }
+            tipArea->showBox();
+            decisionArea->enable(0);
+            break;
+        }        
+
         timelineBar->startCounting(59);
         gui->alert();
+        break;
+    }
+    case network::MSG_POLLING_REP:
+    {
+        network::PollingResponse* req = (network::PollingResponse*) proto;
+        gui->hideBP();
+        gui->reset();
+        tipArea = gui->getTipArea();
+        switch(state){
+        case POLLING_DISCONNECTED:
+            gui->logAppend(req->option() == 0 ? QStringLiteral("房间泛起了绿光，大家决定再给他一次机会") : QStringLiteral("房间已废，可有序离开，愿外面没有始乱终弃的人"));
+            break;
+        case POLLING_GAMEOVER:
+            if(req->option() == -1){
+                tipArea->setMsg(QStringLiteral("没人获得过半的票，本场MVP空缺"));
+            }
+            else{
+                tipArea->setMsg(QStringLiteral("恭喜") + dataInterface->getPlayerById(req->option())->getNickname() + QStringLiteral("成为全场MVP"));
+            }
+            break;
+        }
         break;
     }
     default:

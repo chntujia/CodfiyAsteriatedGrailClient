@@ -110,6 +110,10 @@ void* proto_decoder(const char* msg, unsigned short &type)
         proto = new PollingRequest;
         proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
         break;
+    case MSG_POLLING_REP:
+        proto = new PollingResponse;
+        proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+        break;
 	default:
         qDebug("codec.cpp:: Cannot find matched type: %d", header_ptr->type);
 		return NULL;
