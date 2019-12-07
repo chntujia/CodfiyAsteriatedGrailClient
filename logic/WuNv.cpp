@@ -191,9 +191,9 @@ void WuNv::onOkClicked()
         gui->reset();
         break;
     case XUE_ZHI_AI_SHANG:
-        start = true;
         if(tipArea->getBoxCurrentText()[0]=='2')
         {
+			start = true;
             respond = newRespond(XUE_ZHI_AI_SHANG);
             respond->add_args(2);
             tongShengID = -1;
@@ -207,12 +207,14 @@ void WuNv::onOkClicked()
         }
         break;
     case XUE_ZHI_AI_SHANG_ZHUAN_YI:
+		start = true;
         respond = newRespond(XUE_ZHI_AI_SHANG);
         respond->add_args(1);
         respond->add_dst_ids(selectedPlayers[0]->getID());
         tongShengID = selectedPlayers[0]->getID();
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
+		break;
     case NI_LIU:
         action = newAction(ACTION_MAGIC_SKILL, NI_LIU);
         foreach(Card*ptr,selectedCards){
