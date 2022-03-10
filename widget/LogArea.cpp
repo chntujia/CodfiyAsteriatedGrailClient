@@ -5,6 +5,7 @@
 LogArea::LogArea(QWidget *parent) :
     QTextEdit(parent)
 {
+	setFrameShape(Box);
     setReadOnly(true);
     setStyleSheet("background-color:transparent");
     setFixedSize(259,360);
@@ -18,8 +19,9 @@ void LogArea::append(QString text)
 ChatArea::ChatArea(QWidget *parent):
     QTextEdit(parent)
 {
+	setFrameShape(Box);
     setReadOnly(true);
-    setStyleSheet("background-color:transparent");
+	setStyleSheet("background-color:transparent");
     setFixedSize(259,246);
 }
 void ChatArea::append(int id,QString text)

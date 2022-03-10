@@ -315,9 +315,9 @@ void MoQiang::onCancelClicked()
     }
 }
 
-void MoQiang::attacked(QString element, int hitRate)
+void MoQiang::attacked(QString element, int hitRate,int cardId,bool canLight)
 {
-    Role::attacked(element,hitRate);
+    Role::attacked(element,hitRate, cardId,canLight);
     handArea->disableMagic();
 }
 

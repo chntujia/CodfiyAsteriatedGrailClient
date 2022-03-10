@@ -14,7 +14,7 @@ public:
     void enbleFire();
     void enbleFireAttack(QString element);
     void askForSkill(network::Command* cmd);
-    void attacked(QString element,int hitRate);
+    void attacked(QString element,int hitRate,int cardId,bool canLight);
 public slots:
     void normal();
     void onOkClicked();

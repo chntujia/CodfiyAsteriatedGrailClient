@@ -16,8 +16,7 @@ enum CAUSE {
 YuanSu::YuanSu()
 {
     makeConnection();
-setMyRole(this);
-
+	setMyRole(this);
     Button *yuanSuFaShu,*yuanSuDianRan,*yueGuang;
     yuanSuFaShu=new Button(3,QStringLiteral("元素法术"));
     buttonArea->addButton(yuanSuFaShu);

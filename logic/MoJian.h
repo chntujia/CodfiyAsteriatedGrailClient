@@ -9,7 +9,7 @@ public:
     void normal();
     void attackAction();
     void askForSkill(network::Command* cmd);
-    void attacked(QString element, int hitRate);
+    void attacked(QString element, int hitRate,int cardId,bool canLight);
     void XiuLuoLianZhan();
     void AnYingNingJu();
 

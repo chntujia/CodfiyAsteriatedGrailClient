@@ -80,9 +80,9 @@ void MoNv::enbleFireAttack(QString element)
     }
 }
 
-void MoNv::attacked(QString element,int hitRate)
+void MoNv::attacked(QString element,int hitRate, int cardId,bool canLight)
 {
-    Role::attacked(element, hitRate);
+    Role::attacked(element, hitRate,cardId,canLight);
 
     handArea->disableAttack();
     if(hitRate==0)

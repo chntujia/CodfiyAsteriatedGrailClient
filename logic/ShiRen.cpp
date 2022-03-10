@@ -96,8 +96,9 @@ void ShiRen::XiWangFuGeQu(int id)
 
     tipArea->setMsg(QStringLiteral("选择【希望赋格曲】目标或取消"));
 
-    playerArea->enableMate(true);
-    playerArea->disablePlayerItem(id);
+    playerArea->enableMate();
+	if(id != -1)
+		playerArea->disablePlayerItem(id);
     playerArea->setQuota(1);
 
     decisionArea->enable(1);

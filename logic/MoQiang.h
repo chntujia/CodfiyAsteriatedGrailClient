@@ -9,7 +9,7 @@ public:
     void normal();
     void AnZhiJieFang();
     void HuanYingXingChen();
-	void attacked(QString element, int hitRate);
+	void attacked(QString element, int hitRate,int cardId,bool canLight);
 	void moDaned(int nextID,int sourceID, int howMany);
     void AnZhiBiZhang();
     void QiHeiZhiQiang();

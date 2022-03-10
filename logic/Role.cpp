@@ -314,7 +314,7 @@ void Role::attackOrMagic()
     decisionArea->enable(3);
 }
 
-void Role::attacked(QString element,int hitRate)
+void Role::attacked(QString element,int hitRate,int cardId,bool canLight)
 {
     state=2;
     playerArea->setQuota(1);
@@ -327,7 +327,8 @@ void Role::attacked(QString element,int hitRate)
         handArea->enableElement("darkness");
     }
     handArea->disableMagic();
-    handArea->enableElement("light");
+	if(canLight)
+		handArea->enableElement("light");
     gui->alert();
 }
 //add 充盈弃牌提示
@@ -559,6 +560,7 @@ void Role::askForSkill(Command *cmd)
         tipArea->setMsg(QStringLiteral("选择【激昂狂想曲】发动效果"));
         tipArea->showBox();
         decisionArea->enable(0);
+		decisionArea->enable(1);
         break;
     case SHENG_LI_JIAO_XIANG_SHI:
         gui->reset();
@@ -592,6 +594,7 @@ void Role::askForSkill(Command *cmd)
         tipArea->setMsg(QStringLiteral("选择【胜利交响诗】发动效果"));
         tipArea->showBox();
         decisionArea->enable(0);
+		decisionArea->enable(1);
         break;
     default:
         gui->reset();
@@ -728,6 +731,18 @@ void Role::onCancelClicked()
         emit sendCommand(network::MSG_RESPOND, respond);
         gui->reset();
         break;
+	case JI_ANG_KUANG_XIANG_QU_2:
+		respond = newRespond(JI_ANG_KUANG_XIANG_QU_2);
+		respond->add_args(0);
+		emit sendCommand(network::MSG_RESPOND, respond);
+		gui->reset();
+		break;
+	case SHENG_LI_JIAO_XIANG_SHI_2:
+		respond = newRespond(SHENG_LI_JIAO_XIANG_SHI_2);
+		respond->add_args(0);
+		emit sendCommand(network::MSG_RESPOND, respond);
+		gui->reset();
+		break;
     }
 }
 
@@ -1095,6 +1110,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
     int hitRate;
     int i,howMany;
     int cause;
+	bool canLight;
 
     Card*card;
     Player*player;    
@@ -1143,6 +1159,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                 cardID=cmd->args(1);
                 targetID=cmd->args(2);
                 sourceID=cmd->args(3);
+				canLight = cmd->args(4);
                 card=dataInterface->getCard(cardID);
                 QSound("sound/Attack.wav");
 
@@ -1162,7 +1179,7 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 
                     gui->reset();
                     tipArea->setMsg(msg);
-                    myRole->attacked(card->getElement(),hitRate);
+                    myRole->attacked(card->getElement(),hitRate,cardID,canLight);
                 }
                 break;
             case network::RESPOND_DISCARD:
@@ -1630,6 +1647,14 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
                             card=dataInterface->getCard(cardID);
                             dataInterface->addHandCard(card);
                         }
+						if (dataInterface->getMyself()->getRoleID() == 32)
+							//特殊处理精灵射手，盖牌永远放手里
+						{
+							foreach(CardItem *ptr, coverArea->getHandCardItems())
+							{
+								handArea->addCardItem(ptr->getCard());
+							}
+						}
                     }
                 }
                 // 更新盖牌
@@ -1643,12 +1668,29 @@ void Role::decipher(quint16 proto_type, google::protobuf::Message* proto)
 
                     if (targetID == myID)
                     {
+						if (dataInterface->getMyself()->getRoleID() == 32)
+							//特殊处理精灵射手，盖牌永远放手里：先进行还原
+						{
+							foreach(CardItem *ptr, coverArea->getHandCardItems())
+							{
+								handArea->removeCardItem(ptr->getCard());
+							}
+						}
                         dataInterface->cleanCoverCard();
                         for (int k = 0; k < player_info->covered_count(); ++k){
                             cardID=player_info->covereds(k);
                             card=dataInterface->getCard(cardID);
                             dataInterface->addCoverCard(card);
                         }
+						if (dataInterface->getMyself()->getRoleID() == 32)
+							//特殊处理精灵射手，盖牌永远放手里
+						{
+							foreach(CardItem *ptr, coverArea->getHandCardItems())
+							{
+								handArea->addCardItem(ptr->getCard());
+							}
+						}
+
                     }
                 }
                 // 更新治疗

@@ -186,9 +186,9 @@ void MoJian::askForSkill(network::Command* cmd)
         Role::askForSkill(cmd);
 }
 
-void MoJian::attacked(QString element, int hitRate)
+void MoJian::attacked(QString element, int hitRate,int cardId,bool canLight)
 {
-    Role::attacked(element,hitRate);
+    Role::attacked(element,hitRate,cardId,canLight);
     if(isMyTurn)
         handArea->disableMagic();
 }

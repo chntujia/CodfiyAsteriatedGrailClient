@@ -34,6 +34,12 @@
 #include "YingLingRenXing.h"
 #include "MoNv.h"
 #include "ShiRen.h"
+#include "YinYang.h"
+#include "JingLingSheShou.h"
+#include "XueJian.h"
+#include "YueNv.h"
+#include "ShouLing.h"
+#include "ShengGong.h"
 #ifdef SOUND
   #include <QSound>
 #endif
@@ -201,9 +207,28 @@ void Logic::setMyRole(int roleID)
     case 31:
         myRole = new ShiRen;
         break;
+	case 32:
+		myRole = new JingLingSheShou;
+		break;
+	case 33:
+		myRole = new YinYang;
+		break;
+	case 34:
+		myRole = new XueJian;
+		break;
+	case 35:
+		myRole = new YueNv;
+		break;
+	case 36:
+		myRole = new ShouLing;
+		break;
+	case 37:
+		myRole = new ShengGong;
+		break;
     case 108:
         myRole = new spMoDao;
         break;
+
     }
 
 }

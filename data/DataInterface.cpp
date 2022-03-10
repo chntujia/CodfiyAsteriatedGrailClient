@@ -114,6 +114,12 @@ void DataInterface::initRoleList()
     roleList[29] = QStringLiteral("[魔枪]");
     roleList[30] = QStringLiteral("[苍炎魔女]");
     roleList[31] = QStringLiteral("[吟游诗人]");
+	roleList[32] = QStringLiteral("[精灵射手]");
+	roleList[33] = QStringLiteral("[阴阳师]");
+	roleList[34] = QStringLiteral("[血色剑灵]");
+	roleList[35] = QStringLiteral("[月之女神]");
+	roleList[36] = QStringLiteral("[兽灵武士]");
+	roleList[37] = QStringLiteral("[圣弓]");
     roleList[108] = QStringLiteral("[sp魔导师]");
 }
 

@@ -400,7 +400,7 @@ QString getCauseString(int cause)
     case BU_XIE_HE_XIAN:
         return QStringLiteral("不谐和弦");
     case GE_YONG_TIAN_FU:
-        return QStringLiteral("歌咏天赋");
+        return QStringLiteral("禁忌诗篇");
     case BAO_FENG_QIAN_ZOU_QU:
         return QStringLiteral("暴风前奏曲");
     case JI_ANG_KUANG_XIANG_QU:
@@ -411,8 +411,101 @@ QString getCauseString(int cause)
         return QStringLiteral("胜利交响诗");
     case XI_WANG_FU_GE_QU:
         return QStringLiteral("希望赋格曲");
+	case YUAN_SU_SHE_JI:
+	case YUAN_SU_SHE_JI_HIT:
+		return QStringLiteral("元素射击");
+	case DONG_WU_HUO_BAN:
+		return QStringLiteral("动物伙伴");
+	case JING_LING_MI_YI:
+		return QStringLiteral("精灵密仪");
+	case JING_LING_MI_YI_BOOT:
+		return QStringLiteral("精灵密仪");
+	case HEI_AN_JI_LI:
+		return QStringLiteral("黑暗祭礼");
+	case SHI_SHEN_JIANG_LIN:
+		return QStringLiteral("式神降临");
+	case SHENG_MING_JIE_JIE:
+		return QStringLiteral("生命结界");
+	case SHI_SHEN_ZHOU_SHU:
+		return QStringLiteral("式神咒束");
+	case YIN_YANG_ZHUAN_HUAN:
+		return QStringLiteral("阴阳转换");
+	case XUE_SE_JING_JI:
+		return QStringLiteral("血色荆棘");
+	case CHI_SE_YI_SHAN:
+		return QStringLiteral("赤色一闪");
+	case XUE_RAN_QIANG_WEI:
+		return QStringLiteral("血染蔷薇");
+	case XUE_QI_PING_ZHANG:
+		return QStringLiteral("血气屏障");
+	case XUE_QIANG_WEI_BOOT:
+		return QStringLiteral("血蔷薇庭院");
+	case XIN_YUE_BI_HU:
+		return QStringLiteral("新月庇护");
+	case AN_YUE_ZU_ZHOU:
+		return QStringLiteral("暗月诅咒");
+	case MEI_DU_SHA:
+		return QStringLiteral("美杜莎之眼");
+	case YUE_DU:
+		return QStringLiteral("月渎");
+	case AN_YUE_ZHAN:
+		return QStringLiteral("暗月斩");
+	case YUE_ZHI_LUN_HUI:
+		return QStringLiteral("月之轮回");
+	case CANG_BAI_ZHI_YUE:
+		return QStringLiteral("苍白之月");
+	case WU_ZHE_CAN_XIN:
+		return QStringLiteral("武者残心");
+	case YI_JI_WU_NIAN:
+		return QStringLiteral("一击无念");
+	case YI_JI_ATK:
+		return QStringLiteral("一击无念");
+	case SHOU_HUN_YI_NIAN:
+		return QStringLiteral("兽魂意念");
+	case SHOU_HUN_JING_JIE:
+		return QStringLiteral("兽魂警戒");
+	case SHOU_FAN:
+		return QStringLiteral("兽返");
+	case SHOU_FAN_1:
+		return QStringLiteral("兽返");
+	case NI_FAN_ZHAN:
+		return QStringLiteral("逆反居合斩");
+	case NI_FAN_ATK:
+		return QStringLiteral("逆反居合斩");
+	case NI_FAN_HIT:
+		return QStringLiteral("逆反居合斩");
+	case YU_HUN_BOOT:
+		return QStringLiteral("御魂流居合式");
+	case YU_HUN_BOOT_1:
+		return QStringLiteral("御魂流居合式");
+	case YU_HUN_BOOT_2:
+		return QStringLiteral("御魂流居合式");
+	case YU_HUN_ATK:
+		return QStringLiteral("御魂流居合式");
+	case TIAN_ZHI_GONG:
+			return QStringLiteral("天之弓");
+	case SHENG_XIE_JU_BAO:
+			return QStringLiteral("圣屑飓暴");
+	case SHENG_XIE_MISS:
+			return QStringLiteral("圣屑飓暴");
+	case SHENG_HUANG_MO_SHI:
+			return QStringLiteral("圣煌模式"); 
+	case SHENG_GUANG_BAO_LIE:
+			return QStringLiteral("圣光爆裂");
+	case SHENG_LIU_XING_DAN:
+			return QStringLiteral("圣流星弹");
+	case SHENG_LIU_XING_ATK:
+			return QStringLiteral("圣流星弹");
+	case SHENG_LIU_XING_HIT:
+			return QStringLiteral("圣流星弹");
+	case HUI_GUANG_PAO:
+			return QStringLiteral("圣煌辉光炮");
+	case ZI_DONG_TIAN_CHONG:
+			return QStringLiteral("自动填充");
+	case ZI_DONG_TIAN_CHONG_2:
+			return QStringLiteral("自动填充");
     default:
-        return "CauseString undefined";
+		return QStringLiteral("未定义");
     }
 }
 QString getCommandString(network::Command *cmd){

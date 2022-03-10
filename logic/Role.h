@@ -18,7 +18,7 @@ public:
     virtual void magicAction();
     virtual void attackOrMagic();
     virtual void additionalAction(Command *cmd);
-    virtual void attacked(QString element,int hitRate);
+    virtual void attacked(QString element,int hitRate,int cardId,bool canLight = true);
     virtual void moDaned(int nextID, int sourceID, int howMany);
     virtual void cure(int cross,int harmPoint,int type, int crossAvailable);
     virtual void askForSkill(network::Command* cmd);

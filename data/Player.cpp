@@ -151,8 +151,43 @@ void Player::setRole(int roleID)
         break;
     case 31:
         roleName=QStringLiteral("[吟游诗人]");
+		tapSource = "resource/tap/ShiShen.png";
         addToken(0, new Token(QStringLiteral("灵感"),4,0));
         break;
+	case 32:
+		roleName = QStringLiteral("[精灵射手]");
+		tapSource = "resource/tap/ZhuFu.png";
+		addToken(2, new Token(QStringLiteral("祝福"), 3, 2));
+		break;
+	case 33:
+		roleName = QStringLiteral("[阴阳师]");
+		tapSource = "resource/tap/ShiShen.png";
+		addToken(0, new Token(QStringLiteral("鬼火"), 3, 0));
+		break;
+	case 34:
+		roleName = QStringLiteral("[血色剑灵]");
+		tapSource = "resource/tap/QiangWei.png";
+		addToken(0, new Token(QStringLiteral("鲜血"), 3, 0));
+		break;
+	case 35:
+		roleName = QStringLiteral("[月之女神]");
+		tapSource = "resource/tap/AnYue.png";
+		addToken(0, new Token(QStringLiteral("新月"), 2, 0));
+		addToken(1, new Token(QStringLiteral("石化"), 3, 1));
+		addToken(2, new Token(QStringLiteral("暗月"), 99, 2));
+		break;
+	case 36:
+		roleName = QStringLiteral("[兽灵武士]");
+		tapSource = "resource/tap/QianXing.png";
+		addToken(0, new Token(QStringLiteral("残心"), 4, 0));
+		addToken(1, new Token(QStringLiteral("兽魂"), 2, 1));
+		break;
+	case 37:
+		roleName = QStringLiteral("[圣弓]");
+		tapSource = "resource/tap/AnYue.png";
+		addToken(0, new Token(QStringLiteral("信仰"), 10, 0));
+		crossMax = 3;
+		break;
     case 108:
         roleName=QStringLiteral("[sp魔导师]");
         break;
